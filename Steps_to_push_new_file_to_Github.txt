@@ -1,0 +1,21 @@
+git --version
+git config --global user.name "your-name"
+git config --global user.email "your-email"
+
+IN THE COMMAND LINE–MAKE SURE YOU CD INTO YOUR REQUIRED FOLDER-
+git init (for the first time)
+
+CREATE A README.md file -
+vi README.md
+
+git status
+
+git add .
+git commit -m "first commit"
+git remote add origin https://github.com/sandy2explore/Explore.git
+git push -u origin master
+
+IF YOU WANT TO CONTINUE MAKING CHANGES AND PUSHING THEM TO GITHUB YOU’LL JUST NEED TO USE THE FOLLOWING THREE COMMANDS-
+git add .
+git commit -m "type your commit message here"
+git push origin master
