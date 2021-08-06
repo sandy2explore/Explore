@@ -15,3 +15,60 @@ SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p
 SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state, final_blocking_session from gv$session where event in ('library cache lock') order by 4;
 
 SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state, final_blocking_session from gv$session where event in ('latch: MGA shared context latch') order by 4;
+
+
+FIND THE BLOCKING SESSIONS AND BLOCKERS  - 
+
+1.set lines 500
+select count(1),FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE from gv$session where FINAL_BLOCKING_SESSION_STATUS='VALID' group by FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE ;
+
+2.select sid,WAIT_EVENT,BLOCKER_INSTANCE_ID,BLOCKER_SID,BLOCKER_SESS_SERIAL#,inst_id from gv$session_blockers;
+
+3.set lines 1000
+col MODULE for a50
+col USERNAME for a40
+select username,sql_id,module,program from gv$session where sid=<SID>;
+
+FOR RAC ENVIRONMENT - 
+
+SELECT gvh.SID     sessid
+    , gvs.serial# serial
+    , gvh.inst_id inst_id
+    , holder.username holder
+    , waiter.username waiter
+	, waiter.sql_id "waiter_SQL"
+	,holder.sql_id "holder_SQL"
+FROM gv$lock    gvh
+  , gv$lock    gvw
+  , gv$session gvs
+  , gv$session holder
+  , gv$session waiter
+WHERE (gvh.id1, gvh.id2) IN
+     (-- Lock mode in which the process requests the lock
+      SELECT id1, id2 FROM gv$lock WHERE request = 0  
+      INTERSECT
+      -- Lock mode in which the session holds the lock
+      SELECT id1, id2 FROM gv$lock WHERE lmode = 0    
+   )
+AND gvh.id1 = gvw.id1
+AND gvh.id2 = gvw.id2
+AND gvh.request = 0
+AND gvw.lmode = 0
+AND gvh.SID = gvs.SID
+AND gvh.inst_id = gvs.inst_id
+and ( holder.sid = gvh.sid and holder.inst_id = gvh.inst_id )
+and ( waiter.sid = gvw.sid and waiter.inst_id = gvw.inst_id )
+/
+
+
+FIND OSPID FROM SID -  
+
+1. Set lines 200
+col sid format 99999
+col username format a15
+col osuser format a15
+select a.sid, a.serial#,a.username, a.osuser, b.spid
+from v$session a, v$process b
+where a.paddr= b.addr
+and a.sid=<SID>
+order by a.sid;
