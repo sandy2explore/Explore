@@ -1,3 +1,28 @@
+FIND OUT THE HIDDEN PARAMETER VALUES - 
+
+col NAME for a40
+col CURRENT_VALUE for a30
+col DEFAULT_VALUE for a30
+col DEFAULT_T_F for a30
+set linesize 200
+
+SELECT
+ksppinm   name,
+ksppstvl  Current_Value,
+b.ksppstdfl Default_Value,
+b.ksppstdf  Default_T_F
+FROM
+x$ksppi a,
+x$ksppsv b
+WHERE
+a.indx=b.indx
+AND
+substr(ksppinm,1,1) = '_'
+AND
+ksppinm like '%_lm_idle_connection_check_interval%';--'%_complex_view_merging%'--'%_replace_virtual_columns%'--'%cost_based%';
+--'%_gc_persistent_read_mostly%' --'%_lm_drm_disable%' --'%enable_pdb_close_abort%' --'%undo_autotune%'
+
+
 set lines 200 pages 300
 col File#:Block# for a20
 col sid_ser_instid for a15
