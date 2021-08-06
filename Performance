@@ -1,0 +1,17 @@
+set lines 200 pages 300
+col File#:Block# for a20
+col sid_ser_instid for a15
+col status for a8
+col state for a8
+col con_id for 9
+select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state,final_blocking_session from gv$session where event in ('gc current request') order by 4;
+
+select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state,final_blocking_session from gv$session where event in ('gc buffer busy acquire') order by 4;
+
+select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state,final_blocking_session from gv$session where event in ('gc cr block remote read') order by 4;
+
+SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state, final_blocking_session from gv$session where event in ('gc cr request') order by 4;
+
+SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state, final_blocking_session from gv$session where event in ('library cache lock') order by 4;
+
+SQL> select sql_id,sid||','||serial#||',@'||inst_id "sid_ser_instid" ,p1||':'||p2 "File#:Block#",round(WAIT_TIME_MICRO/1e6,6) wait_seconds,status,state, final_blocking_session from gv$session where event in ('latch: MGA shared context latch') order by 4;
