@@ -37,6 +37,9 @@ shows the resource utilization (CPU, memory, etc...) of running containers
 Create Volume 
  - docker volume create <volume name>
  
+Check the volume created 
+ - docker volume ls
+ 
 inspect volume, check volume, read data from volume, inspect data locally
  - docker volume inspect <volume name>
  
