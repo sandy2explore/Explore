@@ -1,1 +1,18 @@
+Pull an image from a registry
+ - docker pull myimage:1.0
 
+Build an image from the Dockerfile in the current directory and tag the image 
+ - docker build -t myimage:1.0
+
+List the running containers
+ - docker container ls
+
+Delete all running and stopped containers
+ - docker container rm -f $(docker ps -aq)
+ 
+ 
+List the docker networks
+ - docker network ls
+ 
+
+ 
