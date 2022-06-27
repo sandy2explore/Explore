@@ -1,3 +1,51 @@
+TOP SQL WITH WAITS - 
+--------------------
+select * from (select sql_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('12-06-2022 08:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('12-06-2022 08:19:00','dd-mm-yyyy hh24:mi:ss') group by sql_id,event order by 3 desc) where rownum<=20;
+
+
+TOP SQL WITH WAITS FOR LAST 1 HOUR - 
+-----------------------------------
+select * from (select sql_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time > sysdate - 1/24 group by sql_id,event order by 3 desc) where rownum<=20;
+
+BLOCKING SESSION DETAILS -
+------------------------
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('25-06-2022 02:24:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('25-06-2022 02:24:00','dd-mm-yyyy hh24:mi:ss') and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+
+BLOCKING SESSION DETAILS FOR LAST 15 MINS - 
+------------------------------------------
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from gv$active_session_history
+where sample_time >= sysdate - 15/(24*60) and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from dba_hist_active_sess_history 
+where sample_time >= sysdate - 15/(24*60) and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+
+WAITS ON CURRENT OBJECTS - 
+-------------------------
+select * 
+from 
+(select MIN(SAMPLE_TIME), MAX(SAMPLE_TIME),SQL_ID,EVENT,CURRENT_OBJ#,COUNT(DISTINCT SESSION_ID),COUNT(1)
+  from DBA_HIST_ACTIVE_SESS_HISTORY 
+ where sample_time between to_date('10-06-2022 04:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('10-06-2022 04:10:00','dd-mm-yyyy hh24:mi:ss')
+   --and EVENT='gc transaction table'
+ group by SQL_ID,EVENT,CURRENT_OBJ#
+ order by COUNT(1) desc)
+ where rownum <=20;
+
+
+
 FIND OUT THE HIDDEN PARAMETER VALUES - 
 
 col NAME for a40
