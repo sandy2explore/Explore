@@ -1,5 +1,8 @@
 Pull an image from a registry
  - docker pull myimage:1.0
+ 
+Push an image to a registry
+ - docker push myrepo/myimage:2.0
 
 Build an image from the Dockerfile in the current directory and tag the image 
  - docker build -t myimage:1.0
@@ -10,6 +13,11 @@ List the running containers
 Delete all running and stopped containers
  - docker container rm -f $(docker ps -aq)
  
+Delete stopped containers
+ - docker container prune
+
+Cleans up dangling images, containers, volumes, and networks (ie, not associated with a container)
+ - docker system prune -a
  
 List the docker networks
  - docker network ls
