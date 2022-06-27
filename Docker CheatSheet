@@ -3,6 +3,9 @@ Pull an image from a registry
  
 Push an image to a registry
  - docker push myrepo/myimage:2.0
+ 
+How to get into the Docker Terminal 
+ - docker exec -i -t my-nginx-1 /bin/bash
 
 Build an image from the Dockerfile in the current directory and tag the image 
  - docker build -t myimage:1.0
@@ -18,6 +21,9 @@ Delete stopped containers
 
 Cleans up dangling images, containers, volumes, and networks (ie, not associated with a container)
  - docker system prune -a
+ 
+Get logs from container
+ - docker logs <container_name>
  
 List the docker networks
  - docker network ls
