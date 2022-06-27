@@ -1,1 +1,3 @@
-_gc_element_percent - for 'gc freelist' wait event 
+_gc_element_percent = 120 - suggested by PSR - for 'gc freelist' wait event 
+
+_session_cached_instantiations = 1000  - suggested by SE  - for ORA 7445 [KGIPINOBJECT]
