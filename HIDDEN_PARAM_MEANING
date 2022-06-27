@@ -1,3 +1,9 @@
 _gc_element_percent = 120 - suggested by PSR - for 'gc freelist' wait event 
 
 _session_cached_instantiations = 1000  - suggested by SE  - for ORA 7445 [KGIPINOBJECT]
+
+_cursor_reload_failure_threshold= 10 as suggested by PSR , 
+Similar Bug 33751470 - RCA - PRODUCT BUG - SERVICE SERVER OUTAGES DUE TO STUCK THREADS
+        Bug 34321443 - POD:EBIR:EBIR-RCA-WAIT EVENTS 
+        Bug 33525417 - EBWH HAVING LIBRARY CACHE LOCK
+        Bug 34075244 - HIGH PARSE ELAPSED TIME WITH LIBRARY CACHE LOCK AND LIBRARY CACHE: MUTEX X IN 19.11 AND ABOVE
