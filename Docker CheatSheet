@@ -43,6 +43,12 @@ Check the volume created
 inspect volume, check volume, read data from volume, inspect data locally
  - docker volume inspect <volume name>
  
+Deleting a volume
+ - docker volume rm <volume name>
+ 
+Removing all unused volumes
+ - docker volume prune
+ 
  
  250 DCA certification Docker Questions - 
   - https://medium.com/bb-tutorials-and-thoughts/250-practice-questions-for-the-dca-exam-84f3b9e8f5ce
