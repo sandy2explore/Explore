@@ -1,5 +1,7 @@
+PostgreSQL on AWS whitepaper - https://media.amazonwebservices.com/AWS_RDBMS_PostgreSQL.pdf
 
-The main tuning parameter for PostgreSQL - 
+
+The main tuning parameter for PostgreSQL -  
 Ref : https://www.enterprisedb.com/postgres-tutorials/comprehensive-guide-how-tune-database-parameters-and-configuration-postgresql
 
 1. shared_buffer - This parameter sets how much dedicated memory will be used by PostgreSQL for the cache
@@ -18,7 +20,7 @@ Ref : https://www.enterprisedb.com/postgres-tutorials/comprehensive-guide-how-tu
 
 8. max_worker_processes
 
-9. max_parallel_workers_per_gather
+9. max_parallel_workers_per_gather - The maximum workers a Gather or GatherMerge node can use
 
 10. max_parallel_workers
 
@@ -29,3 +31,8 @@ Ref : https://www.enterprisedb.com/postgres-tutorials/comprehensive-guide-how-tu
 13. min_ and max_wal_size
 
 14. max_fsm_pages
+
+
+
+Autovacuum internal - https://www.percona.com/blog/2018/08/10/tuning-autovacuum-in-postgresql-and-autovacuum-internals/
+
