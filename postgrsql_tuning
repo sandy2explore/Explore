@@ -1,1 +1,31 @@
 
+The main tuning parameter for PostgreSQL - 
+Ref : https://www.enterprisedb.com/postgres-tutorials/comprehensive-guide-how-tune-database-parameters-and-configuration-postgresql
+
+1. shared_buffer - This parameter sets how much dedicated memory will be used by PostgreSQL for the cache
+
+2. wal_buffers
+
+3. effective_cache_size
+
+4. work_mem
+
+5. synchronous_commit
+
+6. max_connections
+
+7. max_prepared_transactions
+
+8. max_worker_processes
+
+9. max_parallel_workers_per_gather
+
+10. max_parallel_workers
+
+11. effective_io_concurrency
+
+12. random_page_cost
+
+13. min_ and max_wal_size
+
+14. max_fsm_pages
