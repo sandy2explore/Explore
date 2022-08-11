@@ -27,6 +27,14 @@ where sample_time between to_date('25-06-2022 02:24:00','dd-mm-yyyy hh24:mi:ss')
 and to_date('25-06-2022 02:24:00','dd-mm-yyyy hh24:mi:ss') and BLOCKING_SESSION_SERIAL# is not null 
 group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
 
+CURRENT BLOCKERS - 
+-------------------
+set lines 500
+select * from 
+(
+select count(1),FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE from gv$session where FINAL_BLOCKING_SESSION_STATUS='VALID' group by FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE  order by 1 desc) 
+where rownum<=10;
+
 
 BLOCKING SESSION DETAILS FOR LAST 15 MINS - 
 ------------------------------------------
@@ -52,11 +60,65 @@ from
  group by SQL_ID,EVENT,CURRENT_OBJ#
  order by COUNT(1) desc)
  where rownum <=20;
+ 
+ 
+ HANG  CHAIN FROM DATABASE - 
+ --------------------------
+ 
+ set lines 1000 pages 200 
+col P1_P2 for a40
+col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a70
+col SESS_INFO for a20
+col BLOCKER for a20
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE, 
+       INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	
+       BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+       'FILE#='||P1||' '||'Block#='||P2  "P1_P2",
+       IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains 
+where IN_WAIT_SECS is not null  
+and BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# <> '--' 
+order by IN_WAIT_SECS desc;
 
+
+http://kundun-oracle.blogspot.com/2015/11/blocking-wait-chains.html
+
+set line 500 pages 200
+col blkr_sid for a8
+col blkr_ser for a8
+col wait_event for a35
+col FBLOCKER_PROC for a20
+
+SELECT  wc.chain_id, wc.sid, wc.sess_serial#, i.inst_id,
+decode(blocker_sid,null,'',blocker_sid) blkr_sid,
+decode(BLOCKER_SESS_SERIAL#,null,'',BLOCKER_SESS_SERIAL#) blkr_ser,
+blocker_instance blkr_inst,
+'SID-'||decode(s.final_blocking_session,null,'<>', s.final_blocking_session)
+ ||'-Inst# '||decode(s.final_blocking_instance,null,'<>', s.final_blocking_instance) FBLOCKER_PROC,
+wait_event_text wait_event,
+in_wait_secs Seconds
+FROM v$wait_chains wc,
+ gv$session s,
+ gv$session bs,
+ gv$instance i,
+ gv$process p
+WHERE wc.instance = i.instance_number (+)
+ AND (wc.instance = s.inst_id (+) and wc.sid = s.sid (+)
+ AND wc.sess_serial# = s.serial# (+))
+ AND (s.final_blocking_instance = bs.inst_id (+) and s.final_blocking_session = bs.sid (+))
+ AND (bs.inst_id = p.inst_id (+) and bs.paddr = p.addr (+))
+ AND ( num_waiters > 0
+ OR ( blocker_osid IS NOT NULL AND in_wait_secs > 10 ) )
+CONNECT BY PRIOR wc.sid = blocker_sid
+           AND PRIOR wc.sess_serial# = blocker_sess_serial#
+           AND PRIOR i.inst_id = blocker_instance
+START WITH blocker_is_valid = 'FALSE'
+order by in_wait_secs desc ; 
+ 
 
 
 FIND OUT THE HIDDEN PARAMETER VALUES - 
-
+--------------------------------------
 col NAME for a40
 col CURRENT_VALUE for a30
 col DEFAULT_VALUE for a30
