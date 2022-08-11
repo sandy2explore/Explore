@@ -22,3 +22,20 @@ SELECT SID, SPID, CLIENT_INFO, event, seconds_in_wait secs, p1, p2, p3
   FROM V$PROCESS p, V$SESSION s
   WHERE p.ADDR = s.PADDR
   and CLIENT_INFO like 'rman channel=%';
+  
+  
+ Restore archivelogs to a different locations from tape - 
+ --------------------------------------------------------
+  
+ wiki - https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=3206927664
+
+
+run {
+set archivelog destination to '/u02/app/oracle/diag/arcrestore';
+ALLOCATE CHANNEL C1_SBT DEVICE TYPE 'SBT_TAPE' PARMS 'SBT_LIBRARY=/var/opt/oracle/dbaas_acfs/us2gm5ac/opc/libopc.so,ENV=(OPC_PFILE=/var/opt/oracle/dbaas_acfs/us2gm5ac/opc/opcus2gm5ac.ora)';
+configure device type disk parallelism 2 ;
+restore archivelog sequence 5011 thread 10;
+restore archivelog sequence 5012 thread 10;
+release channel C1_SBT;
+}
+  
