@@ -1,3 +1,12 @@
+DB WAITS - 
+----------
+set lines 500 pages 200
+select * from (
+  select count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT, nvl(event, 'on cpu') event,inst_id from gv$active_session_history where sample_time >sysdate -5/(24*60) group by nvl(event, 'on cpu'),inst_id order by count(*) desc
+)
+where rownum<15;
+
+
 TOP SQL WITH WAITS - 
 --------------------
 select * from (select sql_id,event,count(*) from dba_hist_active_sess_history 
