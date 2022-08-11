@@ -1,0 +1,84 @@
+Successful Greenplum deployments include but are not limited to the following: - USE CASES
+------------------------------------------------------------------------------
+Fraud analytics
+Financial risk management
+Cybersecurity
+Customer churn reduction
+Predictive maintenance analytics
+Manufacturing optimization
+Smart cars and internet of things (IoT) analytics
+Insurance claims reporting and pricing analytics
+Health-care claim reporting and treatment evaluations
+Student performance prediction and dropout prevention
+Advertising effectiveness
+Traditional data warehouses and business intelligence (BI)
+
+Features Included - 
+-------------------
+JSON support, which is of interest to those linking Greenplum and MongoDB and translating JSON into a relational format
+XML enhancements such as an increased set of functions for importing XML data into Greenplum
+PostgreSQL-based Analyze, which is an order of magnitude faster in generating table statistics
+Enhanced vacuum performance
+Lazy transactions IDs, which translate into fewer vacuum operations
+Universally unique identifier (UUID) data type
+Raster PostGIS
+User-defined function (UDF) default parameters
+
+ARCHITECTURE - 
+--------------
+Greenplum users and database administrators (DBAs) connect to a master server, which houses the metadata for the entire system. 
+This metadata is stored in a PostgreSQL database derivative. When the Greenplum instance on the master server receives a SQL statement, 
+it parses it, examines the metadata repository, forms a plan to execute that statement, passes the plan to the workers, and awaits the result. 
+In some circumstances, the master must perform some of the computation.
+Only metadata is stored on the master. All the user data is stored on the segment servers, the worker nodes in the cluster. 
+
+The master must communicate with the segments and the segments must communicate with one another. 
+They do this on a private User Datagram Protocol (UDP) network that is distinct from the public network on which users connect to the master. 
+This is critical. Were the segments to communicate on the public network, user downloads and other heavy loads would greatly affect Greenplum performance. 
+The private network is critical. Greenplum requires a 10 Gb network and strongly urges using 10 Gb switches for redundancy.
+
+In addition to the redundancy provided by the standby master, Greenplum strongly urges the creation of mirror segments. 
+These are segments that maintain a copy of the data on a primary segment, the one that actually does the work.
+
+Best Practices - 
+---------------
+1. Greenplum Database performs best with a denormalized schema design suited for MPP analytical processing for example, Star or Snowflake schema, 
+   with large fact tables and smaller dimension tables. 
+2. Use the same data types for columns used in joins between tables.
+3. Use heap storage for tables and partitions that will receive iterative batch and singleton UPDATE, DELETE, and INSERT operations.
+4. Use row-oriented storage for workloads with iterative transactions where updates are required and frequent inserts are performed.
+5. Use column-oriented storage where selects are narrow and aggregations of data are computed over a small number of columns.
+   Use column-oriented storage for tables that have single columns that are regularly updated without modifying other columns in the row.
+
+6. Use compression on large append-optimized and partitioned tables to improve I/O across the system.
+7. Explicitly define a column or random distribution for all tables. Do not use the default.
+8. Do not distribute on dates or timestamps, Never distribute and partition tables on the same column.
+
+9. Set vm.overcommit_memory to 2.
+10. Do not configure the OS to use huge pages.
+
+11. Choose range partitioning over list partitioning.
+12. Never partition and distribute tables on the same column.
+13. Do not use default partitions.
+14. Do not create too many partitions with column-oriented storage because of the total number of physical files 
+    on every segment: physical files = segments x columns x partitions
+
+15. In general indexes are not needed in Greenplum Database.
+16. Do not index columns that are frequently updated.
+17. Do not create bitmap indexes on columns that are updated.
+18. In general do not index partitioned tables. If indexes are needed, the index columns must be different than the partition columns.
+19. Determine if analyzing the database is actually needed. Analyzing is not needed if gp_autostats_mode is set to on_no_stats (the default) 
+    and the table is not partitioned.
+
+20. Always run ANALYZE after INSERT, UPDATE. and DELETE operations that significantly changes the underlying data.
+21. Always run ANALYZE after CREATE INDEX operations.
+22. If ANALYZE on very large tables takes too long, run ANALYZE only on the columns used in a join condition, WHERE clause, SORT, GROUP BY, 
+   or HAVING clause.
+23. When dealing with large sets of tables, use analyzedb instead of ANALYZE
+
+24. Run VACUUM after large UPDATE and DELETE operations.
+25. Frequently run VACUUM on the system catalogs to avoid catalog bloat and the need to run VACUUM FULL on catalog tables.
+26. Never kill VACUUM on catalog tables.
+
+
+
