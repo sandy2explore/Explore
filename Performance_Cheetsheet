@@ -275,7 +275,7 @@ and BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# <> '--'
 order by IN_WAIT_SECS desc;
 
 For checking P1/P2 value on which it is waited on - 
-
+************
 set lines 1000 pages 200 
 col P1_P2 for a40
 col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a70
