@@ -1,0 +1,434 @@
+Important Wikis- 
+
+https://confluence.oraclecorp.com/confluence/display/TECHTEAM/Procedure+to+triage+performance+issues+due+to+gc+wait+events
+
+https://confluence.oraclecorp.com/confluence/display/TECHTEAM/SOP+for+bug+31797821+GC+HANG
+
+https://confluence.oraclecorp.com/confluence/display/TECHTEAM/Bug+33278042+-+SOP+capture+additional+diagnostic+information+for+HIGH+CPU+UTILIZATION+due+to+cr+request+retry
+
+
+https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=3548148607 - Create by Joy 
+
+
+In-doubt transaction identification - 
+
+SELECT KTUXEUSN, KTUXESLT, KTUXESQN, /* Transaction ID */ KTUXESTA Status, KTUXECFL Flags FROM x$ktuxe WHERE ktuxesta!='INACTIVE' and KTUXESTA ='PREPARED';
+
+set lines 500 pages 200
+col VALUE for a70
+select name,value from v$diag_info where name ='Diag Trace';
+
+
+Parameter value across the instances - 
+----------------------------------------
+select INST_ID,name,value from gv$parameter where name like '%_kgl_hot_object_copies%' order by INST_ID;
+
+
+logfile size - https://www.thegeekdiary.com/how-to-find-redo-log-members-redo-log-file-size-redo-log-status/
+
+SQL> column REDOLOG_FILE_NAME format a50
+SQL> SELECT
+ a.GROUP#,
+ a.THREAD#,
+ a.SEQUENCE#,
+ a.ARCHIVED,
+ a.STATUS,
+ b.MEMBER AS REDOLOG_FILE_NAME,
+ (a.BYTES/1024/1024) AS SIZE_MB
+FROM v$log a
+JOIN v$logfile b ON a.Group#=b.Group#
+ORDER BY a.GROUP#;
+
+
+select instance_number,instance_name,dba_name,startup_time from dba_hist_database_instance order by 4 desc;
+
+No of local connections across the nodes - 
+[grid@epxa3a027-tgygd1 ~]$ exahosts=$(olsnodes | xargs echo | sed -e 's/ /,/g');/usr/local/bin/dcli -l grid -c $exahosts "ps -ef | grep us2dz2v | grep LOCAL | wc -l"
+
+COL OWNER FOR A10
+COL SEGMENT_NAME FOR A30
+COL PARTITION_NAME FOR A15
+COL SEGMENT_TYPE FOR A10
+COL FILE_ID FOR 9999999
+SELECT OWNER,SEGMENT_NAME,PARTITION_NAME,SEGMENT_TYPE,FILE_ID,BLOCK_ID FROM DBA_EXTENTS 
+WHERE file_id= 20
+  and 75030 BETWEEN BLOCK_ID AND BLOCK_ID + BLOCKS - 1;
+
+For actual Corruption-
+
+set lines 1000 pages 200
+col owner for a20
+col segment_name for a30 
+col partition_name for a30
+col block_type for a20
+
+SELECT 'EXT' block_type,e.owner, e.segment_type, e.segment_name, e.partition_name, c.file#
+     , greatest(e.block_id, c.block#) corr_start_block#
+     , least(e.block_id+e.blocks-1, c.block#+c.blocks-1) corr_end_block#
+     , least(e.block_id+e.blocks-1, c.block#+c.blocks-1) - greatest(e.block_id, c.block#) + 1 blocks_corrupted
+  FROM dba_extents e, GV$DATABASE_BLOCK_CORRUPTION c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and e.RELATIVE_FNO=d.RELATIVE_FNO
+   AND e.block_id <= c.block# + c.blocks - 1
+   AND e.block_id + e.blocks - 1 >= c.block#
+UNION
+SELECT 'SEG' block_type,s.owner, s.segment_type, s.segment_name, s.partition_name, c.file#
+     , header_block corr_start_block#
+     , header_block corr_end_block#
+     , 1 blocks_corrupted
+  FROM dba_segments s, GV$DATABASE_BLOCK_CORRUPTION c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and s.RELATIVE_FNO=d.RELATIVE_FNO
+   AND s.header_block between c.block# and c.block# + c.blocks - 1
+UNION
+SELECT 'FREE' block_type, null owner, null segment_type, null segment_name, null partition_name, c.file#
+     , greatest(f.block_id, c.block#) corr_start_block#
+     , least(f.block_id+f.blocks-1, c.block#+c.blocks-1) corr_end_block#
+     , least(f.block_id+f.blocks-1, c.block#+c.blocks-1) - greatest(f.block_id, c.block#) + 1 blocks_corrupted
+  FROM dba_free_space f, GV$DATABASE_BLOCK_CORRUPTION  c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and f.RELATIVE_FNO=d.RELATIVE_FNO
+   AND f.block_id <= c.block# + c.blocks - 1
+   AND f.block_id + f.blocks - 1 >= c.block#
+order by file#, corr_start_block#;
+
+For nonlogged Block- 
+
+set lines 1000 pages 200
+col owner for a20
+col segment_name for a30 
+col partition_name for a30
+col block_type for a20
+
+SELECT 'EXT' block_type,e.owner, e.segment_type, e.segment_name, e.partition_name, c.file#
+     , greatest(e.block_id, c.block#) corr_start_block#
+     , least(e.block_id+e.blocks-1, c.block#+c.blocks-1) corr_end_block#
+     , least(e.block_id+e.blocks-1, c.block#+c.blocks-1) - greatest(e.block_id, c.block#) + 1 blocks_corrupted
+  FROM dba_extents e, V$NONLOGGED_BLOCK c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and e.RELATIVE_FNO=d.RELATIVE_FNO
+   AND e.block_id <= c.block# + c.blocks - 1
+   AND e.block_id + e.blocks - 1 >= c.block#
+UNION
+SELECT 'SEG' block_type,s.owner, s.segment_type, s.segment_name, s.partition_name, c.file#
+     , header_block corr_start_block#
+     , header_block corr_end_block#
+     , 1 blocks_corrupted
+  FROM dba_segments s, V$NONLOGGED_BLOCK c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and s.RELATIVE_FNO=d.RELATIVE_FNO
+   AND s.header_block between c.block# and c.block# + c.blocks - 1
+UNION
+SELECT 'FREE' block_type, null owner, null segment_type, null segment_name, null partition_name, c.file#
+     , greatest(f.block_id, c.block#) corr_start_block#
+     , least(f.block_id+f.blocks-1, c.block#+c.blocks-1) corr_end_block#
+     , least(f.block_id+f.blocks-1, c.block#+c.blocks-1) - greatest(f.block_id, c.block#) + 1 blocks_corrupted
+  FROM dba_free_space f, V$NONLOGGED_BLOCK  c, DBA_DATA_FILES d
+ WHERE d.file_id = c.file# and f.RELATIVE_FNO=d.RELATIVE_FNO
+   AND f.block_id <= c.block# + c.blocks - 1
+   AND f.block_id + f.blocks - 1 >= c.block#
+order by file#, corr_start_block#;
+
+oradebug lkdebug -m reconfig lkdebug 
+oradebug -g all lkdebug -X <p2_block#> <p1_file#> <PDBid> 0 BL
+
+Command to check the HA trace for wait events - 
+Bug 33978849 - EEHO: LIBRARY CACHE LOCK WAIT EVENTS USER ARE GETTING SLOWNESS
+grep -A5 "gc cr request" us2dz2v1_diag_331600.trc | grep Name | sort | uniq -c
+
+Check the ORA-00600 error from DB - 
+SELECT         rownum  "line",
+               message_text "error",originating_timestamp
+FROM           X$DBGALERTEXT
+WHERE          originating_timestamp <= sysdate -3 
+  AND          message_text like '%ORA-0060%’ and message_text like '%ipc_recreate_que_2%'
+ORDER BY       originating_timestamp;
+
+From when ORA error is coming - 
+select min(CREATE_TIME),max(CREATE_TIME),ERROR_FACILITY,ERROR_NUMBER,ERROR_ARG2,count(1) from V$DIAG_INCIDENT where ERROR_FACILITY='ORA' and ERROR_NUMBER like '%7445%' group by ERROR_FACILITY,ERROR_NUMBER,ERROR_ARG2;
+
+
+IMPORTANT QUERIES - 
+-------------------------
+https://github.com/iusoltsev/sqlplus
+
+SOP to Mitigate the Process Hang Scenarios -
+https://confluence.oraclecorp.com/confluence/pages/viewpage.action?spaceKey=SE&title=SOP+to+Mitigate+the+Process+Hang+Scenarios
+
+
+Long Running Sessions:
+-----------------------------
+ SELECT SID, SERIAL#,OPNAME, CONTEXT, SOFAR, TOTALWORK,ROUND(SOFAR/TOTALWORK*100,2) “%_COMPLETE” FROM V$SESSION_LONGOPS WHERE OPNAME NOT LIKE ‘%aggregate%’ AND TOTALWORK != 0 AND SOFAR <> TOTALWORK;
+
+
+Current waits on DB with sql id -
+————————————————
+set lines 500 pages 200
+select event,sql_id,count(*) from gv$session where wait_class <> 'Idle' and STATE = 'WAITING' group by event,sql_id order by 3 desc; 
+
+Instance  wise - 
+set lines 500 pages 200
+col EVENT for a30
+select * from (
+select event,sql_id,inst_id,count(*) from gv$session where wait_class <> 'Idle' and STATE = 'WAITING' group by event,sql_id,inst_id order by 4 desc) where rownum<=10;
+
+DB Waits-
+----------
+select * from (select event,count(*) from gv$active_session_history where sample_time between sysdate-30/(24*60) and sysdate group by event order by 2 desc) where rownum<=10;
+
+select * from (select event,count(*) from dba_hist_active_sess_history where sample_time between to_date('29-07-2022 05:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('29-07-2022 06:00:00','dd-mm-yyyy hh24:mi:ss') group by event order by 2 desc) where rownum<=10;
+
+
+
+SQL- 
+——
+set lines 500 pages 200
+select * from (select sql_id,event,count(*) from gv$active_session_history where sample_time >= sysdate-30/(24*60) group by sql_id,event order by 3 desc) where rownum<=10;
+
+select sql_text from gv$sql where sql_id='&sql_id' and rownum=1;
+
+
+set lines 1000 pages 200
+select * from 
+(
+select sql_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('24-11-2022 16:11:00','dd-mm-yyyy hh24:mi:ss')
+    and to_date('24-11-2022 16:17:00','dd-mm-yyyy hh24:mi:ss')  group by sql_id,event order by 3 desc
+) where rownum <10;
+
+
+Fetch Explain Plan - 
+select * from table(dbms_xplan.display_cursor(sql_id=>'15crm6u0fhjur', cursor_child_no=>&chno, format=>'ALLSTATS ALL'));
+
+select * from TABLE(dbms_xplan.display_awr('15crm6u0fhjur',format=>'ALLSTATS ALL'));
+
+
+BLOCKERS -
+——————
+set lines 500
+select * from 
+(
+select count(1),FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE from gv$session where FINAL_BLOCKING_SESSION_STATUS='VALID' group by FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE  order by 1 desc) 
+where rownum<=10;
+
+col "FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE" for a20
+select * from 
+(
+select count(1),sql_id,final_blocking_session || ':' || final_blocking_instance 
+ From gv$session 
+where final_blocking_session_status='VALID'
+group by final_blocking_session || ':' || final_blocking_instance, sql_id
+order by count(1) desc
+) where rownum <=15;
+
+col min(sample_time) for a30
+col max(sample_time) for a30
+col event for a40
+select * from (
+select min(sample_time),max(sample_time),count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT, nvl(event, 'on cpu') event,sql_id,inst_id,blocking_session,blocking_session_serial# 
+from gv$active_session_history 
+where sample_time >= sysdate-60/(24*60) 
+group by nvl(event, 'on cpu'),sql_id,inst_id,blocking_session,blocking_session_serial# order by count(*) desc
+)
+where rownum<10;
+
+set lines 1000 pages 200
+col min(sample_time) for a30
+col max(sample_time) for a30
+col event for a30
+select * from (
+select min(sample_time),max(sample_time),count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT, nvl(event, 'on cpu') event,sql_id,instance_number,blocking_session,blocking_session_serial# 
+from dba_hist_active_sess_history 
+where sample_time between to_date('24-11-2022 15:30:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('24-11-2022 16:30:00','dd-mm-yyyy hh24:mi:ss')
+group by nvl(event, 'on cpu'),sql_id,instance_number,blocking_session,blocking_session_serial# order by count(*) desc
+)
+where rownum<10;
+
+WAIT CHAINS-
+———————
+col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a80
+col SESS_INFO for a20
+col BLOCKER for a30
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE, INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+P1_TEXT||'-'||P1||'  '||P2_TEXT||'-'||P2 P1_P2,IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains where IN_WAIT_SECS is not null order by IN_WAIT_SECS desc;
+
+set lines 1000 pages 200 
+col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a100
+col SESS_INFO for a20
+col BLOCKER for a30
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE, 
+       INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	
+       BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+       IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains 
+where IN_WAIT_SECS is not null  order by IN_WAIT_SECS desc;
+
+set lines 1000 pages 200 
+col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a100
+col SESS_INFO for a20
+col BLOCKER for a30
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE, 
+       INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	
+       BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+       IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains 
+where IN_WAIT_SECS is not null  
+and BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# <> '--' 
+order by IN_WAIT_SECS desc;
+
+For checking P1/P2 value on which it is waited on - 
+
+set lines 1000 pages 200 
+col P1_P2 for a40
+col "'CHAIN'||CHAIN_ID||'-'||CHAIN_SIGNATURE" for a70
+col SESS_INFO for a20
+col BLOCKER for a20
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE, 
+       INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	
+       BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+       'FILE#='||P1||' '||'Block#='||P2  "P1_P2",
+       IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains 
+where IN_WAIT_SECS is not null  
+and BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# <> '--' 
+order by IN_WAIT_SECS desc;
+
+For specific wait event- 
+select 'Chain '||CHAIN_ID||'-'||CHAIN_SIGNATURE,INSTANCE||'-'||SID||'-'||SESS_SERIAL# SESS_INFO,	BLOCKER_INSTANCE||'-'||BLOCKER_SID||'-'||BLOCKER_SESS_SERIAL# Blocker,
+P1_TEXT||'-'||P1||'  '||P2_TEXT||'-'||P2 P1_P2,IN_WAIT_SECS,TIME_REMAINING_SECS
+ from v$wait_chains where IN_WAIT_SECS is not null and WAIT_EVENT_TEXT in ('rdbms ipc reply')  order by IN_WAIT_SECS desc;
+
+
+Alternate query for wait chains - 
+http://kundun-oracle.blogspot.com/2015/11/blocking-wait-chains.html
+
+set line 500 pages 200
+col blkr_sid for a8
+col blkr_ser for a8
+col wait_event for a35
+col FBLOCKER_PROC for a20
+
+SELECT  wc.chain_id, wc.sid, wc.sess_serial#, i.inst_id,
+decode(blocker_sid,null,'',blocker_sid) blkr_sid,
+decode(BLOCKER_SESS_SERIAL#,null,'',BLOCKER_SESS_SERIAL#) blkr_ser,
+blocker_instance blkr_inst,
+'SID-'||decode(s.final_blocking_session,null,'<>', s.final_blocking_session)
+ ||'-Inst# '||decode(s.final_blocking_instance,null,'<>', s.final_blocking_instance) FBLOCKER_PROC,
+wait_event_text wait_event,
+in_wait_secs Seconds
+FROM v$wait_chains wc,
+ gv$session s,
+ gv$session bs,
+ gv$instance i,
+ gv$process p
+WHERE wc.instance = i.instance_number (+)
+ AND (wc.instance = s.inst_id (+) and wc.sid = s.sid (+)
+ AND wc.sess_serial# = s.serial# (+))
+ AND (s.final_blocking_instance = bs.inst_id (+) and s.final_blocking_session = bs.sid (+))
+ AND (bs.inst_id = p.inst_id (+) and bs.paddr = p.addr (+))
+ AND ( num_waiters > 0
+ OR ( blocker_osid IS NOT NULL AND in_wait_secs > 10 ) )
+CONNECT BY PRIOR wc.sid = blocker_sid
+           AND PRIOR wc.sess_serial# = blocker_sess_serial#
+           AND PRIOR i.inst_id = blocker_instance
+START WITH blocker_is_valid = 'FALSE'
+order by in_wait_secs desc ; 
+
+
+
+select sql_text from gv$sql where sql_id='499b0wcrxkhhy';
+
+select inst_id,count(*) from gv$session where sql_id='499b0wcrxkhhy' group by inst_id order by 2 desc;
+
+CHECK FOR DISTINCT PLANS-
+---------------------------------
+select distinct plan_hash_value from gv$sql_plan where sql_id='499b0wcrxkhhy';
+
+
+
+select * from (
+select count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT, nvl(event, 'on cpu') event,sql_id,inst_id,action from gv$active_session_history where sample_time >=sysdate-30/(24*60) and action='PMO_DEFERRED_GIDX_MAINT_JOB' group by nvl(event, 'on cpu'),sql_id,inst_id,action order by count(*) desc
+)
+where rownum<15;
+
+select object_name from dba_objects where object_name=367796980;
+
+Check whether the index rebuild can save space - 
+---------------------------------------------
+col OWNER for a20
+col TABLE_NAME for a30
+col INDEX_NAME for a30
+select
+OWNER,TABLE_NAME,TAB_BLKSIZ_GB,INDEX_NAME,STATUS,INDEX_TYPE,PARTITIONED,IND_SIZ_GB,LEAFBLK_GB,SAVING_GB from (WITH segment_size AS
+  (SELECT OWNER,
+    SEGMENT_NAME,
+    SEGMENT_TYPE,
+    ROUND((SUM(BLOCKS) *8)/1024/1024,2) IND_SIZ_GB
+  FROM CDB_SEGMENTS
+  WHERE SEGMENT_TYPE IN ('INDEX','INDEX PARTITION')
+  AND owner LIKE '%FUSION%'
+  GROUP BY OWNER,
+    SEGMENT_NAME,
+    SEGMENT_TYPE
+  HAVING (SUM(BLOCKS) *8)/1024/1024>1
+  )
+SELECT
+  (SELECT sysdate FROM dual
+  ) CURRENTDATE,
+  I.OWNER,
+  t.TABLE_NAME,
+  ROUND((t.num_rows * t.avg_row_len)*1.20/1024/1024/1024,2) TAB_ROWLEN_GB,
+  ROUND((t.blocks   *8)/1024/1024,2) TAB_BLKSIZ_GB,I.INDEX_NAME ,
+  I.status,
+  I.INDEX_TYPE,
+  I.PARTITIONED,
+  IND_SIZ_GB,
+  ROUND(I.LEAF_BLOCKS *(1.10 )*8/1024/1024,2) LEAFBLK_GB,
+  ROUND((IND_SIZ_GB   - (I.LEAF_BLOCKS*(1.10 ))*8/1024/1024),2) SAVING_GB
+FROM CDB_INDEXES I,segment_size S,
+  CDB_TABLES T
+WHERE I.INDEX_NAME='PAY_ACTION_INFORMATION_N2' and I.OWNER    = S.OWNER
+AND I.OWNER      = T.OWNER
+AND I.INDEX_NAME = S.SEGMENT_NAME
+AND I.TABLE_NAME = T.TABLE_NAME
+AND I.OWNER LIKE '%FUSION%'
+AND I.LEAF_BLOCKS IS NOT NULL
+AND T.NUM_ROWS is not null
+--AND IND_SIZ_GB     >2*(I.LEAF_BLOCKS *(1.10 )*8/1024/1024)
+ORDER BY 12 DESC) where SAVING_GB > 100;
+
+
+SQL> col MESSAGE for a150
+SQL> set lines 1000 pages 200
+select sofar, totalwork,units,start_time,time_remaining,message  
+     from v$session_longops
+     where opname like  '%Statistics%';
+
+Stats collection status - 
+select id,operation,to_char(start_time,'dd.mm.yyyy hh24:mi:ss') "starttime",
+                        to_char(end_Time,'dd.mm.yyyy hh24:mi:ss') "endtime",
+                        --to_dsinterval(to_char(end_time-start_Time,'dd.mm.yyyy hh24:mi:ss')) "elapsed",
+                        status,job_name,target
+from DBA_OPTSTAT_OPERATIONS
+where operation = 'gather_database_stats (auto)'
+and upper(target) like '%PERSON%'
+order by start_time desc;
+fetch first 20 rows only;
+
+select id,operation,to_char(start_time,'dd.mm.yyyy hh24:mi:ss') "starttime",
+                        to_char(end_Time,'dd.mm.yyyy hh24:mi:ss') "endtime",
+                        to_dsinterval(to_char(end_time-start_Time,'dd.mm.yyyy hh24:mi:ss')) "elapsed",
+                        status,job_name
+from DBA_OPTSTAT_OPERATIONS
+where operation = 'gather_database_stats (auto)'
+order by start_time desc
+fetch first 5 rows only;
+
+set lines 500 pages 200
+col TARGET for a80
+col status for a20
+select  opid, target,target_type, 
+        to_char(start_Time,'dd.mm.yyyy hh24:mi:ss') "starttime",
+        to_char(end_time,'dd.mm.yyyy hh24:mi:ss') "endtime"
+        ,status
+from dba_optstat_operation_tasks 
+where opid=4994
+order by start_Time desc;
