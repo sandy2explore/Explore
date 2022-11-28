@@ -29,13 +29,26 @@ SELECT SID, SPID, CLIENT_INFO, event, seconds_in_wait secs, p1, p2, p3
   
  wiki - https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=3206927664
 
+alter session set nls_date_format = 'YYYY-MM-DD HH24:MI:SS';
+select distinct thread#, sequence#, first_time, next_time
+  from v$archived_log
+ where first_time < to_date('2021-07-12 10:24:00') and
+       next_time >= to_date('2021-07-12 10:24:00');
+
 
 run {
 set archivelog destination to '/u02/app/oracle/diag/arcrestore';
-ALLOCATE CHANNEL C1_SBT DEVICE TYPE 'SBT_TAPE' PARMS 'SBT_LIBRARY=/var/opt/oracle/dbaas_acfs/us2gm5ac/opc/libopc.so,ENV=(OPC_PFILE=/var/opt/oracle/dbaas_acfs/us2gm5ac/opc/opcus2gm5ac.ora)';
+ALLOCATE CHANNEL C1_SBT DEVICE TYPE 'SBT_TAPE' PARMS 'SBT_LIBRARY=/var/opt/oracle/dbaas_acfs/us2dz1v/opc/libopc.so,ENV=(OPC_PFILE=/var/opt/oracle/dbaas_acfs/us2dz1v/opc/opcus2dz1v.ora)';
 configure device type disk parallelism 2 ;
-restore archivelog sequence 5011 thread 10;
-restore archivelog sequence 5012 thread 10;
+restore archivelog from logseq=6600 until logseq=6609 thread=12;
+restore archivelog from logseq=6502 until logseq=6503 thread=6;
+restore archivelog from logseq=9486 until logseq=9489 thread=8;
 release channel C1_SBT;
 }
+
+Run in nohup mode :
+
+nohup rman cmdfile=/u02/app/oracle/diag/arcrestore/rman.rcv log=/u02/app/oracle/diag/arcrestore/arc.log &
+
+Monitor the logs and restore locations
   
