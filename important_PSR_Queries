@@ -1,0 +1,295 @@
+PSR important QUERIES - 
+-------------------------
+
+set lines 1000 pages 200 
+col MIN(SAMPLE_TIME) for a30
+col MAX(SAMPLE_TIME) for a30
+col EVENT for a40
+select min(sample_time),max(sample_time) , inst_id , sql_id,event,in_parse,in_hard_parse,module,action,count(distinct session_id),count(1) from gv$active_session_history where sample_time> sysdate - (60/1440) and sql_id='2fr60g650pdzs' group by inst_id , sql_id,event,in_parse,in_hard_parse,module,action; 
+
+
+select min(sample_time),max(sample_time) , inst_id , qc_session_id,qc_session_serial#,sql_id,in_parse,in_hard_parse,module,action,count(distinct session_id),count(1) from gv$active_session_history where sample_time> sysdate - (60/1440) and sql_id='2fr60g650pdzs' group by inst_id , qc_session_id,qc_session_serial#,sql_id,in_parse,in_hard_parse,module,action; -- Master 
+
+
+select inst_id,event,final_blocking_instance,final_blocking_session,count(distinct sid),max(seconds_in_wait),count(distinct blocking_session),count(1) 
+from gv$session where blocking_session_status='VALID' 
+group by inst_id,event,final_blocking_instance,final_blocking_session
+order by count(1) desc; -- Child for final blocking session
+
+select instance_number,event,count(distinct blocking_session),count(1) 
+from dba_hist_active_sess_history 
+where sample_time between to_date('24-08-2022 13:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('24-08-2022 14:28:00','dd-mm-yyyy hh24:mi:ss')
+and blocking_session_status='VALID' 
+group by instance_number,event
+order by count(1) desc;
+
+
+ENQ: HW - Contention - https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=4044977215
+=====================
+SQL> select distinct event,object_name
+from
+(
+select sample_id,sample_time,event, OBJECT_NAME,count(distinct session_id||'-'||session_serial#) DIST_SESS,count(1)
+from gv$active_session_history ash,cdb_objects obj
+where sample_time>sysdate-(15/1440)  2
+and ash.current_obj# = obj.object_id
+and ash.con_id=obj.con_id
+and obj.owner not in ('SYS','SYSTEM','AUDSYS')
+and event='enq: HW - contention'
+group by sample_id,sample_time,event,OBJECT_NAME
+having count(distinct session_id||'-'||session_serial#)>20
+order by count(1) desc); 
+
+
+TOP SQL WITH WAITS - 
+--------------------
+select * from (select sql_id,user_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('02-08-2022 08:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('02-08-2022 08:40:00','dd-mm-yyyy hh24:mi:ss') group by sql_id,user_id,event order by 4 desc) where rownum<=20;
+
+select count(blocking_session) from gv$session where sid in (select sid from gv$session where event like 'gc%' and seconds_in_wait>300);
+
+Asim: 
+=====
+set lines 500 pages 200
+select * from (
+  select count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT, nvl(event, 'on cpu') event,inst_id from gv$active_session_history where sample_time >sysdate -10/(24*60) group by nvl(event, 'on cpu'),inst_id order by count(*) desc
+)
+where rownum<15;
+
+
+FIND THE SQL_ID - 
+-----------------
+select sql_text from gv$sql where sql_id='&sql_id' and rownum=1;
+
+HOW MANY OCCURENCES OF  SQLs ACROSS INSTANCES - 
+-----------------------------------------------
+select inst_id,sql_id,count(sql_id) from gv$sql where sql_id='&sql_id' group by inst_id,sql_id order by 1 ;
+
+
+blockers:
+==========
+
+select * 
+from 
+(
+select count(1) ,sql_id,session_id,session_serial#,BLOCKING_SESSION ,BLOCKING_SESSION_SERIAL#,BLOCKING_INST_ID 
+  from DBA_HIST_ACTIVE_SESS_HISTORY
+ where sample_time between to_date('20-02-2023 16:15:00','dd-mm-yyyy hh24:mi:ss')
+   and to_date('20-02-2023 16:25:00','dd-mm-yyyy hh24:mi:ss')
+   and  BLOCKING_SESSION is not null
+   and  BLOCKING_INST_ID is not null
+ group by sql_id,session_id,session_serial#,BLOCKING_SESSION ,BLOCKING_SESSION_SERIAL#,BLOCKING_INST_ID
+ order by count(1) desc
+) where rownum<=10;
+
+
+
+PSR: 
+====
+
+col USERNAME for a40
+select * from 
+(
+select inst_id,session_id,sql_id,event,ash.user_id,
+   (select username from dba_users where user_id=ash.user_id)
+    username,count(*)
+    from gv$active_session_history ash 
+    where sample_time >sysdate - 30/1440
+    group by inst_id,session_id,sql_id,event,ash.user_id
+    order by count(*) desc) 
+where rownum<=10;
+
+
+col USERNAME for a40
+select * from 
+(
+select INSTANCE_NUMBER,session_id,sql_id,event,ash.user_id,
+   (select username from dba_users where user_id=ash.user_id)
+    username,count(*)
+    from dba_hist_active_sess_history ash
+    where sample_time between to_date('14-01-2023 07:20:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('14-01-2023 07:35:00','dd-mm-yyyy hh24:mi:ss')
+    group by INSTANCE_NUMBER,session_id,sql_id,event,ash.user_id
+    order by count(*) desc) 
+where rownum<=10;
+
+Current by no of execs :
+-----------------------
+col EVENT for a10
+set lines 500 pages 200
+col MAX(SAMPLE_TIME) for a30
+col MIN(SAMPLE_TIME) for a30
+col MODULE for a30
+select * from 
+(
+select session_id,session_serial#,sql_id,event,p1,p2,p3,module,in_hard_parse, min(sample_time),max(sample_time),count(distinct SQL_EXEC_ID),count(1) 
+from gv$active_session_history 
+where sample_time>= sysdate - 30/(24*60)
+group by session_id,session_serial#,sql_id,event,p1,p2,p3,module,in_hard_parse
+order by count(distinct SQL_EXEC_ID) desc)
+where rownum<=10;
+
+
+select * from 
+(
+select session_id,session_serial#,sql_id,event,p1,p2,p3,module,in_hard_parse, min(sample_time),max(sample_time),count(distinct SQL_EXEC_ID),count(1) 
+from dba_hist_active_sess_history
+where sample_time between to_date('11-02-2023 22:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('11-02-2023 22:18:00','dd-mm-yyyy hh24:mi:ss')
+group by session_id,session_serial#,sql_id,event,p1,p2,p3,module,in_hard_parse
+order by count(distinct SQL_EXEC_ID) desc)
+where rownum<=10;
+
+
+
+select * from 
+(
+select inst_id,session_id,sql_id,event,ash.user_id,
+   (select username from dba_users where user_id=ash.user_id)
+    username,count(*)
+    from gv$active_session_history ash 
+    where client_id like 'ess%39384591%'      ---- for specific Client req id
+    --sample_time >sysdate - 15/1440
+    group by inst_id,session_id,sql_id,event,ash.user_id
+    order by count(*) desc) 
+where rownum<=30;
+
+
+TOP SQL WITH WAITS FOR LAST 1 HOUR - 
+-----------------------------------
+set lines 500
+select * from 
+(
+select count(1),FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE from gv$session where FINAL_BLOCKING_SESSION_STATUS='VALID' group by FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE  order by 1 desc) 
+where rownum<=10;
+
+
+select * from (select sql_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('11-07-2022 23:30:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('12-07-2022 00:10:00','dd-mm-yyyy hh24:mi:ss') 
+group by sql_id,event order by 3 desc) where rownum<=20;
+
+select * from (select sql_id,event,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('11-07-2022 23:00:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('11-07-2022 23:40:00','dd-mm-yyyy hh24:mi:ss') 
+group by sql_id,event order by 3 desc) where rownum<=20;
+
+
+BLOCKING SESSION DETAILS -
+------------------------
+set lines 500 pages 200
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from dba_hist_active_sess_history 
+where sample_time between to_date('11-07-2022 00:33:00','dd-mm-yyyy hh24:mi:ss')
+and to_date('11-07-2022 01:20:00','dd-mm-yyyy hh24:mi:ss') and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+
+BLOCKING SESSION DETAILS FOR LAST 15 MINS - 
+------------------------------------------
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from gv$active_session_history
+where sample_time >= sysdate - 15/(24*60) and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+select * from (
+select sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL#,count(*) from dba_hist_active_sess_history 
+where sample_time >= sysdate - 15/(24*60) and BLOCKING_SESSION_SERIAL# is not null 
+group by sql_id,event,blocking_session,BLOCKING_SESSION_SERIAL# order by 5 desc) where rownum<=20;
+
+
+WAITS ON CURRENT OBJECTS - 
+-------------------------
+col MIN(SAMPLE_TIME) for a30
+col MAX(SAMPLE_TIME) for a30
+select * 
+from 
+(select MIN(SAMPLE_TIME), MAX(SAMPLE_TIME),SQL_ID,EVENT,CURRENT_OBJ#,COUNT(DISTINCT SESSION_ID),COUNT(1)
+  from gv$active_session_history
+ where sample_time  >= sysdate - 15/(24*60)
+   --and EVENT='gc transaction table'
+ group by SQL_ID,EVENT,CURRENT_OBJ#
+ order by COUNT(1) desc)
+ where rownum <=10;
+
+col MAX(SAMPLE_TIME) for a30
+col MIN(SAMPLE_TIME) for a30
+select * 
+from 
+(select MIN(SAMPLE_TIME), MAX(SAMPLE_TIME),SQL_ID,EVENT,CURRENT_OBJ#,COUNT(DISTINCT SESSION_ID),COUNT(1)
+  from DBA_HIST_ACTIVE_SESS_HISTORY 
+ where sample_time between to_date('13-03-2023 19:00:00','dd-mm-yyyy hh24:mi:ss') 
+   and to_date('13-03-2023 20:00:00','dd-mm-yyyy hh24:mi:ss')
+   --and EVENT='enq: HW - contention'
+ group by SQL_ID,EVENT,CURRENT_OBJ#
+ order by COUNT(1) desc)
+ where rownum <=15;
+
+
+ select * from 
+(
+select nvl(event, 'on cpu') event,count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT , P2 , sql_id,inst_id,ecid
+      from gv$active_session_history 
+      where sample_time>= sysdate - 1/24
+      group by nvl(event, 'on cpu'), P2 , sql_id,inst_id,ecid  order by count(*) desc)
+where rownum<=10;
+
+ select * from 
+(
+select nvl(event, 'on cpu') event,count(*), ROUND((RATIO_TO_REPORT(COUNT(*)) over())*100, 2) PCT , P2 , sql_id,inst_id,ecid
+      from gv$active_session_history 
+      where sample_time between to_date('28-06-2022 10:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('28-06-2022 10:35:00','dd-mm-yyyy hh24:mi:ss')
+      group by nvl(event, 'on cpu'), P2 , sql_id,inst_id,ecid  order by count(*) desc)
+where rownum<=10;
+
+
+OBJECT IDENTIFICATION - 
+
+set linesize 290 pages 999
+col event for a50
+col SAMPLE_TIME for a50
+col OBJECT_NAME for a40
+
+SELECT ASH.event,
+       ASH.current_obj#,
+       ASH.sample_time,
+       OBJ.object_name
+FROM   dba_hist_active_sess_history ASH,
+       dba_objects OBJ
+WHERE  ASH.event LIKE '%rdbms ipc reply%'
+       AND ASH.sample_time BETWEEN '28-JUN-22 10.00.00 AM' AND
+                                   '28-JUN-22 10.35.00 AM'
+       AND ASH.current_obj# = OBJ.object_id
+UNION
+SELECT ASHS.event,
+       ASHS.current_obj#,
+       ASHS.sample_time,
+       OBJ.object_name
+FROM   v$active_session_history ASHS,
+       dba_objects OBJ
+WHERE  ASHS.event LIKE '%row lock%'
+       AND ASHS.sample_time BETWEEN '28-OCT-15 01.57.34.730 AM' AND
+                                    '17-OCT-15 02.00.24.950 AM'
+       AND ASHS.current_obj# = OBJ.object_id
+ORDER  BY sample_time DESC; 
+
+
+
+
+ curl -o DGDiagnostic.zip https://objectstorage.us-phoenix-1.oraclecloud.com/p/-5vF1CZI5ngtvIhzq3XvdJ_ObT5kMT4kgVMCB72dwLLhmApUrer-16cVQlMXt97F/n/p1-saasfapreprod1/b/CRS_LOGS/o/DGDiagnostic.zip
+
+
+select TABLE_NAME,PCT_FREE from  dba_tables where owner='FA_FUSION_SOAINFRA' and TABLE_NAME like '%EDN_AQJMS_TOPIC_TABLE%';
+
+
+Asim - 
+
+-- Asim 
+
+SELECT stattype_locked FROM dba_tab_statistics WHERE table_name = '&TABLE_NAME' and owner = '&TABLE_OWNER';
+
+select owner, table_name, stattype_locked
+from dba_tab_statistics
+where stattype_locked is not null;--'ALL'
