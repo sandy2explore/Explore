@@ -1,3 +1,53 @@
+Check good plan_hash_value for an SQL - 
+
+1. WITH
+p AS (
+SELECT plan_hash_value
+  FROM gv$sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL
+UNION
+SELECT plan_hash_value
+  FROM dba_hist_sql_plan
+WHERE sql_id = TRIM('&&sql_id.')
+   AND other_xml IS NOT NULL ),
+m AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time)/SUM(executions) avg_et_secs
+  FROM gv$sql
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions > 0
+GROUP BY
+       plan_hash_value ),
+a AS (
+SELECT plan_hash_value,
+       SUM(elapsed_time_total)/SUM(executions_total) avg_et_secs
+  FROM dba_hist_sqlstat
+WHERE sql_id = TRIM('&&sql_id.')
+   AND executions_total > 0
+GROUP BY
+       plan_hash_value )
+SELECT p.plan_hash_value,
+       ROUND(NVL(m.avg_et_secs, a.avg_et_secs)/1e6, 3) avg_et_secs
+  FROM p, m, a
+WHERE p.plan_hash_value = m.plan_hash_value(+)
+   AND p.plan_hash_value = a.plan_hash_value(+)
+ORDER BY
+       avg_et_secs NULLS LAST;
+       
+2. select  PARSING_SCHEMA_NAME, inst_id, sql_id, child_number, plan_hash_value plan_hash, executions execs,
+(elapsed_time/1000000)/decode(nvl(executions,0),0,1,executions) avg_etime_secs,
+buffer_gets/decode(nvl(executions,0),0,1,executions) avg_lio,
+last_active_time,
+SQL_PROFILE,
+decode(IO_CELL_OFFLOAD_ELIGIBLE_BYTES,0,'No','Yes') Offload,
+decode(IO_CELL_OFFLOAD_ELIGIBLE_BYTES,0,0,100*(IO_CELL_OFFLOAD_ELIGIBLE_BYTES-IO_INTERCONNECT_BYTES)
+/decode(IO_CELL_OFFLOAD_ELIGIBLE_BYTES,0,1,IO_CELL_OFFLOAD_ELIGIBLE_BYTES)) "IO_SAVED_%"
+from gv$sql s
+where   sql_id like nvl(trim('&sql_id'),sql_id)
+order by 1, 2, 3;
+
+
 DB WAITS - 
 ----------
 set lines 500 pages 200
