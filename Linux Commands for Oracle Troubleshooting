@@ -1,0 +1,99 @@
+Various commands for support - 
+
+
+ZSND FAILURES :
+=============
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l  oracle "find /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/*_lms*.trc   -type f |xargs grep -i 'op zsnd failed with remote invalid request error'|wc  -l"
+
+Bugs  to refer - 
+Bug 34938613 - POD:EEDM:RCA - ATK IMPACT -EEDM
+Bug 34621507 - EEHO : KCLCCCHECK: SEND ERROR 1 - REPEATED ERRORS - IMPACT ASSESSMENT ON RECENT OUTAGES 
+
+
+select * from gv$sysstat where NAME like '%gc cr blocks built%' ; — Asim 
+ 
+   INST_ID STATISTIC# NAME                                                                  CLASS      VALUE    STAT_ID     CON_ID
+---------- ---------- ---------------------------------------------------------------- ---------- ---------- ---------- ----------
+         2        410 gc cr blocks built                                                       40          0 2529642460          4
+
+
+kclcccheck CHECK :
+================
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'kclcccheck: send error' -A1"
+
+grep -i 'send error' *.trc|wc -l
+
+
+Check the error message for Log checkpoint incomplete - https://proddev-saas.slack.com/archives/C066FV5LX35/p1700463947021249
+===========================
+
+Ref Bug 36000556 / Bug 36032087 (SE Bug) 
+
+
+oracle@eiaa1a017-uzuos11(iadxd11):/fss/cloudops_tech_stage/BUG_TRIAGE/36000556/36000556/DB/iadxd/eiaa1a017-uzuos12# /usr/local/bin/dcli -g /tmp/nodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/iadxd/iadxd*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'transport retry counter exceeded' -A1"
+
+
+oracle@eiaa1a017-uzuos11():/u02/app/oracle/diag/rdbms/iadxd/iadxd11/trace# /usr/local/bin/dcli -g /tmp/nodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/iadxd/iadxd*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'remote invalid request error' -A1"
+
+Output - 
+
+eiaa1a017-uzuos12: /u02/app/oracle/diag/rdbms/iadxd/iadxd12/trace/iadxd12_lms1_221606_221626.trc:IPCLW:[0.3259]{E}[WAIT]:RC: [1699591467439429]op zsnd failed with remote invalid request error wrid 96.223638 verr 138 qpn 22099 Pend 1 cnh 0x7f4a1c7558c0 msz: 8392 time 8 milisec
+eiaa1a017-uzuos12: /u02/app/oracle/diag/rdbms/iadxd/iadxd12/trace/iadxd12_lms1_221606_221626.trc-IPCLW:[0.3260]{E}[WAIT]:RC: [1699591467439429]op zsnd from PID{XRC://100.107.0.68:35597 [ZCPY ASYNC SEND] [LEND SEND] ts:2574637294 xd1:0x00000223 xd2:0x08e3} to PID{XRC://100.107.0.66:65354 [ZCPY] [LEND !CREPLY FLCTRL] ts:3302906323 xd1:0x00035916 xd2:0x099b} seqno 951465666 srq 219414 cbuf 0x400017aec220 cnh 0x7f4a1c7558c0 msz 8392
+eiaa1a017-uzuos12: --
+
+
+SE (Sangeeth Josh) suggested -  https://proddev-saas.slack.com/archives/C066FV5LX35/p1700474741291089 
+
+Sangeeth Jose
+  3:35 PM
+If this is the same bug, we shoudl see this trace something like "IPCLW:[0.2905]{E}[WAIT]:RC: [1692740945723994]op zsnd failed with transport retry counter exceeded wrid 137.3909178 verr 129 qpn 802976 Pend 223 cnh 0x7f901a9dfc38 msz: 8392 time 12858 milisec" in the LMS trace file (edited) 
+3:37
+This happenning occasionally is fine. In the bug case,we will see this trace with a much higher frequency(like 10+ per minute)
+
+
+
+
+
+HANG MANAGER :
+==============
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l oracle "egrep -i 'Reason.*hang.*manager' /u02/app/oracle/diag/rdbms/us2dz2v/us2dz2v*/trace/alert_us2dz2v*.log -B2|egrep '2022-10-19|2022-10-20|2022-10-21|2022-10-22|2022-10-23|2022-10-24' -B2"
+
+
+
+Exawatcher check :
+==============
+
+egrep 'lms.*us2dz2v' 2022_10_13_15_49_57_TopPidExaWatcher_epxa3a027-tgygd1.pod2dbfrontend.prd01phx01lcm01.oraclevcn.com.dat | awk '{print $3}'|sort|uniq -c
+
+
+
+HA CHECK :
+=========
+
+grep -B2 'HANG ANALYSIS DUMPS' *dia*.trc|grep -v 'END'
+
+grep -B2 'HANG ANALYSIS:' *dia*.trc|grep -v 'END'
+
+
+
+TO CHECK LISTENER LOGS AND VIPS CONNECTION ERROR - 
+===========================================
+
+Ref Bug 36025039 - POD:ELIQ:IO ERROR: THE NETWORK ADAPTER COULD NOT ESTABLISH THE CONNECTION
+
+egrep -i '19-NOV-2023 04:09.*eliq_f_' */listener* |grep  '0$' -> check connection 
+
+egrep -i '19-NOV-2023 04:09.*eliq_f_' */listener* |grep  -v '0$'|wc -l ->  if any connection drop is there 
+
+egrep -i '18-NOV-2023 08:36.*hdmm_f_' */listener* |grep '0$'|wc -l   -> Connection established 
+
+
+list of all the DB-VIPs that pods attempted to connect and failed with  java.net.UnknownHostException - 
+==========================================
+
+Ref Bug 36025039 - POD:ELIQ:IO ERROR: THE NETWORK ADAPTER COULD NOT ESTABLISH THE CONNECTION
+
+egrep -i 'UnknownHostException' *.log |awk -F"HostException:" '{print $2}'|awk '{print $1}'|sort |uniq -c |sort -n -k1,1
