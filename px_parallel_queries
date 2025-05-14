@@ -1,0 +1,119 @@
+Parallel Query (PX)
+
+PQ Best Practices
+Introduction
+This document provides the initial diagnosis for PQ and which have some initial tips to diagnose the various types of PQ issues. Also which includes PQ trace event information. At this point this document have the very basic level information and which need to improve across the time period.
+
+ 
+
+Section:1 - Various type of PQ bugs
+1. Wrong Results
+The wrong results were happens in PQ in various cases. The following cases will give the brief idea about the wrong results and the related bugs have some useful infromation for inital triage.
+a) Join keys clumping wrongly : bug 6617866,bug 7539815, bug 8246022,bug 8604729.
+b) Slave mapping enabled is TRUE : bug 10319360, bug 10282533
+c) bloom filter bugs : bug 9123465
+d) External opn issue: bug 7685296, bug 6643933
+e) Plan (Execution plan) differnce in PSTART and PSTOP: QC & Slave : 9705349.
+For these types of bugs we need the execution plan in advanced mode and we can try to reproduce the issue at SQL*PLUS if we impose the same plan by useing out line (if necessary).
+
+ 
+
+Need the the execution plan in advanced mode
+Select * from table (dbms_xplan.display(NULL,NULL,'ADVANCED'));
+2. Performance issues
+We need to gather the following
+SQL monitor report for the statement
+Useful link : SQL Monitor
+ASH and AWR report for the period this statement ran
+Explain plan in advanced mode
+out put of select dfo_number, tq_id, server_type, num_rows , process from v$pq_tqstat order by tq_id, server_type, process;
+3. ORA-600 - internal PQ errors
+We need to gather the following
+Need the traces about messaging and control at low level for initial investigation
+Need to upload the QC and slave and alert.log files to bug ftp
+Please refer the syntax for tracing for tracing section
+4. PX_MISMATCH/PQ_SLAVE_MISMATCH
+The following actions plans are applicable for 11.2.0.1 and after release only.
+
+ 
+
+Action Plan #A:
+-------------
+ 
+(1) alter system flush shared_pool; on all nodes
+
+(2) Run the customer reports/application and monitor that
+    whether the version count is increasing or not.
+    Once you identify that increasing the version count>25
+    then provide the output of the following queries.
+
+ a) select sql_id, hash_value from gv$sqlarea where version_count > 25;
+
+PX_MISMATCH:
+-----------
+
+b) Get output of following query 
+
+ select inst_id, sql_id, count(1),
+ count (case when px_mismatch = 'Y' then 1 end)  px_mismatch,
+ count (case when bind_peeked_pq_mismatch = 'Y' then 1 end) bind_peeked_pq_mismatch
+ from gv$sql_shared_cursor
+ group by inst_id, sql_id
+ having count (case when px_mismatch = 'Y' then 1 end) >15;
+      
+PQ_SLAVE_MISMATCH:
+-----------------
+  
+ c) Get output of following query 
+
+select inst_id, sql_id, count(1),
+count (case when pq_slave_mismatch = 'Y' then 1 end) pq_slave_mismatch,
+count (case when bind_peeked_pq_mismatch = 'Y' then 1 end) bind_peeked_pq_mismatch
+from gv$sql_shared_cursor
+group by inst_id, sql_id
+having count (case when pq_slave_mismatch = 'Y' then 1 end) >15;
+Once you identify that particular SQL_ID is causing the PX_MISMATCH then check whether that issue was reproduces or not from SQl*PLUS by executing that SQL after substituting the appropriate bind values into that problematic query.
+
+If the issue was reproduces from SQL*PLUS then we can request the traces from session level by the following action plan #B, which will help us to investigate the issue further.
+
+ 
+
+Action Plan #B:
+****************
+clean udump/bdump
+alter system flush shared_pool; on all nodes
+alter session set  TRACEFILE_IDENTIFIER  = 'PQ_Not_Shared';
+alter session set events 'trace[PX_Control] disk medium';
+alter session set events 'trace[PX_Messaging] disk medium';
+alter session set events 'trace[SQL_Compiler] disk high';
+alter session set events 'trace[PX_Granule] disk low';
+alter session set "_px_trace" = "high","compilation","medium","time";
+alter session set events 'trace[SQL_Parallel_Compilation | SQL_Parallel_Optimization] disk medium';
+alter session set events 'trace[Cursor] disk high';
+
+
+< execute the Problematic SQL query 3 times  from SQL*PLUS >
+
+-- Disable the traces by the following.
+
+alter session set events 'trace[PX_Control] off';
+alter session set events 'trace[PX_Messaging] off';
+alter session set events 'trace[SQL_Compiler] off';
+<tt id="bugHistoryText">alter session set events 'trace[PX_Granule] disk off';</tt>
+alter session set "_px_trace" = none;
+alter session set events 'trace[SQL_Parallel_Compilation | SQL_Parallel_Optimization] off';
+alter session set events 'trace[Cursor] off';
+Please upload the QC,Slave traces and alert.log files to bug ftp.
+
+We can find the QC and related traces files by set the trace identifier by the following:
+
+ 
+
+  
+alter session set tracefile_identifier='<px_trace_bug#>';
+For more details look at the updates in bugs :
+bug 11894017 ( SVECHALA 03/23/11 01:14 am)
+bug 11818088 ( SVECHALA 04/28/11 11:43 pm and SVECHALA 06/03/11 04:27 am )
+bug 9375300
+bug 10297948
+
