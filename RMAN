@@ -1,3 +1,27 @@
+RMAN BACKUP DETAILS:- 
+
+col start_time for a20 
+ col time_taken_display for a20 
+ col output_bytes_display for a15 
+ col output_device_type for a10 
+ col status for a25 
+ col COMMAND_ID for a38 
+ set lines 700 
+ set pages 1000 
+ 
+ select -- b.command_id,
+ b.session_recid,b.status,
+ decode(s.incremental_level,1,'INCR','FULL') bkup_level,
+ to_char(b.start_time,'MM-DD-YYYY HH24:MI:SS') START_TIME, 
+ b.time_taken_display,b.input_type, 
+ b.output_bytes_display,b.output_device_type 
+ from v$rman_backup_job_details b, v$backup_set s
+ where 1=1
+ and b.session_recid = s.recid
+ and b.start_time > sysdate -21
+ and input_type='DB INCR'
+ order by start_time desc;
+
 ---- RMAN RECOVERY PROGRESS MONITOR QUERY ----
 
 REM RMAN Progress
