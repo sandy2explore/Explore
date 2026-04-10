@@ -237,7 +237,18 @@ select distinct sql_id,module from gv$active_session_history where sql_id='&sql'
 
 Concurrency - 
 
+Present - 
+
 select inst_id,sql_id,count(*) from gv$session where sql_id='&sql' group by inst_id,sql_id order by 3 desc;
+
+Historic - 
+
+select count(session_id) 
+  from dba_hist_active_sess_history 
+ where snap_id between &bsnap and &esnap 
+   and sample_time between to_date('2026/03/25 10:14:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/25 10:15:00','yyyy/mm/dd hh24:mi:ss')
+   and sql_id='&sql';
+
 
 
 Historic Concurrency :
