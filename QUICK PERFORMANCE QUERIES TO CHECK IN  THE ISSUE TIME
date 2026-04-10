@@ -1,0 +1,1076 @@
+REF POD : ESBE 
+
+
+
+TROUBLEHOOTING BUGS/QUERIES - 
+=============================
+
+issues bug - 
+Bug 38899035 - EKEQ : 4-0001702200-ENTIRE POD PERFORMANCE || 7W5CNHX3NW6NR 
+Bug 38611764 - FA-SQL-BATCH: IAWMQY-DEV7 - SQL_ID CCQX46CY2P9Q8 (TOP SQL 7W5CNHX3NW6NR) IN PROCESSMAIN MODULE WITH HIGH "LIBRARY CACHE LOCK" WAITS | ADD FND_PROFILE_OPTION_VALUES TO FND_BS_IGNORE_TABS
+
+https://bug.oraclecorp.com/pls/bug/webbug_print.showbug?c_rptno=38899035&i_highlight_bc=1068017912
+Bug 38878276 - HCJM: SSRE OBSERVED SLOW RECALCULATE PAYROLL FOR RETROACTIVE CHANGES TOOK 7 HOURS - SSRE MONITORING 
+
+
+
+
+SET THE ENVIRONMENT - 
+
+sho pdbs
+alter session set container=&cont;
+--sho pdbs
+
+
+
+
+SNAP_ID INFO:
+
+SELECT snap_id,to_char(begin_interval_time, 'dd-mon-yyyy hh24:mi:ss') starting 
+  FROM dba_hist_snapshot
+ WHERE begin_interval_time >= TO_DATE('01.03.2026 11:00:00', 'DD.MM.YYYY HH24:MI:SS')
+   AND end_interval_time <= TO_DATE('28.03.2026  11:30:00', 'DD.MM.YYYY HH24:MI:SS')
+ ORDER BY begin_interval_time desc;
+
+
+
+Refer KURT's QUERY FIRST ........
+
++++++++++++++++++
+-- active_session_profile.sql - Profile active sessions by event, program, module and sql_id
+--
+-- History:
+--
+--   20-Mar-2025 kgrauste - Created
+--
+
+column value format a50 wrap
+break on category skip 1
+
+define top_count = 5
+
+with s as (
+  select
+    inst_id,
+    type sesstype,
+    decode(state, 'WAITING', event, 'CPU') event_or_cpu,
+    decode(state, 'WAITING', wait_class, 'CPU') wait_class,
+    program,
+    module,
+    sql_id,
+    seconds_in_wait
+  from gv$session
+  where
+    status = 'ACTIVE'
+    and wait_class <> 'Idle'
+),
+a as (
+  select
+    'TOP_SYSCALLS' category,
+    event_or_cpu value,
+    count(*) session_count,
+    rank() over (order by count(*) desc, event_or_cpu) category_rank
+  from s
+  group by event_or_cpu
+  UNION ALL
+  select
+    'TOP_PROGRAMS' category,
+    regexp_replace(regexp_replace(program, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '') value,
+    count(*) session_count,
+    rank() over (order by count(*) desc, regexp_replace(regexp_replace(program, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '')) category_rank
+  from s
+  group by regexp_replace(regexp_replace(program, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '')
+  UNION ALL
+  select
+    'TOP_MODULES' category,
+    regexp_replace(regexp_replace(module, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '') value,
+    count(*) session_count,
+    rank() over (order by count(*) desc, regexp_replace(regexp_replace(module, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '')) category_rank
+  from s
+  where module is not null
+  group by regexp_replace(regexp_replace(module, '_*([Ss]erver).*$', '\1'), 'DS/FADomain/', '')
+  UNION ALL
+  select
+    'TOP_SQLIDS' category,
+    sql_id value,
+    count(*) session_count,
+    rank() over (order by count(*) desc, sql_id) category_rank
+  from s
+  where sql_id is not null
+  group by sql_id
+)
+select
+  category, 
+  value,
+  session_count
+from a
+where category_rank <= &&top_count
+order by category desc, session_count desc
+/
+
+undefine top_count
+clear breaks
+
++++++++++++++++++++
+
+
+DB WAITS/ TOP SQLs - 
+
+set lines 1000 pages 200
+col EVENT for a30
+SELECT
+        NVL(ash.event,'CPU') event,
+        COUNT(1) sample_cnt,
+        ROUND(100 * ratio_to_report(COUNT(*)) over(), 2) event_sql_pct,
+        top_level_sql_id,sql_id
+  FROM gv$active_session_history ash
+ WHERE 1=1
+--and ash.sample_time between to_date('2026/04/02 07:00:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/02 08:05:00','yyyy/mm/dd hh24:mi:ss')
+and sample_time >= sysdate - interval '1' hour
+--and sample_time >= sysdate - 5/1440
+ GROUP BY event,top_level_sql_id,sql_id
+ ORDER BY event_sql_pct desc
+FETCH FIRST 10 ROWS ONLY;
+
+
+set lines 1000 pages 200
+select * from
+(
+select INST_ID,sql_id,event,count(*) 
+ from gv$active_session_history
+--where sample_time between TO_DATE('05.02.2026 07:30:00', 'DD.MM.YYYY HH24:MI:SS') and  TO_DATE('05.02.2026 08:30:00', 'DD.MM.YYYY HH24:MI:SS')
+where sample_time >= sysdate - 1/24
+and (sql_id is not null and event is not null)
+group by INST_ID,sql_id,event 
+order by 4 desc
+) where rownum <10;
+
+
+AWR SQL HISTORY PER DAY ::: awr_sql_history_per_day.sql
+  
+    COL day              FORMAT A12
+    COL sql_id           FORMAT A13
+    COL plan_hash_value  FORMAT 9999999999999999
+    COL execs            FORMAT 999,999,999
+    COL ela_sec          FORMAT 999,999,999.99
+    COL cpu_sec          FORMAT 999,999,999.99
+    COL io_sec           FORMAT 999,999,999.99
+    COL gets             FORMAT 999,999,999,999
+    COL reads            FORMAT 999,999,999,999
+    COL rows_proc        FORMAT 999,999,999,999
+
+    SELECT
+        TO_CHAR(TRUNC(sn.begin_interval_time), 'DD-MON-YYYY') AS day,
+        ss.sql_id,
+        ss.plan_hash_value,
+        SUM(NVL(ss.executions_delta,0))                AS execs,
+        ROUND(SUM(NVL(ss.elapsed_time_delta,0))/1e6,2) AS ela_sec,
+        ROUND(SUM(NVL(ss.cpu_time_delta,0))/1e6,2)     AS cpu_sec,
+        ROUND(SUM(NVL(ss.iowait_delta,0))/1e6,2)       AS io_sec,
+        SUM(NVL(ss.buffer_gets_delta,0))               AS gets,
+        SUM(NVL(ss.disk_reads_delta,0))                AS reads,
+        SUM(NVL(ss.rows_processed_delta,0))            AS rows_proc,
+        ROUND(
+            SUM(NVL(ss.elapsed_time_delta,0)) /
+            NULLIF(SUM(NVL(ss.executions_delta,0)),0) / 1e6, 4
+        ) AS avg_ela_per_exec_sec
+    FROM dba_hist_sqlstat ss
+    JOIN dba_hist_snapshot sn
+      ON sn.snap_id = ss.snap_id
+     AND sn.dbid = ss.dbid
+     AND sn.instance_number = ss.instance_number
+    WHERE sn.begin_interval_time >= TRUNC(SYSDATE) - 10
+      AND ss.sql_id = '&sql_id'
+    GROUP BY
+        TRUNC(sn.begin_interval_time),
+        ss.sql_id,
+        ss.plan_hash_value
+    ORDER BY
+        TRUNC(sn.begin_interval_time) desc;
+
+
+
+SNAP_ID INFO:
+
+SELECT snap_id,to_char(begin_interval_time, 'dd-mon-yyyy hh24:mi:ss') starting 
+  FROM dba_hist_snapshot
+ WHERE begin_interval_time >= TO_DATE('31.03.2026 06:00:00', 'DD.MM.YYYY HH24:MI:SS')
+   AND end_interval_time <= TO_DATE('31.03.2026  08:30:00', 'DD.MM.YYYY HH24:MI:SS')
+ ORDER BY begin_interval_time desc;
+
+
+
+set lines 500 pages 200
+col EVENT for a50
+select top_level_sql_id,sql_id,event,count(sql_id) 
+  from dba_hist_active_sess_history
+where snap_id between &beg_snap and &end_snap
+  and sample_time between to_date('2026/03/31 06:30:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/31 06:35:00','yyyy/mm/dd hh24:mi:ss')
+  --and event='resmgr:cpu quantum' 
+  --and lower(module) like '%fusionapps%'
+    and event is not null
+  group by top_level_sql_id,sql_id,event
+  order by 4 desc
+  fetch first 10 rows only;
+  
+
+
+RECENT SQL_TEXT  -
+
+set lines 500 pages 200
+set long 2000000
+col SQL_FULLTEXT for a150
+select sql_fulltext from gv$sql where sql_id='&sql' and rownum=1;
+
+
+
+HISTORIC SQL_TEXT :
+
+set lines 1000 pages 200
+set long 200000
+col SQL_FULLTEXT for a150
+select sql_text from DBA_HIST_SQLTEXT where sql_id='&sql' and rownum=1;
+
+select distinct sql_id,module from gv$active_session_history where sql_id='&sql';
+
+
+
+Concurrency - 
+
+select inst_id,sql_id,count(*) from gv$session where sql_id='&sql' group by inst_id,sql_id order by 3 desc;
+
+
+Historic Concurrency :
+
+select instance_number,sql_id , count(*) 
+  from dba_hist_active_sess_history 
+ where snap_id between '&bsnap' and '&esnap' 
+   and sample_time between to_date('2026/04/09 02:00:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/09 03:00:00','yyyy/mm/dd hh24:mi:ss') 
+   and sql_id='&sql' 
+ group by instance_number,sql_id 
+ order by 3 desc;
+
+
+DIBYA , OVERALL METRICS - 
+
+set lines 1000 pages 200
+col EVENT for a20
+col ACTION for a30
+col WAIT_OBJ_NAME for a35
+col USERNAME for a25
+col MODULE for a45
+
+select event,module,action,top_level_sql_id,sql_id,curr_obj,username,wait_obj_name,sql_exec_cnt,hard_parse_cnt,tot_cnt
+from 
+(
+select wait_class,event,module,action,top_level_sql_id,sql_id,current_obj# curr_obj,
+      (select username from dba_users where user_id= ash.user_id) username,
+              min(sample_time) min_sample,max(sample_time) max_sample,
+              min(round(temp_space_allocated/1024/1024,2)) min_temp_mb, max(round(temp_space_allocated/1024/1024,2)) max_temp_mb,
+              min(round(pga_allocated/1024/1024,2)) min_pga_mb , max(round(pga_allocated/1024/1024,2)) max_pga_mb,
+        case when do.object_name is null then 'X' else do.object_name end wait_obj_name,
+        case when do.object_type is null then 'X' else do.object_type end wait_obj_type,
+        sum(case when in_parse='Y' then 1 else 0 end) parse_cnt,
+        sum(case when in_hard_parse='Y' then 1 else 0 end) hard_parse_cnt,
+        sum(case when in_sql_execution='Y' then 1 else 0 end) sql_exec_cnt,
+        sum(case when session_state='ON CPU' then 1 else 0 end) sess_state_cpu_cnt,
+        sum(case when session_state='WAITING' then 1 else 0 end) sess_state_wait_cnt,
+        sum(case when blocking_session_status='VALID' then 1 else 0 end) block_cnt,
+        count(1) tot_cnt
+        from gv$active_session_history ash, dba_objects do
+       where 
+        sample_time >= sysdate - 1/24 
+         --sample_time between to_date('2026/03/17 00:50:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/17 00:51:00','yyyy/mm/dd hh24:mi:ss')
+         and ash.current_obj#=do.object_id(+)
+         and sql_id is not null
+       group by  wait_class,event,module,action,user_id,do.object_name,do.object_type,top_level_sql_id,sql_id,current_obj#
+       order by tot_cnt desc)
+fetch first 10 rows only;
+
+
+
+
+PSR QUERY BY SQL_OPNAME -
+
+set lines 500 pages 100
+col max(sample_time) for a30
+col min(sample_time) for a30 
+col EVENT for a45
+col SQL_PLAN_OPERATION for a18
+col SQL_OPNAME for a20
+select * from 
+(
+select min(sample_time),max(sample_time),event,TOP_LEVEL_SQL_ID,sql_id,SQL_OPNAME,SQL_PLAN_OPERATION,count(distinct session_id),count(1)
+  from gv$active_session_history
+--where sample_time between to_date('27-01-2026 10:20:00','dd-mm-yyyy hh24:mi:ss') and to_date('27-01-2026 10:40:00','dd-mm-yyyy hh24:mi:ss')
+where sample_time >= sysdate - 1/24
+--where sample_time >= sysdate - 5/1440
+ and sql_id is not null and event is not null
+ group by event,TOP_LEVEL_SQL_ID,sql_id,SQL_OPNAME,SQL_PLAN_OPERATION
+ order by count(1) desc
+) where rownum <=10; 
+
+
+Historic :
+
+set lines 500 pages 100
+col max(sample_time) for a30
+col min(sample_time) for a30 
+col EVENT for a30
+col SQL_PLAN_OPERATION for a30
+col SQL_OPNAME for a20
+select * from 
+(
+select min(sample_time),max(sample_time),event,module,action,top_level_sql_id,sql_id,SQL_OPNAME,SQL_PLAN_OPERATION,count(distinct session_id),count(1)
+  from dba_hist_active_sess_history
+ where snap_id between &bsbap and &esnap
+   and sample_time between to_date('02-04-2026 07:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('02-04-2026 08:00:00','dd-mm-yyyy hh24:mi:ss')
+   and sql_id is not null
+   --and sql_opname='INSERT'
+   and event='SGA: allocation forcing component growth'
+ group by event,module,action,top_level_sql_id,sql_id,SQL_OPNAME,SQL_PLAN_OPERATION
+ order by count(1) desc
+) where rownum <=10; 
+
+
+
+BLOCKER STARTS -------------------- 
+
+https://ksun-oracle.blogspot.com/2018/03/enq-ro-fast-object-reuse-and-enq-ko.html -- for enq: "RO - fast object reuse"
+
+
+set linesize 300;
+col FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE for a20;
+select INST_ID,count(*),sql_id,FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE,event from gv$session where FINAL_BLOCKING_SESSION_STATUS='VALID' group by FINAL_BLOCKING_SESSION||':'||FINAL_BLOCKING_INSTANCE,sql_id,event,INST_ID
+order by count(*);
+
+****** IMP
+
+set lines 1000 pages 200
+col SESS_INFO for a15
+col BLOCKER for a25
+col SQL_OPNAME for a25
+col MIN(SAMPLE_TIME) for a35
+col MAX(SAMPLE_TIME) for a35
+col EVENT for a30
+col ACTION for a10
+
+select max_time,min_time,SESS_INFO,event,BLOCKER,SQL_OPNAME
+from (
+select min(sample_time) max_time, max(sample_time) min_time,inst_id||'-'||session_id||'-'||session_serial# SESS_INFO, 
+         SQL_ID,SQL_OPNAME,EVENT,MODULE,ACTION,IN_PARSE,IN_HARD_PARSE,
+		 BLOCKING_INST_ID||'-'||BLOCKING_SESSION||'-'||BLOCKING_SESSION_SERIAL# BLOCKER,
+		 COUNT(DISTINCT SQL_EXEC_ID),COUNT(DISTINCT SESSION_ID), COUNT(1)
+    from gv$active_session_history 
+	where sample_time >= sysdate - 1/24
+	group by inst_id||'-'||session_id||'-'||session_serial# ,SQL_ID,SQL_OPNAME,EVENT,MODULE,ACTION,IN_PARSE,IN_HARD_PARSE,BLOCKING_INST_ID||'-'||BLOCKING_SESSION||'-'||BLOCKING_SESSION_SERIAL#
+	order by COUNT(1) desc)
+fetch first 10 rows only;
+
+
+Historic:
+==========
+select max_time,min_time,SESS_INFO,event,BLOCKER,SQL_OPNAME,IN_PARSE,IN_HARD_PARSE,CNT
+from (
+select min(sample_time) max_time, max(sample_time) min_time,instance_number||'-'||session_id||'-'||session_serial# SESS_INFO, 
+         SQL_ID,SQL_OPNAME,EVENT,MODULE,ACTION,IN_PARSE,IN_HARD_PARSE,
+		 BLOCKING_INST_ID||'-'||BLOCKING_SESSION||'-'||BLOCKING_SESSION_SERIAL# BLOCKER,
+		 COUNT(DISTINCT SQL_EXEC_ID),COUNT(DISTINCT SESSION_ID), COUNT(1) CNT
+    from dba_hist_active_sess_history 
+	where snap_id between &bsnap and &esnap
+	  and sample_time between to_date('2026/04/04 10:55:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/04 11:00:00','yyyy/mm/dd hh24:mi:ss')
+	  and BLOCKING_INST_ID||'-'||BLOCKING_SESSION||'-'||BLOCKING_SESSION_SERIAL# <> '--'
+	group by instance_number||'-'||session_id||'-'||session_serial# ,SQL_ID,SQL_OPNAME,EVENT,MODULE,ACTION,IN_PARSE,IN_HARD_PARSE,BLOCKING_INST_ID||'-'||BLOCKING_SESSION||'-'||BLOCKING_SESSION_SERIAL#
+	order by COUNT(1) desc)
+fetch first 10 rows only;
+	
+	
+**** IMP FOR BLOCKER CHAIN 
+
+set lines 500 pages 200 
+col CHAIN_SIGNATURE for a45
+select c.chain_id, c.chain_signature, c.sid, c.blocker_sid bsid, final_blocking_session final_blocker, s.program, s.sql_id, s.event
+            from v$wait_chains c, gv$session s
+            where c.sid = s.sid order by c.chain_id, s.program;
+            
+
+
+select sql_id, executions, substr(sql_text, 1, 60) sql_text  from gv$sql where sql_id ='&sql';
+
+
+col username format a20
+col ECID format a35
+col MODULE format a30
+col action format a30
+col CLIENT_IDENTIFIER format a35
+col event format 35
+col sess_info format a20
+col bloc_sess format a20
+select sid||'.'||serial#||'.@'||inst_id sess_info, 
+       blocking_session||'.@'||blocking_instance bloc_sess, 
+       username, 
+       module,
+       client_identifier,
+       sql_id,
+       blocking_session 
+  from gv$session 
+ where sid = &sid;
+--where sid||'.@'||inst_id='37285.@3';	
+
+
+BLOCKER ENDS -------------------- 
+
+
+
+
+TOP SQLs FOR SOME SPECIFIC EVENTS - 
+
+current - 
+
+select prev_sql_id,sql_id,event,count(*) 
+  from gv$session 
+ --where event='resmgr:cpu quantum' 
+ --where event='enq: RO - fast object reuse'
+ where event='library cache load lock' 
+ group by prev_sql_id,sql_id,event 
+ order by 3 desc
+ fetch first 10 rows only;
+ 
+ select top_level_sql_id,sql_id,event,count(*) 
+  from gv$active_session_history 
+ where sample_time between to_date('2026/04/02 07:45:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/02 08:05:00','yyyy/mm/dd hh24:mi:ss') 
+   and event like 'library cache%' 
+ group by top_level_sql_id,sql_id,event 
+ order by 4 desc
+ fetch first 10 rows only;
+ 
+ 
+ 
+ 
+Historic : 
+
+select sql_id,event,count(*) 
+  from dba_hist_active_sess_history 
+ where snap_id between &beg_snap and &end_snap 
+   and sample_time between to_date('2026/04/02 07:45:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/02 08:05:00','yyyy/mm/dd hh24:mi:ss') 
+   and event='resmgr:cpu quantum' 
+ group by sql_id,event 
+ order by 3 desc 
+ fetch first 10 rows only;
+
+
+
+
+historic - 
+
+SNAP_ID INFO:
+
+SELECT snap_id,to_char(begin_interval_time, 'dd-mon-yyyy hh24:mi:ss') starting 
+  FROM dba_hist_snapshot
+ WHERE begin_interval_time >= TO_DATE('09.04.2026 10:00:00', 'DD.MM.YYYY HH24:MI:SS')
+   AND end_interval_time <= TO_DATE('09.04.2026  12:30:00', 'DD.MM.YYYY HH24:MI:SS')
+ ORDER BY begin_interval_time desc;
+
+
+
+set lines 500 pages 200
+select top_level_sql_id,sql_id,event,count(sql_id) 
+  from dba_hist_active_sess_history
+where snap_id between &beg_snap and &end_snap
+  and sample_time between to_date('2026/04/09 10:30:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/04/09 11:00:00','yyyy/mm/dd hh24:mi:ss')
+  --and event='resmgr:cpu quantum' 
+  --and lower(module) like '%fusionapps%'
+  --and event is not null
+  group by top_level_sql_id,sql_id,event
+  order by 4 desc
+  fetch first 10 rows only;
+  
+
+
+select top_level_sql_id,sql_id,event,count(sql_id)
+  from dba_hist_active_sess_history
+  where sample_time between to_date('2026/03/23 06:00:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/23 06:55:00','yyyy/mm/dd hh24:mi:ss')
+  group by top_level_sql_id,sql_id,event
+  order by 4 desc
+  fetch first 10 rows only;
+
+
+select count(session_id) from dba_hist_active_sess_history where snap_id=66811 and sample_time between to_date('2026/03/25 10:14:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/25 10:15:00','yyyy/mm/dd hh24:mi:ss');
+
+
+
+
+CONCURRENCY - 
+select inst_id,sql_id , count(*) from gv$session where sql_id='&sql' group by inst_id,sql_id order by 3 desc;
+
+
+
+
+PLANS - 
+select distinct sql_id,plan_hash_value from gv$sql where sql_id='&sql' ;
+
+
+
+DIFFERENT PLANS (GOOD AND BAD PLANS ) 
+
+
+def sql_id='&sql'
+
+select location, sql_id,plan_hash_value,execs,avg_ela_time_secs,avg_buffer_reads
+from
+(
+select 'MEMORY' location, sql_id,plan_hash_value,
+sum(executions) execs,
+round(sum(rows_processed)/sum(executions),2) avg_rows,
+round(sum(cpu_time/1000000)/sum(executions),2) avg_cpu_time_secs,
+round(sum(elapsed_time/1000000)/sum(executions),2) avg_ela_time_secs,
+round(sum(user_io_wait_time/1000000)/sum(executions),2) avg_io_wait_secs,
+round(sum(io_cell_offload_returned_bytes/1024/1024)/sum(executions),2) avg_offload_returned_mb,
+round(sum(io_interconnect_bytes/1024/1024)/sum(executions),2) avg_interconnect_mb,
+round(sum(io_cell_offload_eligible_bytes/1024/1024)/sum(executions),2) avg_offload_eligible_mb,
+round(sum(physical_read_bytes/1024/1024)/sum(executions),2) avg_physical_read_mb,
+round(sum(buffer_gets)/sum(executions),2) avg_buffer_reads
+from gv$sql
+where sql_id='&sql_id'
+and executions>0
+and end_of_fetch_count>0
+group by sql_id,plan_hash_value
+--order by avg_ela_time_secs
+union all
+select 'AWR' location, sql_id,plan_hash_value,
+sum(executions_total) execs,
+round(sum(rows_processed_total)/sum(executions_total),2) avg_rows,
+round(sum(cpu_time_total/1000000)/sum(executions_total),2) avg_cpu_time_secs,
+round(sum(elapsed_time_total/1000000)/sum(executions_total),2) avg_ela_time_secs,
+round(sum(iowait_total/1000000)/sum(executions_total),2) avg_io_wait_secs,
+round(sum(io_offload_return_bytes_total/1024/1024)/sum(executions_total),2) avg_offload_returned_mb,
+round(sum(io_interconnect_bytes_total/1024/1024)/sum(executions_total),2) avg_interconnect_mb,
+round(sum(io_offload_elig_bytes_total/1024/1024)/sum(executions_total),2) avg_offload_eligible_mb,
+round(sum(physical_read_bytes_total/1024/1024)/sum(executions_total),2) avg_physical_read_mb,
+round(sum(buffer_gets_total)/sum(executions_total),2) avg_buffer_reads
+from dba_hist_sqlstat
+where sql_id='&sql_id'
+and executions_total>0
+and end_of_fetch_count_total>0
+group by sql_id,plan_hash_value
+order by avg_ela_time_secs);
+
+
+
+
+
+AWR PLAN CHANGE: 
+================
+set lines 300 pages 100
+col execs for 999,999,999
+col avg_etime for 999,999.999
+col avg_lio for 999,999,999.9
+col begin_interval_time for a30
+col node for 99999
+break on plan_hash_value on startup_time skip 1
+
+select ss.snap_id, ss.instance_number node, begin_interval_time, sql_id, plan_hash_value,
+nvl(executions_delta,0) execs,
+(elapsed_time_delta/decode(nvl(executions_delta,0),0,1,executions_delta))/1000000 avg_etime,
+(buffer_gets_delta/decode(nvl(buffer_gets_delta,0),0,1,executions_delta)) avg_lio
+from dba_hist_sqlstat s, dba_hist_snapshot ss
+where sql_id = '&sql_id'
+and plan_hash_value is not null
+and BEGIN_INTERVAL_TIME >= sysdate - 15
+and ss.snap_id = s.snap_id
+and ss.instance_number = S.instance_number
+and PLAN_HASH_VALUE > 0
+and executions_delta > 0
+order by begin_interval_time desc
+fetch first 200 rows only;
+
+
+
+CORRECT - 
+
+set lines 155
+col execs for 999,999,999
+col avg_etime for 999,999.999
+col avg_lio for 999,999,999.9
+col begin_interval_time for a30
+col node for 99999
+break on plan_hash_value on startup_time skip 1
+
+select ss.snap_id, ss.instance_number node, begin_interval_time, sql_id, plan_hash_value,
+nvl(executions_delta,0) execs,
+(elapsed_time_delta/decode(nvl(executions_delta,0),0,1,executions_delta))/1000000 avg_etime,
+(buffer_gets_delta/decode(nvl(buffer_gets_delta,0),0,1,executions_delta)) avg_lio
+from DBA_HIST_SQLSTAT S, DBA_HIST_SNAPSHOT SS
+where sql_id = '&sql'
+and ss.snap_id = S.snap_id
+and ss.instance_number = S.instance_number
+and executions_delta > 0
+order by begin_interval_time desc
+fetch first 30 rows only;
+
+--order by 1, 2, 3;
+
+
+
+ORA-ERROR CHECK - 
+
+col MESSAGE_TEXT for a100 
+set lines 500 pages 200 
+col ORIGINATING_TIMESTAMP for a60 
+select * from 
+(
+select INST_ID,message_text, ORIGINATING_TIMESTAMP
+from   x$dbgalertext
+where  upper(message_text) like '%ORA-56735%'
+order by ORIGINATING_TIMESTAMP desc)
+where rownum<=10;
+
+
+
+
+
+SQL MONITOR WITH PARALLEL SLAVES - 
+
+SELECT sql_id, 
+       sql_exec_start, 
+       sql_exec_id, 
+       status,
+       PX_SERVERS_REQUESTED,
+       PX_MAXDOP,PX_SERVER#
+  FROM GV$SQL_MONITOR
+ WHERE SQL_ID='&SQL'
+   -- AND status = 'RUNNING'
+ ORDER BY sql_exec_start desc
+FETCH FIRST 10 ROWS ONLY;
+
+
+ORDER BY LAST_REFRESH_TIME DESC -
+
+SELECT sql_id, 
+       sql_exec_start, 
+       sql_exec_id, 
+       status,
+       LAST_REFRESH_TIME,
+       PX_SERVERS_REQUESTED,
+       PX_MAXDOP,PX_SERVER#
+  FROM GV$SQL_MONITOR
+ WHERE SQL_ID='dmb34hfnupxqw'
+   --AND status = 'RUNNING'
+ ORDER BY LAST_REFRESH_TIME desc
+FETCH FIRST 10 ROWS ONLY;
+
+
+
+
+SQL MONITOR / EXECUTIPN PLAN GENERATION - 
+
+Set lines 350 pages 1000 long 100000 longc 100000
+SELECT DBMS_SQLTUNE.REPORT_SQL_MONITOR(sql_id => '&sql') from dual;
+
+SELECT * from table(DBMS_XPLAN.DISPLAY_CURSOR('&sql',null,'ADVANCED ALLSTATS LAST +OUTLINE +PEEKED_BINDS +ALIAS +PROJECTION +HINT_REPORT'));
+
+SELECT rownum, t.* from table(dbms_xplan.display_cursor(sql_id => '&sql',cursor_child_no => 0,FORMAT => 'ALL ALLSTATS LAST')) t;
+  											
+SELECT * FROM TABLE(DBMS_XPLAN.display_awr(SQL_ID=>'&sql_id',plan_hash_value=>'&phv'));
+
+
+
+BLOCKING AND WALLCLOCK ELAPSED - 
+
+
+SELECT *
+FROM   (
+                SELECT   Count(*) "Approx Seconds(db time)",
+                         Sum(
+                         CASE
+                                  WHEN blocking_session IS NOT NULL 
+                                  THEN 1
+                                  ELSE 0
+                         END) "Approx Blocked Seconds",
+                         Count(DISTINCT sql_id) num_sqls,
+                         Count(DISTINCT inst_id||sql_exec_id||sql_exec_start) "Approx Execs",
+                         ash.inst_id||'-'||session_id||'-'||session_serial# "Session",
+                         module,
+                         action,
+                         sql_id,
+                         SQL_OPNAME,
+                         client_id "Client Identifier",
+                         program,
+                         Min(ash.sample_time) first_sample,
+                         Max(ash.sample_time) last_sample,
+                         Max(ash.sample_time) - Min(ash.sample_time) "WallClock Elapsed"
+                FROM     gv$active_session_history ash
+                --WHERE    sample_time BETWEEN nvl(To_timestamp(:bt, 'dd-mm-yy hh24:mi:ss'), systimestamp - interval '1' hour) AND nvl(to_timestamp(:et, 'dd-mm-yy hh24:mi:ss'), systimestamp)
+                WHERE    sample_time >= sysdate - interval '1' hour
+                AND      (
+                                  module NOT LIKE 'emagent%%'
+                         AND      module NOT LIKE 'dbfs_client%%'
+                         AND      module NOT LIKE 'rman%%')
+                HAVING   count(*)>600
+                GROUP BY module,
+                         action,
+                         sql_id,
+                         SQL_OPNAME,
+                         client_id,
+                         program,
+                         ash.inst_id||'-'||session_id||'-'||session_serial#
+                order by Max(ash.sample_time) - Min(ash.sample_time) desc )
+fetch first 10 rows only;
+                                  
+
+
+
+set lines 1000 pages 200
+select sql_id,consumer_GROUP from 
+ (
+ select min(sample_time),max(sample_time) , user_id,inst_id||'-'||session_id||'-'||session_serial#,
+       SQL_ID,SQL_PLAN_HASH_VALUE, EVENT,MODULE,ACTION,CLIENT_ID,PROGRAM,
+     consumer_GROUP_id,
+       (SELECT /*+ no_unnest */ consumer_GROUP FROM dba_rsrc_consumer_GROUPs rsrc
+         WHERE consumer_GROUP_id=ash.consumer_GROUP_id
+       ) consumer_GROUP,
+     count(1) 
+   from gv$active_session_history ash
+ --where event='enq: RC - Result Cache: Contention'
+ where event='latch free'
+ and sample_time between TO_DATE('05.02.2026 07:30:00', 'DD.MM.YYYY HH24:MI:SS')  and TO_DATE('05.02.2026 08:30:00', 'DD.MM.YYYY HH24:MI:SS') 
+   --and ash.sql_id='3hb0ccjqvug9k'
+ group by   user_id,inst_id||'-'||session_id||'-'||session_serial#,SQL_ID,SQL_PLAN_HASH_VALUE, EVENT,MODULE,ACTION,CLIENT_ID,PROGRAM, consumer_GROUP_id
+ order by count(1) desc
+ )
+ where rownum<=10; 
+
+
+ select sql_id,event,count(*) from gv$active_session_history ash 
+ where sample_time between TO_DATE('05.02.2026 07:30:00', 'DD.MM.YYYY HH24:MI:SS')  and TO_DATE('05.02.2026 08:30:00', 'DD.MM.YYYY HH24:MI:SS') 
+ and event='latch free'
+ group by sql_id,event
+ order by 3 desc;
+
+
+ select * from 
+ (
+ select min(sample_time),max(sample_time) , inst_id||'-'||session_id||'-'||session_serial#,SQL_ID,SQL_PLAN_HASH_VALUE, EVENT,MODULE,ACTION,CLIENT_ID,PROGRAM,count(1) 
+   from gv$active_session_history 
+ where event='latch free'
+ and sample_time between TO_DATE('05.02.2026 07:30:00', 'DD.MM.YYYY HH24:MI:SS')  and TO_DATE('05.02.2026 08:30:00', 'DD.MM.YYYY HH24:MI:SS') 
+ group by   inst_id||'-'||session_id||'-'||session_serial#,SQL_ID,SQL_PLAN_HASH_VALUE, EVENT,MODULE,ACTION,CLIENT_ID,PROGRAM
+ order by count(1) desc
+ )
+ where rownum<=10;
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+CPU USAGE BY A SINGLE SQL FOR PAST DAYS - 
+
+
+CURRENT -
+
+set lines 500 pages 200
+col min_sample for a30
+col max_sample for a30
+col MODULE for a40
+col USERNAME for a20
+
+
+select sql_id,min_sample,min_sample,module,username,sql_exec_cnt,sess_state_cpu_cnt
+from 
+(
+select ash.inst_id||'-'||ash.session_id||'-'||ash.session_serial# sess,ash.sql_id,
+       min(ash.sample_time) min_sample,max(ash.sample_time) max_sample,module,action,program,
+            (select username from dba_users where user_id= ash.user_id) username,
+                    min(round(temp_space_allocated/1024/1024,2)) min_temp_mb, max(round(temp_space_allocated/1024/1024,2)) max_temp_mb,
+                    min(round(pga_allocated/1024/1024,2)) min_pga_mb , max(round(pga_allocated/1024/1024,2)) max_pga_mb,
+                    ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3 wait_details,
+                    case when do.object_name is null then 'X' else do.object_name end wait_obj_name,
+                    case when do.object_type is null then 'X' else do.object_type end wait_obj_type,
+                    ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# blkng_sess,
+                    sum(case when in_parse='Y' then 1 else 0 end) parse_cnt,
+                    sum(case when in_hard_parse='Y' then 1 else 0 end) hard_parse_cnt,
+                    sum(case when in_sql_execution='Y' then 1 else 0 end) sql_exec_cnt,
+                    sum(case when session_state='ON CPU' then 1 else 0 end) sess_state_cpu_cnt,
+                    sum(case when session_state='WAITING' then 1 else 0 end) sess_state_wait_cnt,
+                    sum(case when blocking_session_status='VALID' then 1 else 0 end) block_cnt,
+                    count(1) tot_cnt,ash.ecid
+              from gv$active_session_history ash, dba_objects do
+             where ash.current_obj#=do.object_id(+)
+               and sample_time >= sysdate - 6/1440
+             --and ash.snap_id between 62621 and 62624 
+             --and sample_time between to_date('28-10-2024 08:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('28-10-2024 09:00:00','dd-mm-yyyy hh24:mi:ss')
+             and ash.sql_id = '&sql'
+             and module is not null
+            group by ash.inst_id||'-'||ash.session_id||'-'||ash.session_serial#,ash.sql_id,ash.user_id,module,action,program,ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3,in_parse,in_hard_parse,ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# ,ash.ecid,do.object_name,do.object_type
+  order by tot_cnt desc)
+  fetch first 100 rows only;
+  
+  
+HISTORIC - 
+
+
+set lines 500 pages 200
+col min_sample for a30
+col max_sample for a30
+col MODULE for a40
+col USERNAME for a20
+
+select sql_id,min_sample,min_sample,module,username,sess_state_cpu_cnt
+from 
+(
+select ash.instance_number||'-'||ash.session_id||'-'||ash.session_serial# sess,ash.sql_id,
+       min(ash.sample_time) min_sample,max(ash.sample_time) max_sample,module,action,program,
+            (select username from dba_users where user_id= ash.user_id) username,
+                    min(round(temp_space_allocated/1024/1024,2)) min_temp_mb, max(round(temp_space_allocated/1024/1024,2)) max_temp_mb,
+                    min(round(pga_allocated/1024/1024,2)) min_pga_mb , max(round(pga_allocated/1024/1024,2)) max_pga_mb,
+                    ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3 wait_details,
+                    case when do.object_name is null then 'X' else do.object_name end wait_obj_name,
+                    case when do.object_type is null then 'X' else do.object_type end wait_obj_type,
+                    ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# blkng_sess,
+                    sum(case when in_parse='Y' then 1 else 0 end) parse_cnt,
+                    sum(case when in_hard_parse='Y' then 1 else 0 end) hard_parse_cnt,
+                    sum(case when in_sql_execution='Y' then 1 else 0 end) sql_exec_cnt,
+                    sum(case when session_state='ON CPU' then 1 else 0 end) sess_state_cpu_cnt,
+                    sum(case when session_state='WAITING' then 1 else 0 end) sess_state_wait_cnt,
+                    sum(case when blocking_session_status='VALID' then 1 else 0 end) block_cnt,
+                    count(1) tot_cnt,ash.ecid
+              from dba_hist_active_sess_history ash, dba_objects do
+             where ash.current_obj#=do.object_id(+)
+               and sample_time >= sysdate - 20
+             --and ash.snap_id between 62621 and 62624 
+             --and sample_time between to_date('28-10-2024 08:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('28-10-2024 09:00:00','dd-mm-yyyy hh24:mi:ss')
+             and ash.sql_id = '&sql'
+            group by ash.instance_number||'-'||ash.session_id||'-'||ash.session_serial#,ash.sql_id,ash.user_id,module,action,program,ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3,in_parse,in_hard_parse,ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# ,ash.ecid,do.object_name,do.object_type
+  order by tot_cnt desc)
+  fetch first 100 rows only;
+  
+
+
+
+
+
+
+
+TEMP USAGE BY A SQL QUERY - 
+
+
+CURRENT - 
+
+
+set lines 1000 pages 200 
+set long 20000
+col MODULE for a50
+col ACTION for a30 
+col USERNAME for a30 
+col WAIT_OBJ_NAME for a30 
+col event for a30
+
+
+select sql_id,min_sample,min_sample,module,username,(max_temp_mb/1024) as max_temp_gb
+from 
+(
+select ash.inst_id||'-'||ash.session_id||'-'||ash.session_serial# sess,ash.sql_id,
+       min(ash.sample_time) min_sample,max(ash.sample_time) max_sample,module,action,program,
+            (select username from dba_users where user_id= ash.user_id) username,
+                    min(round(temp_space_allocated/1024/1024,2)) min_temp_mb, max(round(temp_space_allocated/1024/1024,2)) max_temp_mb,
+                    min(round(pga_allocated/1024/1024,2)) min_pga_mb , max(round(pga_allocated/1024/1024,2)) max_pga_mb,
+                    ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3 wait_details,
+                    case when do.object_name is null then 'X' else do.object_name end wait_obj_name,
+                    case when do.object_type is null then 'X' else do.object_type end wait_obj_type,
+                    ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# blkng_sess,
+                    sum(case when in_parse='Y' then 1 else 0 end) parse_cnt,
+                    sum(case when in_hard_parse='Y' then 1 else 0 end) hard_parse_cnt,
+                    sum(case when in_sql_execution='Y' then 1 else 0 end) sql_exec_cnt,
+                    sum(case when session_state='ON CPU' then 1 else 0 end) sess_state_cpu_cnt,
+                    sum(case when session_state='WAITING' then 1 else 0 end) sess_state_wait_cnt,
+                    sum(case when blocking_session_status='VALID' then 1 else 0 end) block_cnt,
+                    count(1) tot_cnt,ash.ecid
+              from gv$active_session_history ash, dba_objects do
+             where ash.current_obj#=do.object_id(+)
+            --and sample_time >= sysdate - 1/24
+            --and sample_time between to_date('29-10-2025 07:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('29-10-2025 08:00:00','dd-mm-yyyy hh24:mi:ss')
+             and sample_time >= sysdate - 1
+              and ash.sql_id = '&sql'
+            group by ash.inst_id||'-'||ash.session_id||'-'||ash.session_serial#,ash.sql_id,ash.user_id,module,action,program,ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3,in_parse,in_hard_parse,ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# ,ash.ecid,do.object_name,do.object_type
+  order by max_temp_mb desc)
+fetch first 10 rows only;
+
+
+HISTORIC - 
+
+
+set lines 500 pages 200
+col min_sample for a30
+col max_sample for a30
+col MODULE for a40
+
+select sql_id,min_sample,min_sample,module,username,(max_temp_mb/1024) as max_temp_gb
+from 
+(
+select ash.instance_number||'-'||ash.session_id||'-'||ash.session_serial# sess,ash.sql_id,
+       min(ash.sample_time) min_sample,max(ash.sample_time) max_sample,module,action,program,
+            (select username from dba_users where user_id= ash.user_id) username,
+                    min(round(temp_space_allocated/1024/1024,2)) min_temp_mb, max(round(temp_space_allocated/1024/1024,2)) max_temp_mb,
+                    min(round(pga_allocated/1024/1024,2)) min_pga_mb , max(round(pga_allocated/1024/1024,2)) max_pga_mb,
+                    ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3 wait_details,
+                    case when do.object_name is null then 'X' else do.object_name end wait_obj_name,
+                    case when do.object_type is null then 'X' else do.object_type end wait_obj_type,
+                    ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# blkng_sess,
+                    sum(case when in_parse='Y' then 1 else 0 end) parse_cnt,
+                    sum(case when in_hard_parse='Y' then 1 else 0 end) hard_parse_cnt,
+                    sum(case when in_sql_execution='Y' then 1 else 0 end) sql_exec_cnt,
+                    sum(case when session_state='ON CPU' then 1 else 0 end) sess_state_cpu_cnt,
+                    sum(case when session_state='WAITING' then 1 else 0 end) sess_state_wait_cnt,
+                    sum(case when blocking_session_status='VALID' then 1 else 0 end) block_cnt,
+                    count(1) tot_cnt,ash.ecid
+              from dba_hist_active_sess_history ash, dba_objects do
+             where ash.current_obj#=do.object_id(+)
+             --and sample_time >= sysdate - 20
+               and ash.snap_id between 59718 and 59719 
+             --and sample_time between to_date('28-10-2024 08:00:00','dd-mm-yyyy hh24:mi:ss') and to_date('28-10-2024 09:00:00','dd-mm-yyyy hh24:mi:ss')
+             and ash.sql_id = '&sql'
+            group by ash.instance_number||'-'||ash.session_id||'-'||ash.session_serial#,ash.sql_id,ash.user_id,module,action,program,ash.wait_class||'-'||ash.event||'-'||ash.p1||'-'||ash.p2||'-'||ash.p3,in_parse,in_hard_parse,ash.blocking_inst_id||'-'||ash.blocking_session||'-'||ash.blocking_session_serial# ,ash.ecid,do.object_name,do.object_type
+  order by max_temp_mb desc)
+  fetch first 100 rows only;
+  
+
+
+
+
++++++++++++
+
+
+RESULT CACHE ISSUE 
+
+select * from GV$CHANNEL_WAITS order by wait_time_usec desc;
+
+select CHANNEL,sum(wait_count) sum_wait_count from GV$CHANNEL_WAITS group by CHANNEL order by sum(wait_count) desc;
+
+select sql_id,event,count(*) from gv$session where event='reliable message' group by sql_id,event order by 3 desc;
+
+
+select sql_fulltext from gv$sql where  sql_id='b7x30cvqsc77z' and rownum=1;
+
+
+SQL : b7x30cvqsc77z / 7w5cnhx3nw6nr / 686cjs0vgmvs2
+
+
+b7x30cvqsc77z:
+
+DECLARE
+    l_sess_id     VARCHAR2(32);
+    l_sess_cookie VARCHAR2(32);
+    CURSOR c1 IS
+      SELECT session_cookie,
+             last_connect,
+             counter,
+             limit_time,
+             limit_connects,
+             last_update_date
+      FROM   fnd_sessions
+      WHERE  session_id = l_sess_id;
+BEGIN
+    l_sess_id := fnd_session_mgmt.Create_session(p_user_guid => :1,
+                 p_user_name => :2,
+                                    p_user_locale => :3, p_session_id => :4,
+                                    p_session_cookie => :5);
+
+    :6 := l_sess_id;
+
+    OPEN c1;
+
+    FETCH c1 INTO :7, :8, :9, :10, :11, :12;
+
+    CLOSE c1;
+
+    :13 := fnd_session_ns.Get_namespace_attr(l_sess_id,
+           fnd_global.fnd_session_namespace,
+                  'UserSandbox');
+END; 
+
+
+exec DBMS_RESULT_CACHE.MEMORY_REPORT(detailed=>TRUE);
+
+W/A
+exec dbms_result_cache.flush(global=>TRUE);
+
+
+++++++++++++++++++++
+  
+
+IMP WIKIs REGARDING PERF QUERIES -   
+
+CHECK PARALLEL QUERY EXECUTIONS - 
+
+SOP to diagnostic Parallel Query processes - Diagnostic collection - 
+https://confluence.oraclecorp.com/confluence/display/SE/SOP+to+diagnostic++Parallel+Query+processes++-+Diagnostic+collection
+
+DASA QUERIES - 
+https://confluence.oraclecorp.com/confluence/display/OCIFSRE/Decision+Flow+to+eliminate+disruptive+Application+sessions+proactively 
+
+SAAS FLEET TOP RESOURCE CONSUMING SQLS - PSR QUERIES
+https://confluence.oraclecorp.com/confluence/display/PSR/SaaS+Fleet+Top+Resource+Consuming+SQLs
+
+    
+                               
+                               
+++++ LONG RUNNING QUERY 
+
+
+set linesize 200
+col SID format a15
+col XID format a30
+col START_SCN format 99999999999999999
+col TERMINAL for a15
+col PROGRAM for a35
+
+select t.con_id, t.inst_id, sid||','||serial# sid,xidusn||'.'||xidslot||'.'||xidsqn xid,(sysdate -  start_date ) * 1440 runlength ,t.start_scn,terminal,
+program,s.sql_id,s.status from gv$transaction t, gv$session s
+where t.addr=s.taddr and (sysdate - start_date) * 1440 > 60 order by runlength desc; 
+
+   
+                
+
+
+HARD PARSING QUERY OUTPUT FROM KIRAN - 
+Bug 39130920 - POD:ESBE:RCA SR FA-432170 REQUEST SLOWNESS OBSERVED DURING PEAK BUSINESS HOURS BETWEEN 07:30 AM AND 08:00 AM UTC. 
+
+
+set lines 1000 pages 200
+col SESS_INFO for a30
+col event for a35
+ select
+      to_char(trunc(sample_time), 'DD-Mon-RR') as day,
+      to_char(min(sample_time), 'DD/Mon/YYYY HH24:MI:SS') as min_sample_time,
+      to_char(max(sample_time), 'DD/Mon/YYYY HH24:MI:SS') as max_sample_time,
+      --to_char(numtodsinterval(max(sample_time) - min(sample_time), 'DAY')) as elapsed_time,
+      instance_number || '-' || session_id || '-' || session_serial# as sess_info,
+      module,
+      sql_id,
+      in_hard_parse,
+      event,
+      count(*) as "COUNT(1)"
+  from dba_hist_active_sess_history
+  where snap_id between 64278 and 65572
+  and  sample_time between to_date('2026/03/01 10:30:00','yyyy/mm/dd hh24:mi:ss') and to_date('2026/03/30 11:00:00','yyyy/mm/dd hh24:mi:ss')
+    and module = '&&p_module'
+	and in_hard_parse='Y'
+  group by
+      trunc(sample_time),
+      instance_number || '-' || session_id || '-' || session_serial#,
+      module,
+      sql_id,
+      in_hard_parse,
+      event
+  order by count(*) desc;
+  
+  
+  
