@@ -1,0 +1,483 @@
+Various commands for support - 
+
+
+ARCHIVE LOGS SPACE CHECK- 
+Bug 39674510 - BOFA IC PROD EWGI: LOT OF GB OF ARCHIVE FILES ARE BEING GENERATED
+
+oracle@epxa3a027-tgygd1(us2dz2v1):/u02/app/oracle/diag/rdbms/us2dz2v/us2dz2v1/trace# find . -maxdepth 1 -type f -printf "%TY-%Tm-%Td %s\n" | awk '{size[$1]+=$2} END {for (d in size) printf "%s %.f GB\n", d, size[d]/1024/1024/1024}' | sort
+
+
+
+grep + cp: - 
+grep -irl --include="*trc" 'kghstack_underflow_internal_1' | xargs cp -t /acfs01/cloudops_tech_stage/BUG_TRIAGE/38801794/38801794/DEV2_TRACE/.
+
+
+find + cp 
+find . -name "alert*" -exec cp "{}" /acfs01/cloudops_tech_stage/BUG_TRIAGE/38801794/38801794/DEV2_ALERT \;
+
+PUSH TO OSS BUCKET(DIBYA) - 
+=========================
+curl -k -X PUT https://objectstorage.us-ashburn-1.oraclecloud.com/p/fE7J3MwviDcMq-X9mFYX8U-HrCS9F2WlEDt6dqKIAmyuUWUhJnushClLPfxvsM2E/n/idfl2ow6j7cl/b/PSRDashboard1/o/ddl_us2dz2v1.log -T ddl_us2dz2v1.log
+
+curl -o MAVERICK_TRC_LOGS.tar.gz https://objectstorage.us-ashburn-1.oraclecloud.com/p/fE7J3MwviDcMq-X9mFYX8U-HrCS9F2WlEDt6dqKIAmyuUWUhJnushClLPfxvsM2E/n/idfl2ow6j7cl/b/PSRDashboard1/o/MAVERICK_TRC_LOGS.tar.gz
+
+
+Push the sql patch script on JPMC - (EINO-DEV5/EINO-DEV1)
+
+curl -X PUT -T coe_gen_sql_patch.sql https://idlmjvvqgjze.objectstorage.us-ashburn-1.oci.customer-oci.com/p/grf9iTKtOfO2AvrBlIIOG7kUc1U2BOHCKWqiUMUjbOpC39uq0rzxnJC6Sthoa63X/n/idlmjvvqgjze/b/FSRE_DB_OSS/o/MiscLogs/coe_gen_sql_patch.sql 
+
+curl -X GET -o coe_gen_sql_patch.sql https://idlmjvvqgjze.objectstorage.us-ashburn-1.oci.customer-oci.com/p/grf9iTKtOfO2AvrBlIIOG7kUc1U2BOHCKWqiUMUjbOpC39uq0rzxnJC6Sthoa63X/n/idlmjvvqgjze/b/FSRE_DB_OSS/o/MiscLogs/coe_gen_sql_patch.sql 
+
+SE WIKI FOR ALL SUBJECTS - https://confluence.oraclecorp.com/confluence/display/SE/DBCRE+Quick+Debug+Guide#DBCREQuickDebugGuide-CRS 
+
+Deployer Host Access - 
+sasasark@sasasark-mac ~ % ssh -o ProxyCommand="ossh proxy -V -u %r --overlay-bastion --region us-phoenix-1 --compartment ocid1.compartment.oc1..aaaaaaaaof5v6s7amt4utnrisq2ppaaudd63gd2anyjqpmx6oem6ldgeiz4a -- ssh -A -p 22 ztb-internal.bastion.us-phoenix-1.oci.oracleiaas.com -s proxy:ocid1.bastion.oc1.phx.amaaaaaawshrd3ias4hmrgvcnhtw2hpmkcpku72xx4uws7bn3zpvcpxlxsza-%h:%p" 10.40.160.2
+
+
+LIBRARY CACHE ISSUE :- 
+
+oracle@epxa3a048-ilwkj1(phx421):/acfs01/cloudops_tech_stage/BUG_TRIAGE/38015397/38015397/DB/phx42# find . -name "*trc" | xargs grep -B2 -i "DBMS_UTILITY" | grep "Status=INVL"
+
+oracle@epxa3a048-ilwkj1(phx421):/acfs01/cloudops_tech_stage/BUG_TRIAGE/38015397/38015397/DB/phx42# find . -name "*trc" | xargs grep -B2 -i "HRC_SESSION_UTIL" | grep "Status=INVL"
+
+
+
+FA Patch version Validation from FA Node 
+===============================
+/podscratch/lcm-artifacts/podmetadata/bin/get_prop.py pod.database.fmw_version
+
+/opt/facs/casrepos/glcm/bin/odpwrapper map -cmd "/u01/APPLTOP/fusionapps/applications/lcm/ad/bin/fapmgr.sh report -isapplied -patch 37835430 -reportwidth WIDE -outputfile /tmp/chk_patch.log"
+
+Correct Command - 
+ /opt/facs/casrepos/glcm/bin/odpwrapper map -cmd "/opt/facs/casrepos/glcm/OPatch/opatch lsinventory -oh /u01/APPLTOP/fmw" | grep 37964085
+
+Shilpa Keswani :- 
+[oracle@ehqm-fa1 ~]$ cat /u01/APPLTOP/instance/lcm/metadata/pod.properties|grep 11.13
+maintenance_level=11.13.25.01.0_04.0.00
+
+
+Find out the top most big directories - 
+===========================
+
+du -sch *|grep G | tail 
+
+du -hsx * | sort -rh | head -10
+
+sudo du -ah /var/log | sort -rh | head -n 10
+
+Sometimes the above command errors  -> bash: /usr/bin/du: Argument list too long , so below command can be of use
+
+find . -maxdepth 1 ! -name "." -exec du -hsx {} + | sort -rh | head -10
+
+
+
+Datafile corruption :
+BACKUP VALIDATE CHECK LOGICAL DATAFILE 664;
+BACKUP VALIDATE CHECK LOGICAL DATAFILE 664  TAG DBAASTOOLS_29_09_2024_060722;
+
+ORA-04021 error coming from unique modules - 
+for file in `grep -irl --include="*trc" 'ORA-04021'`;do grep "MODULE NAME:" $file| awk -F':' '{print $2}'| cut -d'(' -f2|uniq;done
+
+
+FIND MOST NO OF BLOCKERS FROM DIA TRACE FILES  - 
+
+dcli -l oracle -g /tmp/olsnodes.txt "find /u02/app/oracle/diag/rdbms/us2dz2v/us2dz2v*/trace -name '*dia*trc' -type f  | xargs grep -n 'blocking:.*session' | grep -v '0 sess' | sort -nr -k3,3 | head -10"
+
+From PSR (Ravi) - 
+grep  -B30 "Signature: " /u02/app/oracle/diag/rdbms/us6bl5fw/us6bl5fw1/trace/us6bl5fw1_diag_349248.trc | grep "time in wait:\|Signature:\|blocking:"|head -10
+
+FIND THE WAIT CHAINS FROM HA (PSR) - 
+
+grep -B30 "Signature: " /u02/app/oracle/diag/rdbms/us2dz2v/us2dz2v1/trace/us2dz2v1_diag_178863.trc | grep "time in wait:\|Signature:\|blocking:"|head -20
+
+
+FINDING MIDDLEWARE CONNECTIONS (PSR) - 
+
+grep "19-JUN-2022 11:1" listener_us2em7v_1.log | grep ebwh_erp_ | wc -l
+
+egrep -i '20-JUL-2024 01:57|20-JUL-2024 01:58|20-JUL-2024 01:59|20-JUL-2024 02:00' listener_scan*.log|grep us6bl5fw_f| grep establish | wc -l
+
+egrep -i "20-JUL-2024 01:57|20-JUL-2024 01:58|20-JUL-2024 01:59|20-JUL-2024 02:00" listener_scan*.log|grep us6bl5fw_f| grep establish|awk -F'PROGRAM=|HOST=' '{print $2}'|egrep 'ESS_SOASer|UIServer_|JDBC|MWServer|ServiceServer'| cut -c 1-22|sort|uniq -c
+
+Dibya Given - 
+grep "05-AUG-2025 08:5" listener_1_v20250806_00.log | grep "us2djhw" | grep "establish" | awk -F'PROGRAM=|HOST=' '{print $2}'| cut -c 1-20 | sort  | uniq -ic | sort -rn | head -10
+
+
+Copy all the listener logs into one folder and then execute the following commands :- 
+
+egrep -i '28-MAY-2025 06:15|28-MAY-2025 06:45' listener*|grep us6br4au_f| grep establish | wc -l
+
+egrep -i '28-MAY-2025 06:15|28-MAY-2025 06:45' listener_scan1.log|grep us6br4au_f| grep establish|awk -F'PROGRAM=|HOST=' '{print $2}'|egrep 'ESS_SOASer|UIServer_|JDBC|MWServer|ServiceServer'| cut -c 1-22|sort|uniq -c
+
+
+
+
+FIND FILES BETWEEN TWO TIMESTAMPS :
+find . -name "*dia*trc" -newermt '2024-12-19T11:50:00' ! -newermt '2024-12-19T11:59:00'
+
+
+
+HA CHECK :
+=========
+
+grep -B2 'HANG ANALYSIS DUMPS' *dia*.trc|grep -v 'END'
+
+grep -B2 'HANG ANALYSIS:' *dia*.trc|grep -v 'END'
+
+
+
+
+SCAN LISTERNER CHECK FOR SERVICE ATTACHMENT  - 
+
+grid@epxa3a027-tgygd4(+ASM4):/u01/app/grid/diag/tnslsnr/epxa3a027-tgygd4/listener_scan1/trace# egrep '_fb|_fd' listener_scan1.log | egrep "INSTANCE_NAME=us2dz2v4|INSTANCE_NAME=us2dz2v5|INSTANCE_NAME=us2dz2v7|INSTANCE_NAME=us2dz2v8" | tail
+
+
+
+IMAGE INFO:
+
+[opc@eama1a017-xnkcj1 ~]$  CRS_HOME=$(grep crs_home /etc/oracle/olr.loc|cut -d '=' -f2|tr -d [[:space:]]) ; exahosts=$($CRS_HOME/bin/olsnodes | xargs echo | sed -e 's/ /,/g');/usr/local/bin/dcli -l opc -c $exahosts "md5sum /etc/localtime"|awk '{print $2}'|uniq
+fe9ad2d5c4c79122a99b4d5ed44fda0e
+
+
+
+rds-ping command - 
+https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=9015810012
+
+
+OFFLINE SERVICES - 
+—————————
+crsctl status res |grep -v "^$"|awk -F "=" 'BEGIN {print " "} {printf("%s",NR%4 ? $2"|" : $2"\n")}'|sed -e 's/  *, /,/g' -e 's/, /,/g'|\awk -F "|" 'BEGIN { printf "%-40s%-35s%-20s%-50s\n","Resource Name","Resource Type","Target ","State" }{ split ($3,trg,",") split ($4,st,",")}{for (i in trg) {printf "%-40s%-35s%-20s%-50s\n",$1,$2,trg[i],st[i]}}' | grep -i offline
+
+ALternate - Venkatesh
+——————
+crsctl stat res -t -w '(TARGET != ONLINE) or (STATE != ONLINE)' | grep -v STABLE
+
+Across all the nodes - 
+/usr/local/bin/dcli -l grid -g /tmp/olsnodes.txt "crsctl stat res -t -w '(TARGET != ONLINE) or (STATE != ONLINE)'"
+
+
+
+
+Vikas given - final for node to cell nodes 
+
+cd /etc/oracle/cell/network-config
+for source_ip in $(cat cellinit.ora|grep ipaddress| cut -d '=' -f2 | sed "s/\/.*//g" )
+ do
+ for dest_ip in $(cat cellip.ora| cut -d'"' -f2|awk -F";" '{print $1 " " $2}' )
+ do
+ echo -e "\n\nFrom ${source_ip} to ${dest_ip} ......"
+/usr/bin/rds-ping -I ${source_ip} ${dest_ip} -c 1 -i 20msec
+if [ $? -ne 0 ]; then
+echo "ERROR: echo -e "\n\nFrom ${source_ip} to ${dest_ip} failed ......" "
+fi
+done
+done
+
+[root@iad2edcsmgmt1 ~]# for cell in $(<cells.out); do echo $cell
+> ssh ${cell} << 'EOF'
+> ips=$(ip a s |grep stre |grep inet |awk '{print $2}' |cut -d "/" -f 1)
+> ips1=`echo ${ips} |cut -d " " -f 1`
+> ips2=`echo ${ips} |cut -d " " -f 2`
+> echo $ips1
+> rds-ping -I $ips1 100.106.64.8 -c 3
+> echo $ips2
+> rds-ping -I $ips2 100.106.64.9 -c 3
+> EOF
+>    done
+
+
+
+CRS Handy Commands - 
+
+crsctl stat res -t -init
+crsctl stat res -init
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l grid "/u01/app/19.25.0.0.0_v1/grid/bin/crsctl stat res ora.crsd -init|grep 'STATE='"
+crsctl check cluster -all
+
+
+To start /stop whole CRS stack from root - 
+ crsctl stop crs -f
+ crsctl start crs -wait
+
+To start crsd along - 
+crsctl start res ora.crsd -init
+
+To Stop crud along - 
+crsctl stop res ora.crsd -init
+
+df -h | grep -I acts
+/usr/sbin/acfsutil info fs
+asmcmd volinfo --all
+
+Start ACFS filesystem - 
+/u02/app/19.0.0.0/grid1912_0_wc50_efra2a010_2c1_0308/bin/srvctl start filesystem -d /dev/asm/acfsvol01-302 -n efra2a010-dvnyz8
+
+DBA Healthcheck scripts for ACFS/ASM/CRS - 
+/u02/CloudOPSSupport/Scripts/DBAMON/ASMHealthCheck.sh
+
+Checking node to node communication - ids-info for node to node 
+
+Ifconfig -a | grep clr 
+
+node 11 
+100.107.0.192 - clre0
+100.107.0.193 - clre1
+
+node 5 
+100.107.0.148 - clre0
+100.107.0.149 - clre1 
+
+rds-ping -I 100.107.0.192 100.107.0.148  
+rds-ping -I 100.107.0.192 100.107.0.149
+
+rds-ping -I 100.107.0.193 100.107.0.148
+rds-ping -I 100.107.0.193 100.107.0.149
+
+
+
+
+
+
+https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=36290848 - Anjnai for ads-ping
+Re: RCA - Bug 36290848 - OCI FA SAAS - EFRA1A026-WGFRV[1-12] - CLUSTER WIDE /ACFS01 HUNG AMIDST 19.21 GI PATCHING - Email for the same bug
+
+
+COPY ONE DIRECTORY CONTENTS INTO ANOTHER DIRECTORY WITHOUT TOP LEVEL DIRECTORY (https://www.tutorialrepublic.com/faq/how-to-copy-the-contents-of-a-folder-to-another-folder-from-terminal-in-ubuntu.php)
+
+cp -a source/. destination/
+
+
+FREE SWAP SPACE - 
+dcli -l oracle -g /tmp/olsnodes.txt "free -g | grep 'Swap:'"     ********* Use this 
+
+Top SWAP Memory utilisation - 
+
+for file in /proc/*/status; do awk '/VmSwap|Name/{printf $2 " " $3}END{ print ""}' $file; done | sort -k 2 -n -r | head -10
+
+PSR given - 
+for status_file in /proc/[0-9]*/status; do     pid=$(basename $(dirname $status_file))     awk -v pid="$pid" '/VmSwap/{s=$2} /Name/{n=$2} END{if(s>0) printf "%10d KB PID=%-6d %s\n", s, pid, n}' "$status_file" 2>/dev/null done | sort -nr | head -50
+
+Actual  (correct one)
+
+Swap Utilization for top 10 processes:-   ********* Use this
+for p in /proc/[0-9]*; do pid=${p##*/}; swap=$(awk '/^VmSwap:/ {print $2}' "$p/status" 2>/dev/null); [ "${swap:-0}" -gt 0 ] && printf "%12s KB  PID=%-8s  %s\n" "$swap" "$pid" "$(tr '\0' ' ' < "$p/cmdline" 2>/dev/null)"; done | sort -nr | head -10
+
+for status_file in /proc/[0-9]*/status; do pid=$(basename $(dirname $status_file)) ; awk -v pid="$pid" '/VmSwap/{s=$2} /Name/{n=$2} END{if(s>0) printf "%10d KB PID=%-6d %s\n", s, pid, n}' "$status_file" 2>/dev/null ;done | sort -nr | head -50
+
+Exadata Servers High SWAP utilisation -  
+https://confluence.oraclecorp.com/confluence/display/FusionSRE/Exadata+servers+with+high+swap+utilization 
+
+
+
+Anjani’s command about swap - 
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l oracle  "free -g|grep 'Swap:'|awk '{print \$4}'"
+
+
+
+
+
+Top CPU /MEM Utilizing processes 
+
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -10
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -10
+
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -10 
+
+
+Important Unix Commands for parsing / reading / changing strings etc - 
+=====================
+
+https://www.theunixschool.com/p/awk-sed.html —> (SED/AWK/SHELL SCRIPT)
+
+
+
+
+
+
+SQLs hitting ora-01555 error 
+/usr/local/bin/dcli -g /home/oracle/dbs_group -l oracle "grep 'ORA-01555' /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/al*"|grep "SQL ID"|awk '{print $10}'|sort -n |uniq -c
+
+No of SQLs hitting ORA-01555 
+/usr/local/bin/dcli -g /home/oracle/dbs_group -l oracle "grep -A3 -B3 -i 'ORA-01555' /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/al*"|grep '2024-04-03'|wc -l
+
+
+
+FIND + COPY - 
+find -iname '*.mp3' -exec cp {} /home/sk/test2/ \;
+
+FOR FILES DURING SOME TIMESTAMPS- 
+find . -type f -name "*.*" -newermt "2024-03-16 06:00:00" ! -newermt "2024-03-16 11:40:00" -exec cp {} /fss/cloudops_tech_stage/BUG_TRIAGE/36411224/ESBE_TRC_LOGS/. \;
+
+
+ZSND FAILURES :
+=============
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l  oracle "find /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/*_lms*.trc   -type f |xargs grep -i 'op zsnd failed with remote invalid request error'|wc  -l"
+
+Bugs  to refer - 
+Bug 34938613 - POD:EEDM:RCA - ATK IMPACT -EEDM
+Bug 34621507 - EEHO : KCLCCCHECK: SEND ERROR 1 - REPEATED ERRORS - IMPACT ASSESSMENT ON RECENT OUTAGES 
+
+
+select * from gv$sysstat where NAME like '%gc cr blocks built%' ; — Asim 
+ 
+   INST_ID STATISTIC# NAME                                                                  CLASS      VALUE    STAT_ID     CON_ID
+---------- ---------- ---------------------------------------------------------------- ---------- ---------- ---------- ----------
+         2        410 gc cr blocks built                                                       40          0 2529642460          4
+
+
+kclcccheck CHECK :
+================
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/us2gl1ec/us2gl1ec*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'kclcccheck: send error' -A1"
+
+grep -i 'send error' *.trc|wc -l
+
+
+Check the error message for Log checkpoint incomplete - https://proddev-saas.slack.com/archives/C066FV5LX35/p1700463947021249
+
+  col MESSAGE_TEXT for a100 
+  set lines 500 pages 200 
+  col ORIGINATING_TIMESTAMP for a60 
+  select * from 
+  (
+  select INST_ID,message_text, ORIGINATING_TIMESTAMP
+  from   x$dbgalertext
+  where  (lower(message_text) like '%completed%checkpoint%' or lower(message_text) like '%begin%checkpoint%')
+    and lower(message_text) like ‘&scn’
+  order by ORIGINATING_TIMESTAMP desc)
+  where rownum<=100;
+
+
+===========================
+
+Ref Bug 36000556 / Bug 36032087 (SE Bug) 
+
+
+oracle@eiaa1a017-uzuos11(iadxd11):/fss/cloudops_tech_stage/BUG_TRIAGE/36000556/36000556/DB/iadxd/eiaa1a017-uzuos12# /usr/local/bin/dcli -g /tmp/nodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/iadxd/iadxd*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'transport retry counter exceeded' -A1"
+
+
+oracle@eiaa1a017-uzuos11():/u02/app/oracle/diag/rdbms/iadxd/iadxd11/trace# /usr/local/bin/dcli -g /tmp/nodes.txt -l oracle "find  /u02/app/oracle/diag/rdbms/iadxd/iadxd*/trace/*_lms*.trc  -type f -mtime -5 |xargs grep -i 'remote invalid request error' -A1"
+
+Output - 
+
+eiaa1a017-uzuos12: /u02/app/oracle/diag/rdbms/iadxd/iadxd12/trace/iadxd12_lms1_221606_221626.trc:IPCLW:[0.3259]{E}[WAIT]:RC: [1699591467439429]op zsnd failed with remote invalid request error wrid 96.223638 verr 138 qpn 22099 Pend 1 cnh 0x7f4a1c7558c0 msz: 8392 time 8 milisec
+eiaa1a017-uzuos12: /u02/app/oracle/diag/rdbms/iadxd/iadxd12/trace/iadxd12_lms1_221606_221626.trc-IPCLW:[0.3260]{E}[WAIT]:RC: [1699591467439429]op zsnd from PID{XRC://100.107.0.68:35597 [ZCPY ASYNC SEND] [LEND SEND] ts:2574637294 xd1:0x00000223 xd2:0x08e3} to PID{XRC://100.107.0.66:65354 [ZCPY] [LEND !CREPLY FLCTRL] ts:3302906323 xd1:0x00035916 xd2:0x099b} seqno 951465666 srq 219414 cbuf 0x400017aec220 cnh 0x7f4a1c7558c0 msz 8392
+eiaa1a017-uzuos12: --
+
+
+SE (Sangeeth Josh) suggested -  https://proddev-saas.slack.com/archives/C066FV5LX35/p1700474741291089 
+
+Sangeeth Jose
+  3:35 PM
+If this is the same bug, we should see this trace something like "IPCLW:[0.2905]{E}[WAIT]:RC: [1692740945723994]op zsnd failed with transport retry counter exceeded wrid 137.3909178 verr 129 qpn 802976 Pend 223 cnh 0x7f901a9dfc38 msz: 8392 time 12858 milisec" in the LMS trace file (edited) 
+3:37
+This happening occasionally is fine. In the bug case,we will see this trace with a much higher frequency(like 10+ per minute)
+
+
+
+
+
+HANG MANAGER :
+==============
+
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l oracle "egrep -i 'Reason.*hang.*manager' /u02/app/oracle/diag/rdbms/us2dz2v/us2dz2v*/trace/alert_us2dz2v*.log -B2|egrep '2022-10-19|2022-10-20|2022-10-21|2022-10-22|2022-10-23|2022-10-24' -B2"
+
+
+
+Exawatcher check :
+==============
+
+egrep 'lms.*us2dz2v' 2022_10_13_15_49_57_TopPidExaWatcher_epxa3a027-tgygd1.pod2dbfrontend.prd01phx01lcm01.oraclevcn.com.dat | awk '{print $3}'|sort|uniq -c
+
+
+
+
+TO CHECK LISTENER LOGS AND VIPS CONNECTION ERROR - 
+===========================================
+
+Ref Bug 36025039 - POD:ELIQ:IO ERROR: THE NETWORK ADAPTER COULD NOT ESTABLISH THE CONNECTION
+
+egrep -i '19-NOV-2023 04:09.*eliq_f_' */listener* |grep  '0$' -> check connection 
+
+Example : 
+[oracle@efra3a015-kktzx11 36136946]$ egrep -i '24-DEC-2023 00:*.*ekak_f_' ./efra3a015-kktzx1/listener_scan1_17.log  |grep '0$'
+
+egrep -i '19-NOV-2023 04:09.*eliq_f_' */listener* |grep  -v '0$'|wc -l ->  if any connection drop is there 
+
+egrep -i '18-NOV-2023 08:36.*hdmm_f_' */listener* |grep '0$'|wc -l   -> Connection established 
+
+
+Extract certain lines from a file and redirect to another file using sed - 
+sed -n "780910,823600p" ./eiaa25-zcpsv3/listener_scan1.log > /tmp/check_listener.out
+
+egrep -i "04-OCT-2024 14:55|04-OCT-2024 15:30" ./eiaa25-zcpsv3/listener_scan1.log |grep hz63u_f| grep establish| wc -l
+
+
+
+
+Connection check for OID - Bug 36955355 - EFRN - IDM RESILENCY ISSUE . (SPIN OFF BUG 36950864) 
+
+egrep -i "14-AUG-2024 09:" listener.log |grep us6bb1cw10 | grep establish | awk -F'PROGRAM=|HOST=' '{print $2 $3}'| cut -c 1-35|sort|uniq -c | grep oid
+
+
+list of all the DB-VIPs that pods attempted to connect and failed with  java.net.UnknownHostException - 
+==========================================
+
+Ref Bug 36025039 - POD:ELIQ:IO ERROR: THE NETWORK ADAPTER COULD NOT ESTABLISH THE CONNECTION
+
+egrep -i 'UnknownHostException' *.log |awk -F"HostException:" '{print $2}'|awk '{print $1}'|sort |uniq -c |sort -n -k1,1
+
+
+CRS / DB services troubleshooting 
+===========================
+
+
+From alert log search any strings - 
+$ find . -name "alert*" | xargs grep -B3 -A3 "archival error, archiver continuing"
+
+crsd file - 
+
+./efra38-v5kcq3/crsd.trc
+
+2024-01-24 06:15:38.325 :UiServer:1646200576: [     INFO] {3:58064:12540} Container [ Name: UI_STOP
+        API_HDR_VER:
+        TextMessage[3]
+        CLIENT:
+
+
+$ grep  -B10 "06:15:38.351" *crsd*trc
+
+crsd_oraagent_oracle.trc-2024-01-24 06:15:36.485 : USRTHRD:440342272: [     INFO] {3:58064:2304} InstConnection::connectInt 999 this:0x7fd6ccf09680 exit }
+crsd_oraagent_oracle.trc:2024-01-24 06:15:38.351 :    AGFW:463456000: [     INFO] {3:58064:12540} Agent received the message: RESOURCE_STOP[ora.em5ac1jc.ejtf_em5_gsi_f_fb.svc 1 1] ID 4099:49720915
+crsd_oraagent_oracle.trc:2024-01-24 06:15:38.351 :    AGFW:463456000: [     INFO] {3:58064:12540} Preparing STOP command for: ora.em5ac1jc.ejtf_em5_gsi_f_fb.svc 1 1
+crsd_oraagent_oracle.trc:2024-01-24 06:15:38.351 :    AGFW:463456000: [     INFO] {3:58064:12540} ora.em5ac1jc.ejtf_em5_gsi_f_fb.svc 1 1 state changed from: ONLINE to: STOPPING
+
+$ grep "STOPPING to: OFFLINE" *crsd*.trc | grep -i "2024-01-24"
+
+$ grep "OFFLINE to: STARTING" *crsd*trc | grep "2024-08-09”
+
+$ grep "OFFLINE to: STARTING" *crsd*trc | egrep "_fs|_fb|_fd|_fsb" | grep "2024-01-24"
+
+
+grep "OFFLINE to: STARTING" *crsd*trc | grep "2025-04-22"| grep ACFS
+ 
+grep "STOPPING to: OFFLINE" *crsd*.trc | grep -i "2025-04-22" | grep ACFS
+
+
+
+SOS Report generation 
+=================
+
+sosreport --batch --all-logs -k sar.all_sar=on
+
+
+
+FIPS MODE ENABLE/DISABLE:-  (from OPC user)
+[opc@eiaa2a044-zmdpf12 ~]$ CRS_HOME=$(grep crs_home /etc/oracle/olr.loc|cut -d '=' -f2|tr -d [[:space:]]) ; exahosts=$($CRS_HOME/bin/olsnodes | xargs echo | sed -e 's/ /,/g');/usr/local/bin/dcli -l opc -c $exahosts "sudo /opt/oracle.cellos/host_access_control fips-mode --status"
+
+
+grep  'Error.*encountered while recovering transaction' alert* 
+
+
