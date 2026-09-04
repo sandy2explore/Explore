@@ -1,0 +1,182 @@
+OCILA
+======
+
+https://console.us-ashburn-1.oraclecloud.com/?tenant=bmc_operator_access&provider=ocna-saml&override_tenant=ocid1.tenancy.oc1..aaaaaaaaumlaapnkskcx7sesnix4m7mcgadi5wfn3bz6myckhukpycg4545q 
+
+All regions covered by following 4 regions - 
+
+PHX (Phoenix)/ FRA (Frankfort)/IAD (Ashburn)/SYD (Sydney)
+
+
+Wiki for LOG Source Mapping - https://confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=3115405589 
+
+SAMPLE OCI LOG ANALYTICS QUERY - https://confluence.oraclecorp.com/confluence/display/SCMCommonArch/Sample+OCI+Log+Analytics+queries#SampleOCILogAnalyticsqueries-TopslowUISQLs 
+
+
+OCILA SAMPLE QUERIES - BALA 
+https://confluence.oraclecorp.com/confluence/display/FSREDB/OCI+LA+Sample+Queries
+
+User HandBook - https://confluence.oraclecorp.com/confluence/display/OBSERV/Logging+Analytics+User+Handbook 
+
+
+
+IO socket error from MT -
+ 
+Log Set' = EUXW and 'IO Error: Socket connect timed out' and 'Log Source' in (saas.idm_wls_oam_out, saas.idm_oam_diagnostic, saas.idm_wls_oam, saas.idm_oid_dir_srv, saas.idm_oid_monitor, saas.idm_adminserver_log, saas.idm_oid_control, saas.idm_oid_dir_ctl, saas.idm_adminserver_out, saas.idm_oid_alert) | timestats count by 'Log Set'
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-01000' | link 'Log Set'     <<<<——
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-12514' | link 'Log Set'
+
+'Log Set' like '%' and 'Log Source' = saas.db_trace and ‘ORA-04021 ERROR: KGL Lock timeout’ |  link 'Log Set'
+
+
+
+'Log Set’ in (EWMY, EXNK,HCKD,HCVK) and ‘ORA-01000’ | link 'Log Set'
+
+* | searchlookup table = pod_lookup | fields -*, pod, customer, pod_size, fa_release | where fa_release = 'REL13.2504'
+'Log Set' like '%' and 'ORA-1688' | stats count by dom_env            <<<<<<<<<<<<
+
+'Log Set' like '%' and 'ORA-12850’ | stats count by dom_env 
+
+'Log Set' like '%' and 'ORA-1688’ | link 'Log Set'
+'Log Set' like '%' and 'ORA-16191’ | link 'Log Set'
+
+'Log Set' like '%' and ‘ORA-04022’ | link 'Log Set'
+
+ 
+ORA-31934 
+'Log Set' like '%' and 'ORA-07445’ and ‘LXPCMPSTR’ | link 'Log Set'
+
+'Log Set' like ejip and 'No resources currently available in pool' | timestats count as logrecords by 'Log Source'
+
+‘Log Set' = HDBZ and 'Log Source' = saas.db_alert and 'Error ID' = 'ora-01555 | link 'Log Set'
+'Log Source' = saas.db_alert and 'Error ID' = 'ORA-04022' | link 'Log Set'
+'Log Set' like '%' and 'ORA-07445' and 'evapls' | link 'Log Set'
+
+'Log Set' like '%' and 'ORA-00600’ and 'kjfcrfg' | link 'Log Set'
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-00625' and 'kdbBlkCheckError' | link 'Log Set'
+'Log Set' like '%' and 'Log Source' = saas.db_alert and ('Error ID' = 'ORA-00625' or 'Error ID' = 'ORA-00600') and 'kdbBlkCheckError' | link 'Log Set'
+'Log Set' like '%' and 'Log Source' = saas.db_alert and ('Error ID' = 'ORA-00625' or 'Error ID' = 'ORA-00600') and 'kdbBlkCheckError' | timestats count as logrecords by 'Log Source'
+
+ 
+ 
+ 'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-04031' and 'large pool' | link 'Log Set'
+ 
+ 'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-07445' and 'qesxlsLookup1_OFF_NUMBIN_BIT_F' | link 'Log Set'
+ 
+  'Log Set' like 'ETQD' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-04031' and 'large pool' 
+  
+ 'Log Set' like '%' and 'Log Source' = saas.db_trace and '17114' | link 'Log Set'
+
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-29771'
+
+'Log Set' like '%' and 'Log Source' = saas.db_trace and  ‘kclcccheck: send error 1’
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-12012' | stats count by 'Log Set' *****
+
+6816
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = ‘ORA-00600’ and ‘6816’ | link 'Log Set'
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = ‘ORA-00600’ and ‘qctfrc : bfc’ | link 'Log Set'
+
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = ‘ORA-07445’ and ‘EVAPLS’ | link 'Log Set'
+
+'Log Set' like '%' and 'Log Source' = saas.db_incident_trace and 'Error ID' = 'ORA-00600' and ‘KQLMLKTYPE:NOT-KQLM-ID’ | stats count by 'Log Set'
+
+KQLMLKTYPE:NOT-KQLM-ID
+
+
+'Log Group' in (EMDG) and 'ORA-04031' | eval Date = formatDate(Time, 'YYYY-MMM-dd:HH') | link span = 1hour Date| sort -Count
+
+Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'RFS: Possible network disconnect with primary database'  | link 'Log Set'
+
+'Log Set' like '%' and 'ORA-00600' and 'KJDMLRM3' or 'KJCVG05' and 'Log Source' = saas.db_alert | link 'Log Set'
+
+
+'Log Source' = saas.db_incident_trace 
+
+
+
+SQL Related - 
+
+'Log Source' = saas.dbperf_awr_ash and 'SQL Plan Hash Value' != 0 and 'SQL Statement ID' = 1c6yt6kgyrbxp | rename 'Log Set' as POD | rename 'SQL Statement ID' as SQL | eval fTime = formatDate(Time) | eval totalET = 'Delta Time' / 1000 | eval totalCPU = 'TM Delta CPU Time' / 1000 | link 'SQL Plan Hash Value', POD, SQL | stats avg(totalET) as Avg_ET_Sec, avg(totalCPU) as Avg_CPU_Sec | fields -* | fields 'End Time', POD, SQL, 'SQL Plan Hash Value', Avg_ET_Sec, Avg_CPU_Sec, 'Start Time'
+
+
+To check the plan hash value with elapsed time - 
+
+'Log Source' = saas.dbperf_awr_ash and 'SQL Plan Hash Value' != 0 and 'SQL Statement ID' = '7n8w0sjzjnpby' | rename 'Log Set' as POD | rename 'SQL Statement ID' as SQL | eval fTime = formatDate(Time) | eval totalET = 'Delta Time' / 1000 | eval totalCPU = 'TM Delta CPU Time' / 1000 | link 'SQL Plan Hash Value', POD, SQL | stats avg(totalET) as Avg_ET_Sec, avg(totalCPU) as Avg_CPU_Sec | fields -* | fields 'End Time', POD, SQL, 'SQL Plan Hash Value', Avg_ET_Sec, Avg_CPU_Sec, 'Start Time'
+
+For Specific POD:
+
+'Log Set' like ‘EJFB’ and 'Log Source' = saas.dbperf_awr_ash and 'SQL Plan Hash Value' != 0 and 'SQL Statement ID' = '6ruuxdp39j45d' | rename 'Log Set' as POD | rename 'SQL Statement ID' as SQL | eval fTime = formatDate(Time) | eval totalET = 'Delta Time' / 1000 | eval totalCPU = 'TM Delta CPU Time' / 1000 | link 'SQL Plan Hash Value', POD, SQL | stats avg(totalET) as Avg_ET_Sec, avg(totalCPU) as Avg_CPU_Sec | fields -* | fields 'End Time', POD, SQL, 'SQL Plan Hash Value', Avg_ET_Sec, Avg_CPU_Sec, 'Start Time'
+
+41yx9jtmgdbq0
+
+SIMPLE QUERY - 
+
+‘Log Set’=EEHO and ‘Log Source’=saas.dbperf_awr_ash| timestats count as logrecords by ‘SQL Statement ID’ 
+
+
+Srini pinged for ELUQ - 
+'Log Set' = ELUQ and 'Log Source' = saas.dbperf_top_ui_sqls and Module like '%payroll%’ | timestats max('ELAPSED TIME') as MaxelapsedTime by Module
+
+
+
+
+Stuck thread Query - https://confluence.oraclecorp.com/confluence/display/SSME/OCILoging+Analytics+Queries+for+Reference 
+
+'Log Set' = EHPV  and Label = 'Stuck Thread' | timestats count as logrecords by 'Log Source'
+
+
+
+STUCK THREAD QUERY FOR OCILA - 
+
+'Log Set' = 'ERMG' and service_type = weblogic_j2eeserver and 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) | timestats count by 'Log Set' | rename 'Log Set' as POD_Name | where POD_Name = 'eelf-dev5' | addfields [ 'Log Source' in (saas.fa_wls_out) and Entity like '%' and 'Terminating due to java.lang.OutOfMemoryError' and Label in ('Out of Memory Restarts', 'Memory Error', 'Out of Memory') | stats count as OOM_ISSUE ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and 'BEA-000337' and Label = 'Stuck Thread' | stats count as STUCK_THREADS_COUNTS ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and ('BEA-000385' and 'Server health failed' or 'Server failed as the number of stuck threads has exceeded the max limit') | stats count as STUCKTHREAD_LIMIT_EXECEEDED ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and ('BEA-000365' and 'Server state changed to FAILED' or 'BEA-000383' and 'A critical service failed') | stats count as WLS_SERVERS_FAILED ], [ 'Log Source' in (saas.fa_wls_out) and ('Could not create pool connection for datasource' or 'ResourceLimitException: No resources currently available in pool' or 'Listener refused the connection' or 'IO Error: The Network Adapter could not establish the connection' or 'ORA-12520' and 'TNS:listener could not find available handler for requested type of server') | stats count as DATASOURCE_ERROR ], [ 'Log Source' in (saas.fa_wls_out, saas.fa_wls_diag) and 'The cluster has been halted and is not restartable' | stats count as COHERENCE_CLUSTER_ERROR ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and ('BEA-149231' and 'Unable to set the activation state to true for the application' or 'Failed to deploy/initialize the application as given archive is missing' and 'BEA-101017') | stats count as DEPLOYMENT_FAIL ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and ('BEA-000573' and 'RequestTimeout for message') | stats count as WLS_REPLICATION_TIMEOUT ], [ 'Log Source' in (saas.fa_wls_server, saas.fa_wls_out) and ('BEA-090078' and 'security realm myrealm has had 5 invalid login attempts') | stats count as USERS_LOCKED_ERROR ], [ 'Log Source' = saas.db_alert and 'Entity Type' = 'Oracle Database Instance' and 'unable to extend' and 'Error ID' in ('ora-1653', 'ora-1683', 'ora-1691', 'ora-1693') | stats count as DB_TABLE_SPACE_ISSUE ]
+
+
+
+Hard Parsing : 
+
+'kkesFindPlsqlStats' and 'Log Set' like '%' and 'Log Source' = saas.db_trace  | link 'Log Set'
+
+'kkesFindPlsqlStats' and 'Log Set' like '%' and 'Log Source' = saas.db_trace | link 'Log Set'
+
+
+
+
+https://confluence.oraclecorp.com/confluence/display/FusionSRE/Logging+JIRA+Template - 
+'Log Set' not like '%-%' and 'Log Source' = saas.fa_wls_out and 'oracle.wsm.security.SecurityException' and 'FAWServiceJWTIssuer' 
+| stats count by 'Log Set' 
+| where Count > 100
+
+
+
+ADB-S QUERY FOR OCILA - 
+
+'Log Set' in (IABXZV, IBFEQY, ICDQJB, ICDRJB, 'IABXZV-TEST', 'IBFEQY-TEST', 'ICDQJB-TEST', 'ICDRJB-TEST') and 'Log Source' = saas.fa_wls_out and 'Problem Priority' != null | fields -*, pod_release, 'Log Set', Region | stats count by Module, 'Log Set'
+
+
+
+how to get log for adw/oltp. Sample query:
+
+'Log Source' = saas.adbs_db_alert and 'ADBS Type' = oltp | stats count as logrecords by 'Log Set'
+
+'Log Source' like 'saas.adbs_*' and 'Log Source' = saas.adbs_dbperf_dbrm_actions and 'Log Set' = 'cpdbxkmqy-test' | timestats count as logrecords by 'Log Set'
+
+
+ADB-S Pipelines 
+
+https://medium.com/oracledevs/data-pipelines-help-you-move-your-data-into-autonomous-database-8ecc542066dc 
+
+Jira (Sarika) - https://jira-sd.mc1.oracleiaas.com/browse/OBSERV-14066 
+
+
+
+Some more examples 
+
+'Log Set' like '%' and 'Log Source' = saas.db_alert and 'Error ID' = 'ORA-00600' and '4097' | linkdetails collection = '6933_3cac727e505975779c8981ab78f7cb06' id in (1) | timestats count
+
