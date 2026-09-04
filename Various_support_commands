@@ -481,3 +481,296 @@ FIPS MODE ENABLE/DISABLE:-  (from OPC user)
 grep  'Error.*encountered while recovering transaction' alert* 
 
 
+
+
+QUEUE+++++
+
+Queue Query - 
+
+https://confluence.oraclecorp.com/confluence/display/SE/Common+UMS+Queries
+
+https://confluence.oraclecorp.com/confluence/display/SE/Optimize+the+dequeue+calls+per+queue+dynamically+at+runtime 
+
+
+
+
+
+set lines 200
+col QUEUE for a30
+select QUEUE,MSG_STATE,COUNT(1) FROM SYS.AQ$SYS$SERVICE_METRICS_TAB GROUP BY QUEUE,MSG_STATE order by 3 desc;
+
+set lines 200
+col QUEUE_NAME for a35
+select QUEUE_NAME,
+         sum(ENQUEUED_MSGS) TOTAL_ENQ_MULTI_SUB,
+         sum(DEQUEUED_MSGS) TOTAL_DEQ_MULTI_SUB,
+         sum(ENQUEUED_MSGS)-sum(DEQUEUED_MSGS) TOTAL_BACKLOG_MULTI_SUB
+    from gv$persistent_subscribers
+   group by QUEUE_NAME
+   having sum(ENQUEUED_MSGS)-sum(DEQUEUED_MSGS)>0
+   order by QUEUE_NAME;
+
+
+SQL> sho user 
+USER is "FA_FUSION_SOAINFRA"
+
+select /*bug35851068*/ count(1), dbms_lob.substr(msg,157,1)
+from FA_FUSION_SOAINFRA.EDN_LOG_MESSAGES_SEC
+where log_date >= sysdate - 1/24
+group by dbms_lob.substr(msg,157,1)
+order by 1 desc;
+
+
+Current - 
+—————
+
+select queue_name ,totalReceived,totalProcessed, time,totalReceived-totalProcessed diff from
+(
+select queue_schema, queue_name,to_char(sysdate,'DD-MM-YYYY HH24') time,SUM(NVL(ENQUEUED_MSGS, 0)) totalReceived , SUM(NVL(DEQUEUED_MSGS, 0))
+totalProcessed
+FROM GV$PERSISTENT_QUEUES
+where upper(queue_name) like '%SDPM%'
+group by queue_schema, queue_name,to_char(sysdate,'DD-MM-YYYY HH24')
+);
+
+
+SELECT QUEUE_NAME, SUBSCRIBER_NAME ,SUM(ENQUEUED_MSGS - DEQUEUED_MSGS) backlog  
+from GV$PERSISTENT_SUBSCRIBERS st 
+WHERE   queue_schema like '%FUSION%' 
+  and  QUEUE_NAME like '%EDN%AQJMS%' 
+GROUP BY QUEUE_NAME, SUBSCRIBER_NAME
+having SUM(ENQUEUED_MSGS - DEQUEUED_MSGS) > 1000
+order by backlog desc;
+
+
+
+Historic - 
+————
+
+select sum(ENQUEUED_MSGS),sum(DEQUEUED_MSGS),to_char(sn.BEGIN_INTERVAL_TIME,'yy-mm-dd hh24') 
+  from dba_hist_PERSISTENT_QUEUES ss,dba_hist_snapshot sn 
+where QUEUE_NAME='ORASDPMENGINESNDT1' and QUEUE_SCHEMA='FUSION_ORASDPM'
+   and ss.snap_id=sn.snap_id
+   and ss.INSTANCE_NUMBER=sn.INSTANCE_NUMBER
+   and sn.DBID=ss.DBID
+   and sn.DBID=(select dbid from v$database)
+   and sn.BEGIN_INTERVAL_TIME >= sysdate - 1
+group by to_char(sn.BEGIN_INTERVAL_TIME,'yy-mm-dd hh24') order by 3;
+
+
+
+select. cellname cv_cellname  CAST(extract(xmltype(confval), '/cli-output/cell/releaseVersion/text()') AS VARCHAR2(20))  cv_cellVersion,  CAST(extract(xmltype(confval), '/cli-output/cell/flashCacheMode/text()') AS VARCHAR2(20))  cv_flashcachemode,    CAST(extract(xmltype(confval), '/cli-output/cell/cpuCount/text()')       AS VARCHAR2(10))  cpu_count,  CAST(extract(xmltype(confval), '/cli-output/cell/upTime/text()')         AS VARCHAR2(20))  uptime,    CAST(extract(xmltype(confval), '/cli-output/cell/kernelVersion/text()')  AS VARCHAR2(30))  kernel_version,  CAST(extract(xmltype(confval), '/cli-output/cell/makeModel/text()')      AS VARCHAR2(50))  make_model from. v$cell_config where. conftype = 'CELL' order by cv_cellname;
+
+
+select cell_path from v$cell;
+
+
+SOP for Advanced Queue (AQ) triaging in FA -
+ https://confluence.oraclecorp.com/confluence/display/PSR/SOP+for+Advanced+Queue+%28AQ%29+triaging+in+FA#SOPforAdvancedQueue(AQ)triaginginFA-ActiveUsageofAQinFusion
+
+
+UMS AQ Analysis - 
+ https://confluence.oraclecorp.com/confluence/display/OALCM/UMS+AQ+Analysis
+
+UMS Tips - 
+https://confluence.oraclecorp.com/confluence/display/~simon.cheng@oracle.com/UMS+tips
+
+
+
+
+Purging queue table - 
+================
+
+DECLARE
+po dbms_aqadm.aq$_purge_options_t;
+BEGIN
+   po.block := TRUE;
+   DBMS_AQADM.PURGE_QUEUE_TABLE(
+     queue_table     => 'FUSION_ORASDPM.ORASDPMDRIVERDEFSNDT1',
+     purge_condition => NULL,
+     purge_options   => po);
+END;
+/
+
+Ref - https://forums.oracle.com/ords/apexds/post/truncate-aq-table-9199
+
+
+ADRCI Commands - (https://juanmercadoit.com/2020/04/08/how-to-identified-issues-with-adrci/)
+
+adrci> show problem
+adrci> show incident
+adrci> show incident -mode detail -p "incident_id=134288"
+
+adrci exec="set home <OH>; SHOW INCIDENT -orderby CREATE_TIME  dsc -last 15;" - given by Sudhir 
+
+
+RATS test - sh /opt/ratsclient/synth-client/ratsclient.sh
+
+
+
+ORA-00020 - PROCESS UTILIZATION  - https://smarttechways.com/tag/get-history-of-resource-utilization-with-time/ 
+
+col snapshottime for a20
+col resource_name for a20
+select s.SNAP_ID,b.INSTANCE_NUMBER,TO_CHAR(s.END_INTERVAL_TIME, 'DD-MON HH24:MI:SS') Snapshottime,resource_name,current_utilization,max_utilization,limit_value from DBA_HIST_SNAPSHOT s, DBA_HIST_RESOURCE_LIMIT b
+where s.snap_id = b.snap_id and resource_name like '%process%'  and current_utilization > 9000 order by s.END_INTERVAL_TIME ;
+
+
+LINKEDIN RESOURCES 
+
+5 GitHub Repos Every DevOps Engineer Should Know for AI Workloads
+
+https://www.linkedin.com/posts/vsadhwani_5-github-repos-every-devops-engineer-should-activity-7458897321465126912-EQbl?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+AI CERTIFICATIONS NEED TO BE DONE- 
+
+OCI AI FOUNDATION / OCI GENERATIVE AI
+AWS AI PRACTITIONER
+NVIDIA AI 
+
+
+DATAPATCHING ++++++++++++++
+
+Useful SQLs
+
+Ref - https://confluence.oraclecorp.com/confluence/display/SAASPROV/DATABASE-CONVERSION-STEPS
+
+Find PDB VIOLATION
+
+set linesize 350
+col time format a30
+col action format a60
+col type format a30
+col cause format a30
+select time,name,cause,status,type from pdb_plug_in_violations where status='PENDING' and type='ERROR' and name not in 'PDB$SEED';
+select time,type,message from PDB_PLUG_IN_VIOLATIONS where STATUS <>'RESOLVED' ;
+
+
+Find DBPATCH status
+
+set linesize 180
+set pagesize 350
+col ACTION_TIME format a30
+col DESCRIPTION format a75
+select PATCH_ID,ACTION,ACTION_TIME,STATUS,DESCRIPTION from registry$sqlpatch order by ACTION_TIME  ;
+
+Refined - 
+
+set linesize 180
+set pagesize 350
+col ACTION_TIME format a30
+col DESCRIPTION format a75
+select PATCH_ID,ACTION,ACTION_TIME,STATUS,DESCRIPTION from registry$sqlpatch where description like '%19.18%' and status ='SUCCESS';
+
+
+Check DB Component validity
+
+set linesize 250
+col COMP_ID format a30
+col COMP_NAME format a50
+col VERSION format a30
+col status format a20
+select COMP_ID,COMP_NAME,VERSION,status from dba_registry
+
+
+Validate PDB Status 
+
+set lines 500 pages 100
+select inst_id,con_id,name,open_mode , restricted  from gv$pdbs order by inst_id,con_id;
+
+
+Validate PDB Saved state
+
+COLUMN con_name FORMAT A20
+COLUMN instance_name FORMAT A20
+select CON_NAME,INSTANCE_NAME,STATE from dba_pdb_saved_states;
+
+
+Saved PDB state
+
+ALTER PLUGGABLE DATABASE <PDB_NAME> SAVE STATE instances=all;
+
+
+Verify TDE wallet status
+
+set linesize 300
+select INST_ID,WRL_TYPE,STATUS,WALLET_TYPE from gv$encryption_wallet;
+
+
+To check invalid objects
+
+set lines 152 pages 200
+col OBJECT_NAME for a30
+col owner for a30
+alter session set nls_date_format='mm/dd/yyyy hh24:mi:ss';
+select owner, status,count(*) from dba_objects where STATUS='INVALID' group by owner,status;
+select OWNER,OBJECT_NAME,OBJECT_TYPE, CREATED from dba_objects where STATUS='INVALID';
+
+
+
+
+Analyse Known Issue - 
+——————————
+
+Spatial / SDO - INVALID
+
+-- Run utlrp and check status
+@?/rdbms/admin/utlrp.sql
+set lines 200 pages 200
+col comp_name for a40
+select comp_name,version,status from dba_registry ;
+
+ select comp_name,version,status from dba_registry  where COMP_NAME like '%XML%'; — XML 
+
+-- If still issue, check JAVA status
+-- Check JAVA status
+select * from JAVA_DEV_STATUS;
+exec sys.dbms_java_dev.enable;
+select * from JAVA_DEV_STATUS;
+
+-- Run utlrp
+@?/rdbms/admin/utlrp.sql
+
+set lines 200 pages 200
+col comp_name for a40
+select comp_name,version,status from dba_registry ;
+
+-- Disable back to original status
+exec sys.dbms_java_dev.disable;
+select * from JAVA_DEV_STATUS;
+
+CATPROC - INVALID
+
+-- Run utlrp and check status
+@?/rdbms/admin/utlrp.sql
+set lines 200 pages 200
+col comp_name for a40
+select comp_name,version,status from dba_registry ;
+
+-- If still issue, check JAVA status
+-- Check JAVA status
+select * from JAVA_DEV_STATUS;
+exec sys.dbms_java_dev.enable;
+select * from JAVA_DEV_STATUS;
+
+-- Run utlrp (CDB / PDB Level)
+@?/rdbms/admin/dbmscr.sql
+@?/rdbms/admin/utlrp.sql
+
+set lines 200 pages 200
+col comp_name for a40
+select comp_name,version,status from dba_registry ;
+
+-- Disable back to original status
+exec sys.dbms_java_dev.disable;
+select * from JAVA_DEV_STATUS;
+
+
+
+
+
+
+
+
