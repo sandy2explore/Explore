@@ -1,0 +1,247 @@
+
+
+Tuning queries wiki - 
+https://confluence.oraclecorp.com/confluence/display/TECHTEAMINT/SOP+for+Sql+level+issues - Siva
+
+https://confluence.oraclecorp.com/confluence/display/FusionSRE/PSI+bug+raising+guidelines -  Sridhar / Dibya
+
+
+
+
+Find out the top most big directories - 
+du -sch *|grep G | tail
+
+
+Wiki 
+
+https://confluence.oraclecorp.com/confluence/display/DevOpsATG/My+SQL+Tuning+and+Performance+Knowledge#MySQLTuningandPerformanceKnowledge-waitsfor'enq:TX-allocateITLentry'
+
+https://confluence.oraclecorp.com/confluence/display/OracleApplicationLabs/CDPAP+-+GC+Waits+Issue
+
+https://confluence.oraclecorp.com/confluence/display/DevOpsATG/DB+Work
+
+https://confluence.oraclecorp.com/confluence/display/EMS/DevOps+and+PSR+Useful+Diagnostic+SQL#DevOpsandPSRUsefulDiagnosticSQL-GetDetailedEXPLAINPlan — very important
+
+https://confluence.oraclecorp.com/confluence/display/PSR/Common+DB+Contentions - Venkata Ravi 
+
+
+
+Job details with start / end - 
+
+SELECT job_name,
+         status,
+         actual_start_date,
+         run_duration
+    FROM DBA_SCHEDULER_JOB_RUN_DETAILS where --actual_start_date between to_date('14-06-2021 01:30','dd-mm-yyyy hh24:mi') and to_date('14-06-2021 01:40','dd-mm-yyyy hh24:mi') and 
+	job_name like '%FND%'
+ORDER BY ACTUAL_START_DATE DESC;
+
+
+QUERY FROM DB ALERT LOGS -  https://confluence.oraclecorp.com/confluence/display/DBSE/Diagnostics+Via+V%24+views%3A+Working+notes
+========================
+
+col MESSAGE_TEXT for a100 
+set lines 500 pages 200 
+col ORIGINATING_TIMESTAMP for a60 
+select * from 
+(
+select INST_ID,message_text, ORIGINATING_TIMESTAMP
+from   x$dbgalertext
+where  message_text like '%ORA-1652%'
+order by ORIGINATING_TIMESTAMP desc)
+where rownum<=100;
+
+col MESSAGE_TEXT for a100 
+set lines 500 pages 200 
+col ORIGINATING_TIMESTAMP for a60 
+select * from 
+(
+select INST_ID,message_text, ORIGINATING_TIMESTAMP
+from   x$dbgalertext
+where  message_text like ‘%ORA-04031%’
+order by ORIGINATING_TIMESTAMP desc)
+where rownum<=10;
+
+
+Madhav - 
+
+col ERROR_CODE for a20
+SELECT
+    inst_id,REGEXP_SUBSTR(message_text, 'ORA-[0-9]+', 1, 1) AS ERROR_CODE,
+    COUNT(*) AS ERR_COUNT,
+    TO_CHAR(MIN(originating_timestamp), 'DD-MON-YYYY HH24:MI:SS') AS FIRST_SEEN_HR,
+    TO_CHAR(MAX(originating_timestamp), 'DD-MON-YYYY HH24:MI:SS') AS LAST_SEEN_HR
+FROM  X$DBGALERTEXT
+WHERE originating_timestamp > SYSTIMESTAMP - INTERVAL '30' DAY -- Filter for the last 30 days
+  AND REGEXP_LIKE(message_text, '(ORA-)', 'i') -- Filter for linesSQL>  containing 'ORA-' or 'error'
+GROUP BY inst_id,REGEXP_SUBSTR(message_text, 'ORA-[0-9]+', 1, 1)
+ORDER BY LAST_SEEN_HR DESC;
+
+
+QUERY FROM DIAG_INCIDENT-
+=======================
+
+Correct query - 
+
+col MIN(CREATE_TIME) for a40 
+col MAX(CREATE_TIME) for a40
+set lines 1000
+select * 
+From 
+(
+ select min(CREATE_TIME),max(create_time),error_facility,error_number,error_arg2,error_arg5,count(1) 
+   from v$diag_incident
+ where error_number like '%4031%'
+ group by error_facility,error_number,error_arg2,error_arg5
+order by count(1) desc)
+where rownum<=10;
+
+Alternate query to group on error_arg5 -
+
+col MIN(CREATE_TIME) for a40 
+col MAX(CREATE_TIME) for a40
+set lines 1000
+
+SELECT *
+FROM TABLE(
+    gv$(CURSOR(
+select * 
+From 
+(
+ select min(CREATE_TIME),max(create_time),error_facility,error_number,error_arg2,error_arg5,count(1) 
+   from v$diag_incident
+ where error_number like ‘%4031%’ 
+   and error_arg2 like '%large pool%'
+ group by error_facility,error_number,error_arg2,error_arg5
+order by count(1) desc)
+)
+where rownum<=10;
+
+
+QUERY FROM DIAG_ALERT_EXT:
+==========================
+
+SELECT 
+    count(*)
+FROM 
+    v$diag_alert_ext
+WHERE
+    originating_timestamp >= TO_DATE('2026-01-01', 'YYYY-MM-DD')
+    AND (
+        REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\[\s*3020\s*\]')
+        OR MESSAGE_TEXT LIKE 'ORA-00752%'
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*kclchkblk_3\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*kclcfusion_17\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*kclchkblkdma_3\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*kclrecbst_19\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*kcl_check_block_1\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*ktubko_1\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00800\s*\[\s*PRIORITY\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*4193\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*4552\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*6006\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*13013\s*\]')
+        OR REGEXP_LIKE(MESSAGE_TEXT, 'ORA-00600\s*\[\s*25027\s*\]')
+        OR MESSAGE_TEXT LIKE 'ORA-01499%'
+        OR MESSAGE_TEXT LIKE 'ORA-08102%'
+        OR MESSAGE_TEXT LIKE 'ORA-08103%'
+    )
+ORDER BY originating_timestamp; 
+
+
+SELECT originating_timestamp, message_text 
+      from v$diag_alert_ext 
+WHERE originating_timestamp >= SYSTIMESTAMP - INTERVAL '1' DAY 
+      AND REGEXP_LIKE(message_text, '(ORA-|error)', 'i') 
+ ORDER BY originating_timestamp DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+Special Query to trace sid/serial for the ora error :
+=====================================
+
+WITH problem
+     AS (SELECT Count(*) cnt
+         FROM   v$diag_problem
+         WHERE  Upper(problem_key) LIKE '%4031%'
+                AND lastinc_time > SYSDATE - 1)
+SELECT /*+  ORDERED leading(problem)  */
+DISTINCT  
+         alert.process_id,
+         s.sid,
+         s.serial# ,
+		 alert.message_text
+FROM   problem,
+       v$diag_alert_ext alert,
+       gv$process p,
+       gv$session s
+WHERE  cnt != 0
+       AND Upper(alert.message_text) LIKE '%ORA-04031%'
+       AND alert.originating_timestamp > SYSDATE - 1
+       AND p.spid = alert.process_id
+       AND p.addr = s.paddr;
+
+
+
+
+To find out the Exact MLR -https://confluence.oraclecorp.com/confluence/display/TECHTEAM/DB+Patching+and+Pillar+Validation+for+DB+19.23.0+DBRU_MLR240425
+
+Correct - 
+SQL> with gap as (
+select replace(regexp_substr(DESCRIPTION ,'RUR [^ ]+'),'RUR ') str, replace(regexp_substr(DESCRIPTION ,'RU [^ ]+'),'RU ') str1, replace(regexp_substr(DESCRIPTION,'MLR[^]\]+'),'MLR') str2, replace(regexp_substr(DESCRIPTION ,'FA [^ ]+'),'FA ') FA from dba_registry_sqlpatch where ACTION_TIME in (select max(ACTION_TIME) from dba_registry_sqlpatch where STATUS='SUCCESS' and ACTION='APPLY' and (description like '%DATABASE%' or description like '%FA MLR RELEASE%')))
+select FA||'.0.'||nvl(str2,0) from gap;
+
+Revised Query ::::
+
+with gap as (
+  select replace(regexp_substr(DESCRIPTION ,'RUR [^ ]+'),'RUR ') str, replace(regexp_substr(DESCRIPTION ,'RU [^ ]+'),'RU ') str1, replace(regexp_substr(DESCRIPTION,'MLR[^]\]+'),'MLR') str2,
+  replace(regexp_substr(DESCRIPTION ,'FA [^ ]+'),'FA ') FA from dba_registry_sqlpatch where ACTION_TIME in (select max(ACTION_TIME) from dba_registry_sqlpatch where STATUS='SUCCESS'
+  and ACTION='APPLY' and (description like '%]TRACKING BUG FOR FA MLR RELEASE RDBMS%')))
+  select FA||'.0.'||nvl(str2,0) from gap;
+
+FA||'.0.'||NVL(STR2,0)
+---------------------- 
+19.23.0.0.240425
+
+Correct Query given by Muthu : -
+
+with gap as (
+select replace(regexp_substr(DESCRIPTION ,'RUR [^ ]+'),'RUR ') str, replace(regexp_substr(DESCRIPTION ,'RU [^ ]+'),'RU ') str1, replace(regexp_substr(DESCRIPTION,'MLR[^]\]+'),'MLR') str2, replace(regexp_substr(DESCRIPTION ,'FA [^ ]+'),'FA ') FA from dba_registry_sqlpatch where ACTION_TIME in (select max(ACTION_TIME) from dba_registry_sqlpatch where STATUS='SUCCESS' and ACTION='APPLY' and (description like '%DATABASE%' or description like '%FA MLR RELEASE%')))
+select FA||'.0.'||nvl(str2,0) from gap;
+
+
+Query two find the locked object while getting ORA-04021 error - 
+http://oracle-help.com/ora-errors/ora-04021-timeout-occurred-while-waiting-to-lock-object-sssss/
+
+
+select /*+ ordered */ w1.sid  waiting_session,
+         h1.sid  holding_session,
+         w.kgllktype lock_or_pin,
+         w.kgllkhdl address,
+         decode(h.kgllkmod,  0, 'None', 1, 'Null', 2, 'Share', 3, 'Exclusive',
+            'Unknown') mode_held,
+         decode(w.kgllkreq,  0, 'None', 1, 'Null', 2, 'Share', 3, 'Exclusive',
+          'Unknown') mode_requested
+   from dba_kgllock w, dba_kgllock h, gv$session w1, gv$session h1
+  where
+   (((h.kgllkmod != 0) and (h.kgllkmod != 1)
+      and ((h.kgllkreq = 0) or (h.kgllkreq = 1)))
+    and
+      (((w.kgllkmod = 0) or (w.kgllkmod= 1))
+      and ((w.kgllkreq != 0) and (w.kgllkreq != 1))))
+   and  w.kgllktype      =  h.kgllktype
+   and  w.kgllkhdl =  h.kgllkhdl
+   and  w.kgllkuse     =   w1.saddr
+   and  h.kgllkuse     =   h1.saddr;
+
+
