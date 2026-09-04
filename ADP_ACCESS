@@ -1,0 +1,387 @@
+rTeam Status Wiki- FAAS LANDING PAGE
+
+
+pkill -9 ssh-agent;pkill -9 ssh-pkcs11-helper - if not able to connect to normal OCI after connecting to ADP  
+
+Cart add - 
+ssh-add -s /usr/local/lib/opensc-pkcs11.so
+
+Cart remove - 
+ssh-add -e /usr/local/lib/opensc-pkcs11.so 
+
+yksa -> instead of pic_yubi 
+
+Yubikey pin : 5PSrw=nB (for pic_yubi)
+
+ADP production bastion/server access for MAC - https://confluence.oraclecorp.com/confluence/display/FSREDBINT/FAaaS+access+for+Mac ****
+
+ADP converted pod log location - /acfs01/cloudops_tech_stage/BUG_TRIAGE/35470969
+
+Devops portal (DOP) - https://devops.oci.oraclecorp.com/        *********
+
+
+https://confluence.oraclecorp.com/confluence/display/TECHTEAM/FAaaS+Landing+Page
+
+
+Entitlements 
+============
+FAaaS Landing Page https://confluence.oraclecorp.com/confluence/display/TECHTEAM/FAaaS+Landing+Page#FAaaSLandingPage-AdditionalInformation
+
+FAaaS Access Related		https://confluence.oraclecorp.com/confluence/display/SAASPROV/How+to+Access+FACP+VMs+and+ADP+Exadata
+
+FaaaS dope page		https://devops-next.oci.oraclecorp.com/fusion-apps
+
+FAaaS OIM entitlement  Related		https://confluence.oraclecorp.com/confluence/display/TECHTEAM/OIM+entitlements+required+to+access+FASaaS+pods+in+OPC+and+OCI
+
+
+
+Steps to configure 
+
+FAaaS access:
+=============
+ 
+https://objectstorage.us-phoenix-1.oraclecloud.com/p/jb-0TsgJoodpO5zdYH_eg2kV2WsZzM-PE3y2ruWuMA1as7ECYEG5VDo430mA0FwD/n/p1-saasfapreprod1/b/CRS_LOGS/o/FAaaS_setup.zip
+ 
+Step 1:
+=======
+Go to the $HOME Location create pic-tools.env
+ 
+https://bitbucket.oci.oraclecorp.com/projects/PIC/repos/pic-tools/browse/scripts/pic-tools.env
+ 
+ 
+Step 2:
+======
+configuring pic-yubi
+ 
+sivasankarjinde@sivasankarjinde-mac ~ % pic-yubi
+NOTE: autossh support dropped as it caused repeated popups when YubiKey removed.
+ 
+SSH agent and PKCS11 integration was broken with MacOS Security Update 10.12.4
+Adding hard link to PKCS11 library in white listed directory
+ 
+I'm now asking for your sudo password, not your YubiKey PIN
+Password:                                                     <<==== Mac login password
+2023-05-08 17:56:16.458 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.459 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.460 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.460 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.460 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.461 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+2023-05-08 17:56:16.461 system_profiler[70541:1601981] SPUSBDevice: IOCreatePlugInInterfaceForService failed 0xe00002be
+NOTE: Use YubiKey PIN when asked for passphrase. See https://confluence.oci.oraclecorp.com/display/PGI/Yubikey+Setup#YubikeySetup-InstallSoftwareandSetPIN
+ 
+Adding key to ssh-agent. This sometimes *FAILS THE FIRST TIME*, so try again if you get a "Could not add card" error.
+Enter passphrase for PKCS#11:                     <<========= Provide the YUBI KEY PIN
+Card added: /usr/local/lib/opensc-pkcs11-local.so
+sivasankarjinde@sivasankarjinde-mac ~ %
+ 
+ 
+Step 3:
+=======
+If faaas_ssh_configs already created, please rename to faaas_ssh_configs-<date>
+create dir faaas_ssh_configs
+ 
+mkdir -p  ~/.ssh/faaas_ssh_configs
+ 
+https://bitbucket.oci.oraclecorp.com/projects/FACONTROLPLANE/repos/faaas_ssh_configs/
+ 
+Step 4:
+======
+Download config file from following link and place it in $HOME/.ssh
+ 
+https://bitbucket.oci.oraclecorp.com/projects/ADP/repos/adp-ssh-config/browse/config
+ 
+#PKCS11Provider /Library/OpenSC/lib/opensc-pkcs11.so <<==== comment this line
+ServerAliveInterval 120
+ForwardAgent yes
+ForwardX11 no
+ForwardX11Trusted no
+Protocol 2
+UserKnownHostsFile /dev/null
+StrictHostKeyChecking no
+HostkeyAlgorithms +ssh-rsa
+#PubkeyAcceptedAlgorithms +ssh-rsa <<<=== comment this #
+PubkeyAcceptedKeyTypes +ssh-rsa    <<<=== add this line.
+RequestTTY yes
+User sivasan                        <<=== Add this line incase if guid is not same on xterm
+ 
+ 
+step 5:
+=======
+Take backup of .bash_profile
+ 
+Add the following lines:
+=====================
+/Users/sivasankarjinde/.ssh
+export FACP_SSH_HOME=/Users/sivasankarjinde/.ssh/faaas_ssh_configs
+source $FACP_SSH_HOME/aliases
+source $HOME/pic-tools.env
+# Setting PATH for Python 3.10
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.10/bin:${PATH}"
+export PATH
+ 
+Step 5:
+=======
+source .bash_profile
+ 
+ssh -o ProxyCommand="ssh -A -p 22 ztb-internal.bastion.us-phoenix-1.oci.oracleiaas.com -s proxy:ocid1.bastion.oc1.phx.amaaaaaajk2zrgyat5ppj2qm44zx6qrjey74xhafsiswgbtotfazibbv343a-%h:%p" -A -t 192.168.50.201
+ 
+ 
+ 
+Jump Host for DB Host's (PreProd PHX)
+===============================
+ssh -o ProxyCommand="ssh -A -p 22 ztb-internal.bastion.us-phoenix-1.oci.oracleiaas.com -s proxy:ocid1.bastion.oc1.phx.amaaaaaagkejmwqaiwp5exwtfpz7cmmwc45hpvfpsje4wusbm2qnftqj5xrq-%h:%p" -A -t 192.168.206.244
+ 
+ 
+Jump Host for DB Host's (PreProd HYD)
+=====================================
+ssh -o ProxyCommand="ssh -A -p 22 ztb-internal.bastion.ap-hyderabad-1.oci.oracleiaas.com -s proxy:ocid1.bastion.oc1.ap-hyderabad-1.amaaaaaagkejmwqai5fzlwysl3srx5dwzvmszkbvwhfdagwxmrypjgsha5ja-%h:%p" -A -t 192.168.206.252
+ 
+ 
+Validation:
+============
+ 
+ssh -o ProxyCommand="ssh -A -p 22 ztb-internal.bastion.us-phoenix-1.oci.oracleiaas.com -s proxy:ocid1.bastion.oc1.phx.amaaaaaagkejmwqaiwp5exwtfpz7cmmwc45hpvfpsje4wusbm2qnftqj5xrq-%h:%p" -A -t 192.168.206.244
+ 
+ssh 10.4.127.229
+sudo su - oracle
+
+
+
+
+
+———Bhaskar pinged ————
+
+
+Here are the console url's list for FAAASEM Console URLs (Production) - https://confluence.oraclecorp.com/confluence/display/FASUPPORT/List+of+Cloud+EM+URLs+for+FAaaS+POD+Data+Center
+
+https://confluence.oraclecorp.com/confluence/display/STELEM/EM+Cloud+Control+in+FA+as+a+Service
+
+
+·        Phoenix (PHX)- https://cloudem.faasem.us-phoenix-1.ocs.oraclecloud.com/em - EEHO DB : us2dz2v  dbsnmp : pv986NV1hAR__ej##KXkF6r604ds /              
+                                                                                                                                                                                                        oq858bA6iFM_#pd__SEmqh3688qv (new)
+                                                                                                                                                                                   Sysdba : si006AP94RK__eb_#USdn9Y736yz
+·        Ashburn (IAD)- https://cloudem.faasem.us-ashburn-1.ocs.oraclecloud.com/em
+·        Toronto (YYZ)- https://cloudem.faasem.ca-toronto-1.ocs.oraclecloud.com/em
+·        London (LHR)- https://cloudem.faasem.uk-london-1.ocs.oraclecloud.com/em
+·        Sao Paulo (GRU)- https://cloudem.faasem.sa-saopaulo-1.ocs.oraclecloud.com/em
+·        Dubai (DXB)- https://cloudem.faasem.me-dubai-1.ocs.oraclecloud.com/em
+·        Osaka (KIX)- https://cloudem.faasem.ap-osaka-1.ocs.oraclecloud.com/em
+·        Tokyo (NRT)- https://cloudem.faasem.ap-tokyo-1.ocs.oraclecloud.com/em
+·        AbuDhabi (AUH)- https://cloudem.faasem.me-abudhabi-1.ocs.oraclecloud.com/em
+·        Amsterdam (AMS)- https://cloudem.faasem.eu-amsterdam-1.ocs.oraclecloud.com/em
+·        Frankfurt (FRA)- https://cloudem.faasem.eu-frankfurt-1.ocs.oraclecloud.com/em
+·        Mumbai (BOM)- https://cloudem.faasem.ap-mumbai-1.ocs.oraclecloud.com/em
+·        Sydney (SYD)- https://cloudem.faasem.ap-sydney-1.ocs.oraclecloud.com/em
+·        HYD - https://cloudem.faasem.ap-hyderabad-1.ocs.oraclecloud.com/em
+·        Melbourne (MEL)- https://cloudem.faasem.ap-melbourne-1.ocs.oraclecloud.com/em
+·        Cardiff (CWL)- https://cloudem.faasem.uk-cardiff-1.ocs.oraclecloud.com/em
+·        Montreal (YUL)- https://cloudem.faasem.ca-montreal-1.ocs.oraclecloud.com/em
+·        Jeddah (JED)- https://cloudem.faasem.me-jeddah-1.ocs.oraclecloud.com/em
+·        VCP - https://cloudem.faasem.sa-vinhedo-1.ocs.oraclecloud.com/em
+·        ZRH - https://cloudem.faasem.eu-zurich-1.ocs.oraclecloud.com/em
+·        SIN - https://cloudem.faasem.ap-singapore-1.ocs.oraclecloud.com/em
+·        SCL - https://cloudem.faasem.sa-santiago-1.ocs.oraclecloud.com/em/
+·        ARN - https://cloudem.faasem.eu-stockholm-1.ocs.oraclecloud.com/em
+
+
+
+
+
+
+
+
+CREDENTIALS +++++++++++++++
+
+Credentials
+
+My profile - https://idcs-9dc693e80d9b469480d7afe00e743931.identity.oraclecloud.com/ui/v1/myconsole?root=my-info
+
+How to reset your SSO passed if forgotten - https://myhelp.oracle.com/app/answers/answer_view/a_id/1000376#dontknow 
+
+Credentials-
+SSO:
+sandip.ss.sarkar@oracle.com
+3@JrejCRDysH. (OLD)
+sr@vFuxUF3Wa (OLD) — CHANGED ON 30TH NOV 2022
+.=yE&&^QP+7D (old) - CHANGED ON 27TH NOV 2023
+a)[8/mu-\Y2a (old) - CHANGED ON 1st MAR 2023
+WdtDvgDz[c9}P4<\ (old) - CHANGED on 30th MAY 2023
+/G<'sb&Y\C88eYU\  (old) - Changed on 22nd Aug
+
+
+dr5^])kqG>jxh6m (old) - Changed on 2nd Jan
+s4xT-bJZ%@_(p38g (old) - Changed on 6th Feb 2024
+
+xeNY).`k9-ChbA4n (old) - Changed on 7th Feb 2024
+
+Ey^WYU6=5sV}t7d( (old) - Changed on 6th May 2024 - 
+
+F@stSSOpass2024# (old) - Changed on 19th June 2024
+
+eNDLKUadcyf#Zp4F (old) - Changed on 18th Sept 2024
+
+/G<'sb&Y\C88eYU\  (old) - Changed on 20th Nov 2024
+
+mg#P6&q$x#w!Wrf! (New) - Changed 4th Feb 2025
+
+
+
+
+Earlier Laptop - Florida123#
+
+
+OIM entitlements required to access FASaaS pods in OPC and OCI - 
+https://confluence.oraclecorp.com/confluence/display/TECHTEAM/OIM+entitlements+required+to+access+FASaaS+pods+in+OPC+and+OCI
+
+
+FSRE-DB BUDDY PROGRAMM -
+https://confluence.oraclecorp.com/confluence/display/TECHTEAMINT/FSRE+DB+Buddy+Program
+
+Outlook WEBMAIL -
+https://outlook.office.com/mail/inbox/id/AAQkADg0OGU5OTEyLTY2MGMtNDVhMC1iOWY
+3LTdjOGY3MjhmZDQzMQAQALY5sZVwzphBoAQb2lzSSEg%3D
+
+VPN:
+https://myaccess.oraclevpn.com/
+sasasark_in
+
+
+4SzudT@MHbF8 / 3@JrejCRDysH (new) / 2hz8Pm;J=bD(c\dk (old) / C.Q4%{][$H$^6s# (new)
+Laptop123#
+
+
+OCEAN TEAM NAME - SaaS - Fusion - Cloud Ops Tech (SOE)
+Zoomhttps://
+oracle.zoom.us/j/8372678291?pwd=M044TFdZdEMvSXl3MnQ0UndYUG5SQT09
+
+https://oracle.zoom.us/my/sarkar.sandip?pwd=M044TFdZdEMvSXl3MnQ0UndYUG5SQT09
+https://oracle.zoom.us/my/muthu.kumar?pwd=cmxuTmF3SDVQdU1aOUx4b0VwbTZ1Zz09
+
+OPC SERVER ACCOUNTKolkataKolkata@
+123 / KolkataKolkata@345 (new)
+OCI Server Account -
+KolkataKolkata@345
+SFTP LOCATIONsftp
+sandip.ss.sarkar@oracle.com@arusftp.us.oracle.com - passwd - SSO password
+sftp sandip.ss.sarkar@oracle.com@bugsftp.us.oracle.com - passwd - SSO password
+
+Cloud EM Credential -
+
+dp_user
+Welcome!23
+
+
+BUG DASHBOARD - https://apex.oraclecorp.com/pls/apex/f?p=40004:12:116973956857074:::::
+Fleet Manager: https://fleetmanager.oraclecloud.com/customerPod/faces/fmHome
+
+
+To check patch related information - http://aru.us.oracle.com/
+To Provision POD from the Customer side-
+TAS - Tenant automation system
+onboard Customer
+TAS -> SDI (for OPC)
+size of the POD , sky will be in the payload
+SDI -> place provisioning Req on Infra Side
+SDI ( has already pre-configured Infra) -> exadata node , exalogic (hypervisor)
+afetr prov is done -> send a call nack req to TAS -> callback to onboard
+Training Planhttps://
+confluence.rightnowtech.com/display/TECHTEAMINT/FY+2020+IDC+New+Hire+Training+Plan
+
+New Wiki - https://confluence.oraclecorp.com/confluence/display/TECHTEAMINT/FY+2020+IDC+New+Hire+Training+Plan
+
+
+
+New Hire Wiki:-
+https://confluence.oraclecorp.com/confluence/display/TECHTEAMINT/New+Hire+Starter+Kit
+
+https://confluence.oraclecorp.com/confluence/display/TECHTEAMINT/New+Hire+Starter+Kit?searchId=MPD1YFTGF (new)
+https://confluence.rightnowtech.com/pages/viewpage.action?spaceKey=SOPS&title=SaaS+SOPS-
++New+Hire+Account+and+Software+Setup+Wiki#SaaSSOPSNewHireAccountandSoftwareSetupWiki-
+RequestaccesstoOALPods — Provided by Anjani
+
+
+DB Upgrade Steps
+https://confluence.rightnowtech.com/pages/viewpage.action?
+spaceKey=TECHTEAM&title=PP1_12c+to+19c_DB+Upgrade_Runbook#PP1_12cto19c_DBUpgrade_R
+unbook-1.Prepareall-pod-info
+ORA-600 ERRORS TRACKING PAGEhttps://
+confluence.rightnowtech.com/pages/viewpage.action?pageId=142175455 (
+BUG TRIAGING GUIDELINES -
+https://confluence.rightnowtech.com/display/TECHTEAM/RDBMS+Triaging+Guidelines
+OCI BASTIONS and HOST NAMEShttps://
+confluence.oraclecorp.com/confluence/pages/viewpage.action?pageId=1723431145
+RDBMS BUGS IN FA FLEET TRACKING PAGEhttps://
+confluence.rightnowtech.com/display/TECHTEAM/RDBMS+Bugs+in+FA+fleet+Tracking+Page
+PP1 - 19c DB upgrade (JUN MLR) validation for OPC using ZDT OT
+https://confluence.rightnowtech.com/display/TECHTEAM/PP1++-
++19c+DB+upgrade+%28JUN+MLR%29+validation+for+OPC+using+ZDT+OT#PP1-
+19cDBupgrade(JUNMLR)validationforOPCusingZDTOT-ERVPCLOUD
+EM URLS - https://cloudemtools.us1.oraclecloud.com/ords/f?
+p=CLOUDEMSITE:STATUS:308145791314924:::::
+=========================================================================
+For Ubkey token. contact the person-
+Display name
+vsurabha
+Local time
+9:22 PM
+Phone number
+9008683677
+Email address
+venkata.surabhattu@oracle.com
+Wam65861
+BUG:31597385
+cloudops_tech_team_ww_grp@oracle.com
+9036396533 - Rafiq
+18003159999 - LG Customer care for raising ticket
+
+
+
+Network access account for VPN and OCNA 
+
+myaccess-india.oraclevpn.com
+
+Network Access Account Reset Password : 2hz8Pm;J=bD(c\dk
+Old Passowrd - C.Q4%{][$H$^6s#
+new passwd : - G3n~Lp`E]g`.>4H/ (old)
+n5{LD]5K+eHeH+v (old)
+>xG`&jWdL&A"X2y (old)
+={_<P5Gp=w_c@hF' (old)
+YpeH5WSm3h!+wY= (old)
+cLE;e5V8#Nsn.6/ (old)
+fH)8\Kc7&n.S.E@ (new)
+
+For OCNA the url is - myaccess.oracle-ocna.com 
+
+
+
+
+OCI BASTION Passed - 
+
+AMER/APAC/EMEA- 
+h8E?upL~Zc#2sX4 (new) 
+
+
+
+As a Principal Database for Cloud Ops Tech org , in order to provide RDBMS Operations Support for OPC and OCI. I need the access as part of Tarun Mittal’s  org in Cloud Operations . Access is needed to support RDMBS L3 Support for GI Upgrade and patching , DB upgrades and patching , Exa / Cell upgrades , Outage issues , Runtime and Performance issues.
+
+
+As from FSRE-DB team , we need to deep dive into the sql performance issue using ASH and through EM its easier to spot the issue quickly during MI/TCB call so in order to login with saved credential  into EM for any pod I need the following roles /entitlements. 
+Could you please provide the approval for the following privilges? 
+Thanks.
+
+Request 69795205 was submitted for approval - password less entry into EM
+
+https://confluence.oraclecorp.com/confluence/display/FSREDBINT
+
+
+New
+
+https://confluence.oraclecorp.com/confluence/display/FSREDB
+
+
+AMER/APAC/EMEA- 
+h8E?upL~Zc#2sX4 (new) 
+
+
