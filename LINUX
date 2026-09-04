@@ -1,0 +1,87 @@
+
+Linux important Commands :::
+
+
+Find out the top most big directories - 
+===========================
+
+du -sch *|grep G | tail 
+
+du -hsx * | sort -rh | head -10
+
+sudo du -ah /var/log | sort -rh | head -n 10
+
+Sometimes the above command errors  -> bash: /usr/bin/du: Argument list too long , so below command can be of use
+
+find . -maxdepth 1 ! -name "." -exec du -hsx {} + | sort -rh | head -10
+
+
+
+Example command to find these files by timestamp:
+find /u02/app/oracle/diag/rdbms/usanopxq_iadad3/usanopxq5/trace/ -name "*.trc"  -newermt "2024-07-05 04:25:00" -not -newermt "2024-07-05 05:50:00"
+
+Find files for last n days : 
+find . -mtime -2
+
+
+Remove files :
+find . -type f -name "*.log" -exec rm {} \;
+
+
+Top CPU/Mem consuming process : 
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head
+
+
+To see memory for specific set of process:
+ps -aux | head -n 1; ps -aux | egrep 'ora_p0|ora_pp' | sort -k6,6 -g -r | head
+
+
+
+Kill all the process related to foreground process oracle :
+ps -ef |grep ora_p[0-9]*|grep -v grep|awk '{print  $2}'|xargs kill -9
+
+
+
+
+ACFS Check for corruption : 
+/usr/local/bin/dcli -l opc -g ~/dbs_group "sudo bash -c "/sbin/acfsutil info fs /acfs01""|grep -i corrupt
+
+
+Image info checking post patch using opc  :
+/usr/local/bin/dcli -g /tmp/olsnodes.txt -l opc 'sudo /usr/local/bin/imageinfo -version'
+
+
+EXTRACT THE NO OF THE INDIVIDUAL ORA ERRORS REPORTED IN DB ALERT LOG :-
+grep -Eo 'ORA-[0-9]{5}' alert*.log | sort | uniq -c | sort -nr
+
+
+
+TFACTL ++++++++
+
+
+TFACTL -
+—————— 
+
+tfactl print status
+ 
+
+ahfctl statusahf    — status check 
+
+ahfctl stopahf — start on node basis , does not impact other node
+
+ahfctl stopahf - Stop on node basis , does not impact other node
+
+ 
+
+
+EXACHECK STATUS - 
+——————————
+
+
+exachk -autostatus
+6:37
+exachk -autostop
+exachk -autostart
+
+
+
