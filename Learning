@@ -1,0 +1,3254 @@
+NPS ACCOUNT OPENING ONLINE  - NPS - National Pension System | NPS Account Open Online 2025 (By Super Tech)
+https://www.youtube.com/watch?v=3I5XuMkuQBo
+
+
+Health Insurance policies - DITTO
+https://www.youtube.com/@dittoinsurance/videos
+
+Travel Vlogging good channel - 
+https://www.youtube.com/watch?v=UEDeptPVNQA - https://www.youtube.com/@RhettandClaire
+
+Good hotels and homestays - (AdvenTourer Kishan)
+https://www.youtube.com/@AdvenTourer_Kishan/videos
+
+
+Travel Vlogging with camera - 
+https://www.youtube.com/watch?v=oBujGS-BZ9w -  If you're starting as a content creator, buy THIS gear  **********
+
+insta 360 go ultra vlogging -
+https://www.youtube.com/watch?v=SkDgMw0qKi8 -  Insta360 GO Ultra | Pro Tips for Capturing Expert Travel Shots  
+https://www.youtube.com/watch?v=L9Tfmn6_Xgc -  How to Vlog with Insta360 Go Ultra Pocket Cam? 
+https://www.youtube.com/watch?v=yUfYh2mwB4k -  How to Realistically Vlog in Public with the Insta360 GO Ultra as a Solo Creator 
+
+
+YT MONITIZATION GUIDE -
+https://www.youtube.com/watch?v=gG_6HoTnw4c
+
+
+
+LEETCODE PATTERNS (GOLDMINE) - 
+https://leetcode.com/discuss/post/1337373/tree-question-pattern-2021-placement-by-t65qm/
+
+
+ORACLE VS POSTGRESQL -
+======================
+https://www.linkedin.com/feed/update/urn:li:activity:7451940629023993857?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Oracle vs PostgreSQL: Why Control Files Are Designed So Differently
+
+
+POSTGRES AUDITING - 
+https://www.linkedin.com/posts/tejaswi-kt_postgresql-pgaudit-databasesecurity-activity-7461878110636904448-HKB5?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+
+Both Oracle and PostgreSQL use control-related files to track the state of the database, but their design and responsibilities are very different.
+
+Core Difference
+Oracle Control File → A large, multi-purpose component that manages critical database metadata
+PostgreSQL pg_control → A small file that mainly tracks database status and checkpoints
+
+1. Role and Responsibilities
+a)Oracle -- The control file acts as the central reference point. It stores details about:
+Data files
+Redo log files
+Backup and recovery history
+Checkpoint details
+It directs the database instance on where everything is located.
+b) PostgreSQL -- pg_control has a limited role. It stores:
+Database cluster status
+Location of the latest checkpoint
+It does not maintain detailed metadata about files.
+
+2. Physical File Management
+a)Oracle -- The control file explicitly links all physical components (data files, log files, backups). If a data file is moved, the control file must be updated accordingly.
+b)PostgreSQL -- It does not store data file locations. PostgreSQL manages files through its directory structure at the filesystem level.
+
+3. Redundancy and Availability
+a)Oracle -- Control files are usually multiplexed (2–3 copies) across different disks to avoid a single point of failure.
+b)PostgreSQL -- There is only one pg_control file. Redundancy depends on the underlying storage or filesystem (like RAID or replication).
+
+4. Format and How to Read Them
+a)Oracle -- Stored in binary format and accessed through database views like V$CONTROLFILE.
+b)PostgreSQL -- Also binary, but read using the pg_controldata utility.
+
+5. Backup Information
+a)Oracle -- Stores backup metadata and integrates with recovery catalog information.
+b)PostgreSQL -- Does not store backup history. External tools like pgBackRest or similar handle backups.
+
+6. Checkpointing and Recovery
+a)Oracle -- Uses System Change Numbers (SCNs) to track synchronization across all data files during startup and recovery.
+b)PostgreSQL - It stores Transaction IDs (XID), WAL (Write-Ahead Log) location of the last checkpoint
+These help determine where recovery should begin after a crash.
+
+7. Impact of Losing the File
+a)Oracle -- Losing all control file copies is critical. Recovery requires restoring from backup or manually rebuilding the control file.
+b)PostgreSQL -- If pg_control is lost, it can be recreated using pg_resetwal, but this is risky and can lead to possible data corruption.
+
+
+
+
+
+
+DATA ENGINEERING QUESTIONS - 
+https://www.linkedin.com/posts/shubhamwadekar_microsoft-de-1-35lpa-100-sql-python-activity-7446189815189958656-3bBT?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+DATA ENGINEERING NOTES - 
+https://www.linkedin.com/in/fayyaz-ahmed-fayyaz-762102158/recent-activity/all/
+
+
+APPLE JOBS DESCRIPTION - Database Engineer : RDBMS & NoSQL
+
+Summary
+
+Imagine what you could do here. At Apple, great ideas have a way of becoming great products, services, and customer experiences very quickly. Bring passion and dedication to your job and there's no telling what you could accomplish!
+
+The Database Engineering team under Data Services at Apple is responsible for providing Engineering Solutions to a large fleet of mission critical databases. The Data Services team is looking for candidates who will provide architecture and design solutions for multiple database technologies with expertise in Oracle, MongoDB and PostgreSQL and will be in charge of fast-paced, sophisticated distributed database environments. This position demands the best and brightest Database engineers! Join us, and help build and run database platforms that deliver Apple services to all of its customers around the world and build the Apple experience on a global scale.
+
+Description
+
+Would you like to work in a fast-paced environment where your technical abilities will be challenged on a day-to-day basis? Do you want your work to make a difference in the lives of millions of people who use Apple's products and services? If so, we are looking to hire extraordinary individuals to join the Data Services team as a Datastore Engineer. The ideal candidate will work with cross-functional teams, locally and remotely, to design, develop, and support product and process development efforts for our next-generation services and products.
+
+Responsibilities
+
+Design, architect, build and continuously maintain a high performance and highly available database infrastructure.
+Work closely with Application and Internal Infrastructure teams to advance their strategic initiatives, operational readiness, engineering standards and designs.
+Support various database maintenance activities like Database Upgrades, Patch Management, User Management and Backup and Recovery.
+Troubleshoot and resolve performance issues across Oracle, PostgreSQL and MongoDB with strong expertise in SQL/query tuning, memory optimisation (SGA/PGA, shared_buffers/work_mem, WiredTiger cache), I/O tuning, and deep understanding of locks, latches and concurrency mechanisms.
+Optimise SQL queries, MongoDB aggregation pipelines and database workloads for efficiency.
+Design and implement performance optimisation strategies for large-scale, high-transaction environments.
+Provide recommendations for schema optimisation, indexing, partitioning, and sharding.
+Setup and maintain Active-Active environments for databases within and across geographic locations.
+Implement and support PostgreSQL logical replication.
+Identify avenues for automation for mundane and recurring database tasks and implement automated solutions.
+Troubleshoot complex technical problems under pressure, implement solutions that are massively scalable, while managing multiple customer groups.
+Participate in rotational on call support, as necessary.
+
+Minimum Qualifications
+
+8+ Years of work experience in IT Industry, with expertise in Large scale Database implementations including Oracle, MongoDB and PostgreSQL.
+Experience in designing and managing databases with a strong understanding of database concepts, troubleshooting skills and root cause analysis.
+Experience in handling architectural and design considerations such as performance, scalability and availability.
+Strong knowledge of High Availability architecture using Oracle DataGuard/FSFO, MongoDB Replica Sets & Sharding, multi-region deployments, Load balancer / Net Scaler configurations, Application Continuity. 
+Performance tuning and schema design for all datastore (Oracle, MongoDB and PostgreSQL).
+Deep understanding of Performance Tuning, including SQL/Query Execution plans, wait events, Performance debugging features/tools, pg_stat, mongostat, mongotop etc.
+Hands-on experience in database migration to PostgreSQL and designing table structures.
+Strong knowledge of deploying and managing databases on Kubernetes.
+Strong knowledge of major cloud providers (AWS, GCP, etc.) and Cloud APIs.
+Strong knowledge of Linux/Unix Internals, Systems/Application Design & Architecture.
+Strong experience in automation/scripting using Shell/Perl/Python.
+Evaluate emerging technologies and provide architectural recommendations.
+Knowledge of other graph and distributed db’s technologies is a plus.
+Strong analytical, critical thinking, and problem-solving skills.
+Excellent written and verbal communication skills, solid collaboration skills.
+
+
+
+
+ORACLE DBA QUESTIONS - https://www.linkedin.com/posts/sairuthwik-peddapalli-45745a219_oracledba-oracledatabase-dataguard-share-7474707529848119297-f6hI/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Some of the key questions that stood out:
+
+✅ How would you migrate a schema from one database to another using EXPDP/IMPDP?
+✅ How can you disable table logging during an IMPDP import?
+✅ How would you import Schema A into Schema B?
+✅ A huge transaction is consuming all available UNDO space. How would you handle it?
+✅ One multiplexed control file is on a mount point that is 100% full. What would be the impact and how would you fix it?
+✅ Can the above control file issue be resolved without downtime?
+✅ What is the difference between AWR and ASH reports, and when would you use each?
+✅ What are the pre-checks and high-level steps involved in Oracle Database installation?
+✅ Explain the difference between Physical Standby and Logical Standby databases.
+✅ What are the Data Guard protection modes, and which mode is the default?
+✅ A server is lost and only RMAN backups are available. How would you restore the database on a new server?
+✅ How does SQL Tuning Advisor work, and how would you validate its index recommendations?
+✅ Share an example where you improved SQL query performance by 20–25%.
+✅ What shell scripts have you developed for DBA activities and monitoring?
+✅ A script runs manually but fails through cron. How would you troubleshoot it?
+✅ How do you identify all members of a MongoDB Replica Set, and what is the role of Priority?
+✅ A cloned PostgreSQL database is performing slower than the source. How would you troubleshoot it?
+✅ What is a SQL Handle, SQL Plan Baseline, and SQL Profile? How do they differ?
+✅ What recurring DBA incidents have you automated, and why did you choose shell scripting over OEM?
+✅ What are the high-level steps for applying a patch in a two-node Oracle RAC environment?
+
+
+SQL QUERY TUNING STEPS SUMMARY FOR INTERVIEW - 
+
+Steps for Tuning a SQL Query (SQL_ID)
+Step 1 – Collect Basic Details
+Ask the user for essential information such as:
+Hostname
+Database details
+SQL_ID (if available).
+
+Step 2 – Identify SQL_ID
+If the SQL_ID is not provided, retrieve it using one of these methods:
+Query v$sql using part of the sql_text to find the SQL_ID.
+Use v$session_longops to identify long-running SQL operations, especially if the job has been
+running for an extended period.
+
+Step 3 – Check OEM (Oracle Enterprise Manager)
+Check OEM for Top SQL queries that are consuming significant resources or running slow. Confirm
+the details of the slow-running query with the user.
+
+Step 4 – Get Active Session Details
+Obtain the session details for the user by querying gv$session or gv$active_session_history.
+
+Step 5 – Monitor Resource-Intensive Transactions/Jobs
+Check for long-running transactions or jobs that are consuming excessive resources. These could be
+causing the SQL or job to run slowly. Use gv$session, v$sysstat, and v$session_wait to track resource
+consumption.
+
+Step 6 – Check for Locks or Blocking Sessions
+Investigate if any locks are affecting the performance:
+Use v$lock or dba_locks to find locking sessions.
+If there are blocking sessions, gather session details and consult the application team to decide
+whether to kill the blocking session(s).
+
+Step 7 – Examine SQL History and Plan Changes
+Review the SQL's execution history:
+Query dba_hist_snapshot and wrh$_sqlstat to check for any plan changes (PHV - Plan Hash Value)
+that occurred recently.
+If a better execution plan existed in the past, consider creating a SQL Profile for optimizer to use that
+efficient plan.
+
+Step 8 – Check and Update Statistics
+Ensure that the table and index statistics are current:
+If statistics are out dated/stale, collect them using DBMS_STATS. Check for INDEX status and INDEX
+stats as well.
+Set up regular collection of statistics (weekly or more frequently based on load) to keep the
+optimizer's decisions accurate.
+
+Step 9 – Analyze Execution Plan
+Use DBMS_XPLAN.DISPLAY_CURSOR to get the query’s execution plan:
+Look for inefficient operations such as Full Table Scans and INDEX FAST FULL SCAN and also
+cost(%CPU)
+Consider creating indexes on columns used in the WHERE clause or joins to improve performance.
+
+Step 10 – Run SQL Tuning Advisor
+Execute the SQL Tuning Advisor for the affected SQL_ID and follow the recommendations
+
+Step 11 – Executions/Redo Generated:
+Check no of executions and was there increase and also checj the redo size shows the total number
+of bytes of redo log generated by a particular session. High redo generation can indicate heavy DML
+operations (INSERT, UPDATE, and DELETE).
+
+Step 12 – AWR Report
+If the database is consistently performing slowly, generate an AWR report and analyze it to identify
+performance bottlenecks.
+
+
+ORACLE DBA JENIE  - ChatGPT one stop solution for Oracle DBAs
+https://chatgpt.com/g/g-wTI8GmBuK-oracle-dba-genie-v2/c/68610733-5ccc-8012-8ad5-39593583843e
+
+
+
+
+PODSTGRESQL DBA PERFORMANCE SUMMARY FOR INETERVIEW - 
+
+
+PostgreSQL DBA Tips
+🧠 Tip 1: Kill problems early, not after outages
+Most database “performance issues” are actually lock issues.
+ Timeouts and guardrails protect production better than last-minute tuning.
+
+🔒 Tip 2: Always look for blockers first
+Before blaming slow queries, check what is waiting and who is blocking.
+ One bad session can slow down the entire system.
+
+🚨 Tip 3: Long transactions are silent killers
+They lead to table bloat, delayed autovacuum, and unexpected downtime.
+ If transactions stay open too long, problems pile up quietly.
+
+⚙️ Tip 4: Use modern, future-proof designs
+Adopting current PostgreSQL standards today avoids technical debt tomorrow.
+
+📦 Tip 5: Vacuum is not optional
+Ignoring cleanup is like never taking out the trash — eventually, things break.
+ Healthy vacuuming keeps performance stable over time.
+
+🧯 Tip 6: Fail fast during deployments
+It’s better for a change to fail quickly than to freeze production systems.
+ Fast failure saves teams from long outages.
+
+📊 Tip 7: Monitoring beats tuning
+If you’re not actively monitoring database activity and locks,
+ you’re reacting too late instead of preventing issues.
+ 
+ 
+
+
+AMAZON AURORA DEEP DIVE - 
+
+https://medium.com/@joudwawad/aws-aurora-deep-dive-db9532cbc451
+
+
+
+
+
+
+
+
+
+Prompt questions : -
+-------------------
+RAC startup sequence in a very simple way to understand
+give me some complex questions on oracle undo recovery
+	
+Undo Monitoring & Estimation Dashboard Script
+Check the Current/historical PGA Usage:
+PGA Monitoring & ORA-04036 Prevention Script
+
+
+how to parse listener logs to check how many sessions connected within a time to database?
+
+
+Exadata:
+how to check rds-info in RAC
+
+
+New Features 
+A demo lab script for vector search?
+
+A migration checklist to upgrade to 23ai?
+
+Or a side-by-side comparison with Oracle 19c or 21c?
+
+
+ORACLE EBR - 
+https://www.youtube.com/watch?v=ZRMOEREhlZo - video about How Oracle EBR works? Part 2
+
+ORACLE STARTUP AND SHUTDOWN - linkedin post with visual
+https://www.linkedin.com/posts/sumanmahato777_oracledba-oracledatabase-dbalife-activity-7417151048617889793-2FLe?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+
+You’re grinding at your job, giving your 100%. Then, one chai break, your friend spills the tea: “Bhai, same role, same skills, but that guy at XYZ Corp is making way more than you!”
+
+Ouch. The paycheck feels like a punch now. You’re tempted to quit, switch companies, or maybe just chill at home for a bit. Been there? Here’s the real talk on what to do:
+
+🔥 Know Your Worth: Check Glassdoor or ask peers discreetly. Don’t guess—get data on what your skills are worth.
+
+🚀 Upskill & Negotiate: Don’t jump ship yet. Take a course, build a side project, or network. Then walk into your boss’s cabin and demand that raise.
+
+💡 Plan the Switch Smartly: If leaving’s the vibe, don’t rage-quit. Line up interviews, polish your CV, and target companies that pay what you deserve.
+
+😎 Chilling at Home? Think Twice: A break is tempting, but gaps can raise eyebrows. If you need it, plan it—save up, freelance, or upskill.
+
+💪 Stay True to You: Don’t let underpayment dim your hustle. Whether you stay or go, make moves that scream, “I know my value!”
+Your worth isn’t just a number—it’s your skills, your vibe, your grind. Don’t settle. Make the smart move!
+
+
+
+
+
+
+https://hrservices.oraclecorp.com/apex/f?p=85500:1:102158950275457:::::&tz=5%3A30
+
+For requesting NOC for travelling abroad 
+
+
+Requesting for different country Visas - Videos
+https://www.youtube.com/@SoftwareTraveller/videos - Channel - Software Traveller
+
+
+
+imovie tutorial - https://www.youtube.com/watch?v=xZV6mqF6JCY
+
+imovie good tutorial - https://www.youtube.com/watch?v=vON9x3xLDzY
+
+
+How to upload Videos on YT
+ALL BANGLA TIPS - https://www.youtube.com/@ALLBANGLATIPSBD/videos
+
+YouTube Monetization এখন আগের থেকে Easy 😍 নতুন নিয়মে Monetize করা সহজ 🤑 2026 New Rules Explained
+https://www.youtube.com/watch?v=BaSLBA4tlqc
+
+
+INST360 GO ULTRA VLOGGING SETUP - (Insta360 GO Ultra | Beginner’s Guide & BEST Settings)
+https://www.youtube.com/watch?v=N35dcrrXBqA
+
+
+osmo action  pro videos 
+
+Airborne Pirates  - https://www.youtube.com/watch?v=NoeuVAz4yPI
+
+
+
+
+Sony GP-VPT2BT - shooting grip
+
+Introducing vlog camera ZV-E1 | Sony - https://www.youtube.com/watch?v=FRkHu_0kqbc 
+
+https://www.youtube.com/shorts/0X0s3gdbmUI - Shorts about shooting grip
+
+
+
+
+Videography 
+
+20 THINGS YOU MAY NOT KNOW & HIDDEN FEATURES!! | Insta360 Ace Pro
+https://www.youtube.com/watch?v=QwiH0xvg0Rw
+
+
+
+
+
+View Kailash Parvat through  Lipulekh pass- 
+
+https://www.linkedin.com/posts/saurabhsinghz_kailashparvat-uttarakhand-tourism-activity-7233345232686215169-0LoU?utm_source=share&utm_medium=member_desktop
+
+
+
+
+Youtube plan - 
+https://www.youtube.com/watch?v=BScEdPfOyaY - Eleanor Neale(Crime Stories)
+
+
+
+AWS certifications for 50% OFF - https://www.linkedin.com/posts/keer718_aws-certified-associate-challenge-is-offering-activity-7229517227551510532-73wn?utm_source=share&utm_medium=member_desktop
+
+
+
+Exam retake for cloud practitioner and AI practitioner before 15th Feb 2025 
+https://www.linkedin.com/posts/semaan_awstraining-awscertification-aws-activity-7253738729553461249-A3wL?utm_source=share&utm_medium=member_desktop
+
+
+JOIN AWS Group for cloud and devops - 
+https://www.linkedin.com/posts/alisohailit_networking-careers-cloudcomputing-activity-7229658977058336768-DDLi?utm_source=share&utm_medium=member_desktop
+
+AWS Certification Questions - Video
+https://www.youtube.com/@sthithapragnakk/playlists
+https://www.youtube.com/playlist?list=PLAkmEquH84Du8rxSFgy2MQBxhTkGSJrl4 
+https://www.youtube.com/playlist?list=PL_0RK_1F4sTDNZOzu4aQ0h7RBA6tPwuUj 
+
+
+
+How to get AWS experience to get hired - Victoria Semman
+https://www.linkedin.com/posts/semaan_aws-cloudcomputing-activity-7231643135984984064-2QvM?utm_source=share&utm_medium=member_desktop
+
+
+Learning
+
+
+
+ORACLE Good Blog Sites - 
+https://askmedawaa.wordpress.com/2023/11/19/enable-flashback-and-create-guaranteed-restore-point-in-rac/
+https://www.askmlabs.com/2011/01/movingrenaming-database-files-from-asm.html
+https://www.hhutzler.de/blog/category/asm-block-corruption/	
+
+
+
+PostgreSQL -
+=============== 
+
+Blogs - 
+https://databaserookies.wordpress.com/2024/04/23/plpgsql-conversion-gotchas-functions-with-out-parameter-and-return-type/ - Deepak Mahato about migration from Oracle to Postgres
+https://www.linkedin.com/feed/update/urn:li:activity:7226458608383741952?utm_source=share&utm_medium=member_desktop - Deepak Mahato
+https://postgrespro.com/blog/pgsql
+https://hakibenita.com/ - very good blog site
+
+https://data-nerd.blog/2022/06/14/beyond-like-operator-advanced-pattern-matching-in-postgresql/#more-2425 - Good Tutorials about Postgres
+
+https://engineering.sada.com/migration-from-oracle-to-alloydb-made-easy-d69b9df61f3c - Migration from Oracle to AlloyDB made easy
+
+
+
+
+POSTGRESQL INTERNALS - 
+
+THE INTERNAL STRUCTURE OF POSTGRESQL: A DEEP DIVE INTO HOW POSTGRESQL ORGANIZES DATA
+Very important  Blog - https://medium.com/@jramcloud1/the-internal-structure-of-postgresql-a-deep-dive-into-how-postgresql-organizes-data-7a0952ec0569
+
+
+
+
+
+
+
+
+Videos -
+https://www.youtube.com/watch?v=meU2qKRzkCM - A Detailed Understanding of MVCC and Autovacuum Internals in PostgreSQL 14 - Avinash Vallarapu
+https://www.youtube.com/@EMultiSkillsDatabaseServices/videos - E-MultiSkills Database  services
+https://www.youtube.com/watch?v=ruUlK6zRwS8 - Solving one of PostgreSQL's biggest weaknesses.
+https://www.youtube.com/watch?v=gtXNWdW42SQ&t=3173s - PostgreSQL In-Depth Training: Fundamentals Part 2
+https://www.youtube.com/watch?v=0DIejmpwy7c - Postgres regular expression
+
+Books - 
+https://edu.postgrespro.com/postgresql_internals-14_part1_en.pdf 
+https://dokumen.pub/postgresql-configuration-best-practices-for-performance-and-security-9781484256633-1484256638.html - Baji Sheik
+
+
+
+
+ORACLE - 
+
+  DR - 
+  https://www.linkedin.com/pulse/understanding-redo-data-transfer-oracle-guard-async-transport-jurko-aggif
+  https://franckpachot.medium.com/data-guard-gap-history-efc982f6aecd
+  https://franckpachot.medium.com/where-to-check-data-guard-gap-e1ccadc8f41
+
+
+
+REDOLOG TROUBLESHOOTING ->   https://www.linkedin.com/posts/miliyon-b-tulu-b34b8a212_oracle-databaseperformance-redologs-activity-7330504743934382083-GPyd?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+
+
+
+savinder puri - Devops
+
+
+
+
+
+
+
+
+
+KCNA /CNCF /CKAD certifications notes 
+=====================================
+
+https://github.com/nikhilagrawal577/ckad-notes - Most Important Notes *******
+
+https://github.com/fahmifahim/kubernetes-ckad/blob/master/02.CKAD-preparation/ckad-crash-course/README.md -- Good resources for Exam practice 
+
+https://www.linkedin.com/posts/neetu-mallan-04b93694_kcna-kubernetes-containers-activity-7223575921918631936-HhNL?utm_source=share&utm_medium=member_desktop
+
+CKAD Exam Past Papers - 150 Practice Questions - 
+https://www-cnblogs-com.translate.goog/peteremperor/p/12785335.html?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en-US&_x_tr_pto=wapp
+
+CKAD Preparation Guide: Lessons from My Failed Attempt-
+https://safeti.medium.com/ckad-preparation-guide-lessons-from-my-failed-attempt-e673c1b5118d
+
+Passing CKAD: cheatsheet, notes and tips
+https://medium.com/@codebob75/passing-ckad-cheatsheet-notes-and-tips-1aa285e6a473
+
+
+
+
+very good tutorials - 
+https://www.linkedin.com/posts/alexphilipjames_devops-kubernetes-activity-7355817074784415746-Pv14?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+https://devopscube.com/
+
+AWS games - 
+
+https://www.linkedin.com/posts/semaan_aws-awstraining-activity-7212073184722866177-BXs6?utm_source=share&utm_medium=member_desktop
+
+
+AWS Quest Badge -
+https://www.linkedin.com/posts/semaan_new-generative-ai-quest-dont-miss-out-activity-7213573319319519233-Mos0?utm_source=share&utm_medium=member_desktop
+
+AWS Solution Architect HAT - 
+https://www.linkedin.com/posts/trevspires_solutionsarchitect-aws-simulearn-ugcPost-7216773834408882178-nIHB?utm_source=share&utm_medium=member_desktop
+- Trevor Spires
+
+
+Essential Linux Concepts - 
+
+https://www.linkedin.com/posts/omsrivastava_devops-engineering-softwareengineer-activity-7209390609122422784-tynp?utm_source=share&utm_medium=member_desktop
+
+
+PGSQL BACKUP AND RESTORES - 
+
+https://www.linkedin.com/feed/update/urn:li:activity:7211979377662660608?utm_source=share&utm_medium=member_desktop
+
+
+String comparison video talk - 
+
+https://www.linkedin.com/feed/update/urn:li:activity:7213762866523381760?utm_source=share&utm_medium=member_desktop
+
+
+
+Sandip is doing very well for RDBMS support particularly for supporting CRE customers and support for DR. Sandip is technically knowledgeable  and is actively responding to MI or TCB requests or bug support for MI RCA . Sandip's response on MI handling and MI RCAs has been extremely positive. Sandip is reviewing the bugs and incidents with technical depth and working with internal and external stakeholders . Sandip's contribution and interaction during the scrum calls has been excellent. Sandip has gained good knowledge and expertise on RDBMS and should continue further enhancing his skills on ADB-S. 
+
+
+CLEARTAX E-FILLING 
+https://www.youtube.com/watch?v=4DjLoM1i3UQ - Steps 
+
+
+
+Accessories - https://www.youtube.com/@HorrocksoniPhone/videos - Simon Horrocks on iPhone
+
+freewell grip for iphones mount 
+
+monopod mount for iphone grip 
+
+crucial x9 pro ssd 1tb/2tb/4tb 
+
+samsung t7 ssd  1tb/2tb/4tb 
+
+
+
+How to file income tax returns 
+
+https://www.incometax.gov.in/iec/foportal/help/how-to-file-itr1-form-sahaj
+
+
+
+
+
+Autonomous DB (1Z0-931-23) cert - 
+
+Concepts - https://quizlet.com/notes/autonomous-databases-0d549189-343e-407e-83a9-9c2f3e9110a9
+
+https://www.youtube.com/watch?v=f0u-M-u7iA8
+https://www.youtube.com/watch?v=QJNxIEDzlEw
+https://www.youtube.com/watch?v=bZe4RHC6tCc
+https://www.youtube.com/watch?v=a9wlbnL_uC4 
+
+
+
+AI certifications notes -
+https://www.linkedin.com/posts/zinetkemal_artificialintelligence-ai-aws-activity-7236397037666058240-jDZZ?utm_source=share&utm_medium=member_desktop - I
+
+https://www.linkedin.com/pulse/aws-certified-ai-practitioner-aif-c01-exam-rahul-trisal-shiec/?trackingId=3j9qZrwPE3emLVKynEIcmg%3D%3D - Rahul Trishal 
+
+
+
+
+Mouse Charged 100% on 24th July 2024
+
+9903399647 - Gajraj Hyundai Kamalgazi
+
+
+
+Oracle documentation mistake 
+
+https://www.linkedin.com/posts/quanwen-zhao-6ba9a4137_flashbacktransactionquery-jloracle-ugcPost-7221489543517020161-fDmq?utm_source=share&utm_medium=member_desktop
+
+
+
+
+APPLE ID
+sandipmac2024@icloud.com
+SwbnUpLu27
+
+
+
+https://www.linkedin.com/posts/somdyuti-paul-042aa27_postgresql-database-replication-activity-7234206208281186304-fimJ?utm_source=share&utm_medium=member_desktop - Post By Somdyuti
+
+
+MUTUAL FUND TO INVEST 
+Nippon India Small Cap Fund Direct Growth ---- strong contender - Done for Rs 5000
+Nippon India Small Cap 250 index fund - Done for Rs 5000 
+Parag Parikh Flexi Cap Fund Direct Growth
+
+
+
+-- FOR GOLD AND SILVER IN BALANCE 
+Axis Gold and Silver Passive FoF Direct Growth
+
+
+
+
+TECH TUTORIALS WITH PIYUSH - 
+Very good tutorials for kubernetes / cloud
+https://www.youtube.com/@TechTutorialswithPiyush/videos
+
+
+
+
+
+
+Tata Dealer in Kolkata 
+
+https://www.carwale.com/dealer-showrooms/tata/kolkata/
+
+https://www.cardekho.com/Tata/Kolkata/cardealers
+
+
+RDBMS 19C Open Issues Impacting FA 
+
+
+
+KodeCloude free course - 
+
+DevOps Interview Preparation Course
+
+Kubernetes and Cloud-Native Associate (KCNA) - VIDEO 
+Supporting material 
+https://notes.kaiwalyakoparkar.com/ - Very good Notes for KCNA
+https://kaiwalyakoparkar.hashnode.dev/what-is-kubernetes
+https://github.com/edithturn/KCNA-training?tab=readme-ov-file#next-steps-unlock
+https://medium.com/@marino.wijay/the-kcna-exam-a-quick-guide-to-kicking-off-your-k8s-and-cloud-native-journey-56a3a5be345
+https://www.youtube.com/@AlokKumar/videos - Kubernetes very good videos (for CKA exam)
+
+
+DEVOPS ROADMAP - https://www.linkedin.com/posts/rahul-shendage-0b51b8257_devops-github-freeresources-share-7478287584062873600-gCyy/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+
+
+DEVOPS INTERVIEW QUESTIONS - 
+https://www.linkedin.com/posts/basanta-panda-4bb42b89_kubernetes-aws-terraform-share-7470853335575711745-4OU3/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+##Kubernetes
+1. How do you separate environments (like Dev, Staging, Prod) within Kubernetes or across clusters?
+ 2. What is the purpose of a **ServicePort** in Kubernetes?
+ 3. What is a **Deployment** in K8s, and how does it manage pods?
+ ##AWS (Amazon Web Services)
+ 1. What are the primary differences between **AWS EC2** and **AWS Fargate**?
+ 2. Explain the different **Routing Policies** available in **Route 53**.
+ 3. What is the use of a **Rotation Policy** in AWS KMS (Key Management Service)?
+ 4. What are the main parameters or attributes used when configuring **Auto Scaling** on AWS?
+ ###Terraform (IaC)
+ 1. What is the purpose of the **depends_on** meta-argument in Terraform?
+ 2. How do you view or extract **outputs** in Terraform after a deployment?
+ 3. What is the use of **terraform taint**, and when should it be applied?
+ ###Docker
+1. What is Docker Compose, and why is it used?
+ 2. How can you run multiple containers on the same port in Docker? (Note: Usually involves a Load Balancer or Reverse Proxy).
+ 3. What is the purpose of the **EXPOSE** command in a Dockerfile?
+ 4. If you need to run multiple versions of Python or different base image versions, how do you handle that in a Dockerfile build?
+ ###Linux & Scripting
+ 1. What does the command **chmod 777** do, and what is the meaning of the permission code **5777**?
+ 2. Which command is used to substitute a string or pattern within a particular directory in Linux?
+ 3. How do you filter or search for a specific word/pattern in Linux using **grep** or **sed**?
+ 4. Write a Python script to search for a specific file within a folder or directory.
+ ###CI/CD & Git**
+ 1. How do you build **parallel stages** in a Jenkins pipeline?
+ 2. What is the difference between **git merge** and **git rebase**?
+ 3. What is meant by "**staging**" in Git?
+ 4. Explain the concept of Blue-Green Deployment.
+ 5.What is Git stash used for.
+ 6. What is Git commit used for ? Are all git commits will same if we do git rebase?
+
+
+AWS EKS
+
+Advanced Bash Scripting
+
+
+
+
+CLOUD / AWS INTERVIEW (CAPGEMINI) - 
+
+Explain your current AWS architecture end-to-end.
+How do you design a highly available application in AWS?
+Explain the complete request flow from Route 53 → ALB → EKS/EC2.
+How do you secure workloads running in AWS?
+Difference between Security Groups and NACLs with real use cases.
+How do you troubleshoot high CPU utilization on an EC2 instance?
+How have you implemented Auto Scaling in your project?
+
+Explain Kubernetes architecture in detail.
+How does the scheduler decide where to place Pods?
+Difference between Deployment, StatefulSet, DaemonSet, and Job.
+How do rolling updates and rollbacks work internally?
+Explain Kubernetes networking architecture.
+How does Ingress communicate with services?
+
+Explain your Terraform project structure.
+How do you manage Terraform state files?
+Why do we use remote backends?
+Explain state locking and its importance.
+How do you handle multiple environments using Terraform?
+What are Terraform modules and how have you used them?
+
+
+Explain your CI/CD pipeline architecture.
+How is Jenkins integrated with Kubernetes?
+How do you implement automated deployments?
+What strategies do you use for deployment rollbacks?
+
+How do you optimize Docker image size?
+Explain write multi-stage Docker builds code.
+How do you scan Docker images for vulnerabilities?
+How do you troubleshoot container startup failures?
+
+Production application is inaccessible after deployment. How will you troubleshoot?
+One Kubernetes node suddenly goes down. What happens and how do you recover?
+Terraform apply failed after creating some resources. What steps will you take?
+
+I also provide 1-to-1 mentorship for DevOps, SRE, Cloud, AWS, Kubernetes, Terraform, CI/CD, and interview preparation.
+
+
+
+
+
+																				DATAGUARD NOTES 
+																				----------------
+
+
+DATAGUARD Important Notes  - Understanding Redo Data Transfer in Oracle Data Guard (ASYNC). Calculating the Transport Gap with SQL.
+===================================================
+https://www.linkedin.com/pulse/understanding-redo-data-transfer-oracle-guard-async-transport-jurko-aggif/
+
+
+REDO GENERATION RATE AND BANDWIDTH CALCULATION - 
+================================================
+https://clouddba.co/case-study-network-bandwidth-calculation-12c-dataguard-environment-testing-redo-generation-rate/
+
+
+CAPTURE APPLY LAG / RATE 
+==================
+How to track "Apply Lag" "Transport Lag" & "Apply rate" on standby site (Doc ID 2900604.1)
+
+
+DR SETUP IN SUMMARY (IN PICS)
+https://www.linkedin.com/posts/aiman-taha23_100daysoforacledba-oracledba-dataguard-activity-7443725501656899584-_V62?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+How to accurately measure data guard lag events
+========================================
+https://www.pythian.com/blog/business-insights/how-to-accurately-measure-data-guard-lag-events
+
+
+Oracle Data Guard Explained – Step By Step
+========================================
+https://gotodba.com/2019/08/07/oracle-data-guard-step-by-step/
+
+
+
+
+OCI generative AI - videos 
+Solution of OCI Generative AI Professional 1Z0-1127-24 || OCI Generative AI Professional SCORE=100%
+
+
+
+Learn Video Editing in 20 Minutes with Filmora 12 (Hindi) | Filmora Free Masterclass 2023
+https://www.youtube.com/watch?v=9OB3XbLzPxc
+
+
+
+card reader - https://www.youtube.com/watch?v=vqPxjWXZWMw - (TechRx Zone)
+
+
+How to export DJI action 5 pro camera footage to Laptop - https://www.dji.com/global/support/product/osmo-action-5-pro
+
+
+
+DJI OSMO ACTION 5 PRO | BEGINNER'S GUIDE & BEST SETTINGS - BY JORDAN HETRICK
+https://www.youtube.com/watch?v=QaLi-FBBpIk
+
+DJI OSMO ACTION CAMERA CAR MOUNT-
+https://www.amazon.in/FotStdio-Suction-Windshield-Compatible-Insta360/dp/B0F7Y3FZ96/ref=sr_1_4?crid=3KE76X3HVJDHF&dib=eyJ2IjoiMSJ9.fSPgS3GKt9TlWc-AdQ2Uylf4BTpM86pnN-oQrMZqBKTkvmMELyRSiyVmVtMQZkzkcZGnKhK5PfnWDCNVymD3trmDHOhNq4wpxEWzgxDHmy1-L6-rmzGi6mSLn9-9S19uRGyA4hw9SlH25S0AWsTrtGIc5bxEEONzuDyYDE_GvX7EQr72wKtZNUv88w556_4JxM8dDiQPFIp-IpbkwWVvQzWo3c7d6igWp8riK02vWvE.xbnmO_4UJwcjJnB2WiKS-3WCa8uBXPPK1gVwzZVtTlw&dib_tag=se&keywords=DJI+osmo+action+5+car+windshield+mount&qid=1774869061&sprefix=dji+osmo+action+5+car+windshield+moun%2Caps%2C392&sr=8-4  
+
+
+There are three exporting options available:
+1. Connect to the DJI Mimo app and download content from the microSD card and built-in storage to your smartphone.
+2. Use a card reader to export content from the microSD card to your computer or smartphone.
+3. Swipe down from the camera view, tap the Settings icon, and select OTG Connection. Follow the on-screen prompts to connect the camera to a computer or smartphone with a Type-C port using a Type-C cable. You can then export content from the microSD card and built-in storage.
+
+
+
+
+Very Good Travel Blog - 
+https://roytellstales.com/the-ultimate-travel-guide-to-sri-lanka/ ---> Must See 
+
+https://pickyourtrail.com/blog/5-days-itinerary-to-srilanka/ --> Must See 
+
+
+
+
+
+
+For flat / house / Villa - https://www.youtube.com/@Imanrealestate/videos - IC Real Estate 
+
+Good Flat Godrej - https://www.youtube.com/watch?v=WNdcjMbcgM8
+https://godrejpreferredpartner.com/godrej-se7en-elevate/?gad_source=1&gclid=Cj0KCQiAi_G5BhDXARIsAN5SX7pFpuyt_XkYkoOB2G9fdIK23dabOuFE3OZtPC1Tg9u3_sbN7SVlpikaAmhLEALw_wcB#floor-plan
+
+
+Godrej Elevate - 
+https://www.99acres.com/3-bhk-bedroom-apartment-flat-for-sale-in-elevate-godrej-se7en-joka-kolkata-south-1400-sq-ft-r1-spid-L75928345
+
+
+
+DTC Southern heights (Joka)- 
+https://www.99acres.com/dtc-southern-heights-joka-kolkata-south-npxid-r107603?src=VSP_WIDGET
+
+
+
+https://www.99acres.com/oas-lake-life-township-joka-kolkata-south-npxid-r336691 - Villa property
+OAS Lake Life Township
+Shortlist-Button
+
+Flat on Southern Bypass - https://www.youtube.com/watch?v=1Klf3LOO698
+
+Kolkatar Bhumi - https://www.youtube.com/@kolkatarbhumi/videos
+
+
+Rahwada Springfield Flats for sale - 
+https://www.99acres.com/3-bhk-bedroom-apartment-flat-for-sale-in-rajwada-springfield-kamalgazi-kolkata-south-1510-sq-ft-r1-spid-V70794858 
+https://www.99acres.com/3-bhk-bedroom-apartment-flat-for-sale-in-rajwada-springfield-kamalgazi-kolkata-south-1575-sq-ft-spid-I78060013
+
+
+Independent Villa for sale - 
+https://www.99acres.com/3-bhk-bedroom-independent-house-villa-for-sale-in-oas-sonar-gaon-thakurpukur-kolkata-south-2160-sq-ft-spid-W77292757
+https://www.99acres.com/3-bhk-bedroom-independent-house-villa-for-sale-in-joka-kolkata-south-1342-sq-ft-r1-spid-P72597409
+https://www.99acres.com/3-bhk-bedroom-independent-house-villa-for-sale-in-oas-lake-life-township-joka-kolkata-south-1800-sq-ft-spid-D77234209 
+https://www.99acres.com/4-bhk-bedroom-independent-house-villa-for-sale-in-oas-lake-life-township-joka-kolkata-south-2100-sq-ft-spid-L78267283 - OAS Lake Life Township, Joka, Kolkata
+https://www.99acres.com/3-bhk-bedroom-independent-house-villa-for-sale-in-oas-lake-life-township-joka-kolkata-south-1450-sq-ft-spid-T78266963 - OAS Lake Life Township, Joka, Kolkata
+https://www.99acres.com/4-bhk-bedroom-independent-house-villa-for-sale-in-emami-aastha-joka-kolkata-south-1850-sq-ft-spid-Z76899349?src=VSP_WIDGET - Emami Aastha, Joka, Kolkata
+
+
+
+
+
+MI - EWXS
+
+FA-345922 - p.roopavani@oracle.com *from MW team) 
+
+https://jira-servicedesk.oraclecorp.com/jira/servicedesk/customer/portal/21/FA-345922
+
+
+
+phone photography
+https://www.youtube.com/watch?v=YQfL9SqLhos 
+
+
+https://cloudem.faasem.us-ashburn-1.ocs.oraclecloud.com/em/console/database/instance/sqlWorksheet?planHashValue=2878698642&childNumber=0&sql_id=572ary82sx65z&event=doLoad&target=iadkq_iadkq1&type=oracle_database&cmeTarget=iadkq_IADKQ_F&cmeType=oracle_pdb&&
+
+https://apex.oraclecorp.com/pls/apex/r/emlauncher/portal/search-pod - Roopvani pinged 
+
+
+
+SYSTEM DESIGN - Subham Sharma
+https://www.linkedin.com/posts/thecreatorsir_if-you-want-to-become-good-at-system-design-share-7475058436490022912-2mr_/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+SYSTEM DESIGN NOTES::::
+
+VERY GOOD YT CHANNEL - https://www.youtube.com/@hello_interview/videos (Hello Interview - SWE Interview Preparation)
+hellointerview.com 
+
+GOOD YT CHANNEL - https://www.youtube.com/@IGotAnOffer-Engineering/videos (IGotAnOffer: Engineering)
+
+Linkedin Resources - 
+https://www.linkedin.com/posts/vsadhwani_if-youre-starting-out-or-leveling-up-in-share-7403468829365817344-gHfQ?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Good Resources linkedin : 
+https://www.linkedin.com/posts/rajatgajbhiye_i-screwed-up-3-interviews-because-i-didn-activity-7283110539747094529-3lB8?utm_source=share&utm_medium=member_desktop
+
+➤ 𝗪𝗮𝘁𝗰𝗵 𝗥𝗲𝘀𝗼𝘂𝗿𝗰𝗲𝘀:
+
+ 1. Shrayansh Jain: https://lnkd.in/d_m-g-BJ
+ 2. Arpit Bhayani: https://lnkd.in/dGH4fTe7
+ 2. Gaurav Sen : https://lnkd.in/dgjFGmXc
+ 3. The Code Mate: https://lnkd.in/d8_6yTSN
+ 4. Soumyajit Bhattacharyay: https://lnkd.in/dFe4t5gZ
+
+➤ 𝗧𝗼𝗽 𝗥𝗲𝗽𝗼𝘀𝗶𝘁𝗼𝗿𝗶𝗲𝘀​:
+
+ - https://lnkd.in/dbYajXSd
+ - https://lnkd.in/dZZZw8gm
+ 
+ 
+ 
+GOOD SYSTEM DESIGN NOTES (linkedin) : https://www.linkedin.com/posts/aarchigandhi_systemdesign-aarchigandhi-activity-7328975516785352704-bixU?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+These 22 System Design Fundamentals articles will make you more prepared for your next system design interview.
+
+Pick up 2-3 in a week and read them thoroughly to build strong fundamentals.
+
+► Scalability
+↳https://lnkd.in/gjS6wgaW
+↳https://lnkd.in/g7Ubkt2p
+
+► Database scaling and Sharding
+↳https://lnkd.in/gGPf3Chj
+↳https://lnkd.in/gXtAu8_q
+↳https://lnkd.in/gR44yVbd
+
+► Fault tolerance, Replication and Disaster recovery
+↳https://lnkd.in/gXqcp36n
+↳https://lnkd.in/gN2xYsD8
+↳https://lnkd.in/gAkFBpqm
+
+► Microservices Architecture
+↳https://lnkd.in/gECnvWpW
+
+► CAP Theorem, ACID and consistency patterns
+↳https://lnkd.in/giwb5wCd
+↳https://lnkd.in/gTgBtQcN
+↳https://lnkd.in/gAy8jQaZ
+↳https://lnkd.in/gSDUb86N
+
+►Load Balancing
+↳https://lnkd.in/gXHwMtWE
+↳https://lnkd.in/gEcr53sX
+
+►Caching and CDNs
+↳https://lnkd.in/gB6JtHSf
+↳https://lnkd.in/gUcRRKHi
+↳https://lnkd.in/gr-w477q
+
+► Rate Limiting and Circuit Breaker
+↳https://lnkd.in/g4iym7DU
+↳https://lnkd.in/gCY4zhHt
+
+More Design concepts from Ashish Prathap Sing - 
+https://www.linkedin.com/posts/ashishps1_30-blogs-to-learn-30-system-design-concepts-activity-7368132950321786881-4LpD?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw 
+
+
+DB Scaling / Design notes  - Chandra Sekhar Joshi
+https://www.linkedin.com/posts/mrcjoriginals_if-i-have-a-system-design-round-tomorrow-activity-7272097733308522496-xx2P?utm_source=share&utm_medium=member_desktop
+
+
+PostgreSQL Notes - 
+
+TOAST 
+     - https://www.linkedin.com/posts/niledatabase_in-postgres-use-of-toast-is-very-common-activity-7176080201162907648-gckD/
+     - https://www.youtube.com/watch?v=feMOYE3HuNM - Video by Klouddb
+     
+     
+
+https://www.linkedin.com/posts/mariyanclement_postgresql-linuxtips-dba-activity-7345521896580399104-RdXz?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+𝗻𝗼𝗵𝘂𝗽 𝗽𝘀𝗾𝗹 -𝗨 𝘂𝘀𝗲𝗿 -𝗱 𝗱𝗯 -𝗳 𝗯𝘂𝗹𝗸_𝘂𝗽𝗱𝗮𝘁𝗲𝘀.𝘀𝗾𝗹 -𝗼 𝘂𝗽𝗱𝗮𝘁𝗲_𝗼𝘂𝘁𝗽𝘂𝘁.𝗹𝗼𝗴 < /𝗱𝗲𝘃/𝗻𝘂𝗹𝗹 &
+
+
+
+OCI exams Examtopics - https://www.examtopics.com/search/?query=oracle
+
+OCI generative AI - https://www.actual4test.com/exam/1z0-1127-24-questions 
+
+GCP PROFESSIONAL CLOUD DATABASE ENGINEER - https://www.examtopics.com/exams/google/professional-cloud-database-engineer/view/
+
+                                         - https://www.actual4test.com/exam/Professional-Cloud-Database-Engineer-questions
+                                         
+                                         
+                                         
+GCP PROFESSIONAL CLOUD DATABASE ENGINEER EXAM QUESTIONS - VERY IMPORTANT 
+https://www.youtube.com/watch?v=zJpbWvEB7_8 - **** Tech With Shapingpixel
+https://www.youtube.com/watch?v=1hYkBVaR0SI - algoholic
+
+                                         
+
+
+Referrals template: https://lnkd.in/dJYUuMtZ
+
+
+
+SOME DEVOPS QUESTIONS FROM OKTA - 
+
+25LPA at Okta
+
+These are the classic questions they generally ask - but the depth of your answer decides the offer.
+
+Linux & System Internals
+1. A service gets killed without logs. How do you confirm if it’s the OOM killer?
+2. Load average is high but CPU usage is low. How do you explain and debug this?
+3. How do you trace a memory leak in a long-running service?
+4. What happens internally when a process exceeds its file descriptor limit?
+5. How do you debug disk latency when IOPS metrics look normal?
+
+Networking
+1. A service works in one AZ but not another. How do you isolate the issue?
+2. TCP connection is established but requests hang. What could be wrong?
+3. How do you debug intermittent packet loss in production?
+4. Difference between connection timeout and read timeout — impact on retries?
+5. How do you debug DNS issues that behave differently across regions?
+
+Kubernetes
+1. Pods are Running but traffic intermittently fails. Where do you start?
+2. Why does HPA scale too late during traffic spikes, and how do you fix it?
+3. What happens step-by-step when a Kubernetes node fails?
+4. How do readiness probes cause partial outages?
+5. How do you reduce blast radius in a large Kubernetes cluster?
+
+CI/CD & Release Engineering
+1. Deployment succeeds but users see errors. What went wrong?
+2. How do you decide rollback vs hotfix during peak traffic?
+3. What causes flaky pipelines and how do you eliminate them permanently?
+4. How do you design CI/CD pipelines for multi-region deployments?
+5. How do you test rollback paths before production incidents?
+
+Infrastructure as Code
+1. Terraform plan looks safe but causes an outage. How?
+2. How do you recover from a corrupted Terraform state?
+3. Drift is detected in production. Roll back or adopt — how do you decide?
+4. How do you refactor Terraform modules used by multiple teams safely?
+5. How do you prevent accidental destruction of critical resources?
+
+Cloud Architecture & Reliability
+1. One AZ goes down during peak traffic. Walk through recovery.
+2. How do you design systems for partial cloud failures?
+3. Cloud costs suddenly spike. How do you find the root cause?
+4. How do you balance resilience vs cost?
+5. When is Multi-Region architecture unnecessary?
+
+Observability & Incident Response
+1. Metrics are green but users complain. What’s your first move?
+2. How do you correlate logs, metrics, and traces during incidents?
+3. How do you reduce alert fatigue without missing real incidents?
+4. How do you design SLOs that actually matter?
+5. How do you prevent the same outage from happening again?
+
+If you’re preparing for DevOps interviews and want real, scenario-based questions (not just theory), check out my 𝐃𝐞𝐯𝐎𝐩𝐬 𝐈𝐧𝐭𝐞𝐫𝐯𝐢𝐞𝐰 𝐆𝐮𝐢𝐝𝐞 - 𝐁𝐮𝐢𝐥𝐝, 𝐃𝐞𝐩𝐥𝐨𝐲, 𝐆𝐞𝐭 𝐇𝐢𝐫𝐞𝐝.
+It covers 𝟏𝟎𝟎𝟎+ 𝐐&𝐀𝐬, real-world scenarios, and tool-based breakdowns to help you prepare
+
+Get it here: https://lnkd.in/dtkAGrH6
+Use coupon code: 𝐃𝐄𝟐𝟎 for an exclusive 20% discount
+
+
+                                
+                                         
+DEVOPS INTERVW - 
+
+Role: 𝗗𝗲𝘃𝗢𝗽𝘀/𝗖𝗹𝗼𝘂𝗱 𝗦𝘂𝗽𝗽𝗼𝗿𝘁 𝗘𝗻𝗴𝗶𝗻𝗲𝗲𝗿
+ Exp Range : 𝟯-𝟱 𝘆𝗿𝘀
+
+
+1. What would you do if an EC2 instance is getting slow?
+2. If users can’t access an application hosted on EC2, what steps would you take?
+3. What’s the difference between a Load Balancer and a Reverse Proxy?
+4. How would you write a Terraform script to create an EC2 instance and run a script on every reboot?
+5. What is a Backend in Terraform, and why is it used?
+6. What is the Docker lifecycle?
+7. What are the key Docker components?
+8. What’s the difference between a Docker Image and a Docker Container?
+9. What should you do before creating a Docker container?
+10. What is Docker Compose, and how do you use it?
+11. What steps would you take if you see an "unhealthy" status in an ELB?
+12. How do you optimize Docker images for better performance?
+13. How would you secure a Docker container?
+14. What is Jenkins scaling, and how do you achieve it?
+15. What is the role of the Master and Node in Jenkins?
+16. What is a Sidecar container, and when would you use it?
+17. What is the difference between ConfigMap and Secrets in Kubernetes?
+18. What is the default deployment in Kubernetes?
+19. What are Taints and Tolerations in Kubernetes?
+20. What is a Static Pod in Kubernetes, and how is it different from a regular pod?
+21. How do you check pod logs and attach Prometheus for monitoring?
+22. How would you define a ConfigMap and Secrets in Kubernetes?
+23. What is the default scaling in Kubernetes, and how does it work?
+24. What is RBAC in Kubernetes, and why is it important?
+25. What’s the difference between ClusterRole and Role in RBAC?
+
+
+Devops Interview :- 
+
+https://www.linkedin.com/posts/juniorksr_devops-cloudengineering-azure-activity-7315339908020146178-bBfY?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+I attended two technical interviews today that offered a deep dive into my hands-on experience with DevOps, Cloud, and Infrastructure Automation. The interviews were intense, scenario-based, and practical — here's a list of the exact questions I was asked:
+
+ 🔹Tell me about yourself?
+ 🔹 What kind of clients and projects did you work on?
+ 🔹 What is the team size you worked with?
+ 🔹 What were your roles and responsibilities?
+ 🔹 Explain your branching strategy.
+ 🔹 Git rebase vs. merge
+ 🔹 What is Terraform taint?
+ 🔹 Describe your pipeline.
+ 🔹 Describe a DevOps pipeline using YAML.
+ 🔹 Describe a desktop project that produces an artifact.
+ 🔹 What is your experience with ARM templates and Terraform?
+ 🔹 How would you approach migrating 500+ on-premises systems to AWS or Azure?
+ 🔹 (Follow-up) How would you approach the same specifically for Azure?
+ 🔹 How do you approach client requests to reduce costs?
+ 🔹 How does AI/ML relate to your cloud/DevOps experience?
+ 🔹 What are the specific considerations for a multi-cloud environment?
+ 🔹 Can you describe a scenario where you optimized a DevOps pipeline for a complex application, and what strategies did you use?
+ 🔹 How would you reduce downtime during monthly patching activity?
+ 🔹 Explain the importance of close monitoring, and what types of monitoring do you use?
+ 🔹 Describe a security incident you faced.
+ 🔹 What compliance standards are you familiar with?
+
+These questions reflect what’s truly expected from modern DevOps and Cloud professionals — a blend of technical mastery, real-world experience, and strategic thinking. Grateful for the learning and the opportunity to reflect deeply on my journey.
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+PostgreSQL Database Administrator - Jio 
+
+Skills:
+Database Management, SQL Query Optimization, Backup and Recovery, Performance Tuning, Monitoring Tools, Troubleshooting, Postgre SQL, Database Administration,
+
+The Senior Postgre SQL DBA would need to have at least 4 years of experience with development and customer support, providing technical and operational support activities of Database Servers, including logical and physical database design support, troubleshooting, performance monitoring, tuning, and optimizing.
+PostgreSQL database cloning by using Pg_dump and Pg_Restore.
+Review all PostgreSQL logs and problems.
+Experience with Postgres Connection Pooling (PgBouncer).
+Hands-on operational DBA expertise in the areas of Replication, High Availability and Backup/Recovery.
+Advanced performance-tuning skills to review performance data and prepare reports.
+SQL and Linux scripting skills are required skills.
+Strong communication skills are a requirement for this position.
+Ability to manage customer or in-house escalation calls is required
+Experience working on an Application/Development team or experience as an Application DBA.
+Responsible for managing Development, QA, Staging and Production databases and applications and implementing future enhancements to meet the business needs of the end users.
+Monitor database health - availability, reliability, performance, capacity planning.
+Upgrading PostgreSQL Databases.
+Responsible for the monitoring and uptime of all production databases.
+Estimate PostgreSQL database capacities; develop methods for monitoring database capacity and usage.
+Lead efforts to develop and improve procedures for automated monitoring and proactive intervention, reducing any need downtime.
+Responsible for developer SQL code review to ensure queries are optimized and tuned to perform efficiently prior to production release.
+Responsible for regular maintenance on databases (e.g., Vacuum, Reindexing, Archiving).
+Responsible for pro-active remediation of database operational problems.
+Participate in a 247 support rotation.
+Support complex web-based applications.
+Automatic Switchover & Failover.
+
+
+Techops 
+https://www.linkedin.com/posts/govardhana-miriyala-kannaiah_not-a-joke-many-cloud-engineers-dont-fully-activity-7282237022503628800-v0H6?utm_source=share&utm_medium=member_desktop - Govardhana Miriyala Kaaniah
+
+
+
+OCI multicloud Exam - 
+https://www.linkedin.com/posts/rohitrahi_unlock-the-power-of-multicloud-a-comprehensive-activity-7283021289600991232-Ur2y?utm_source=share&utm_medium=member_desktop
+
+Oracle Cloud Infrastructure Architect Associate - Part 1/2/3
+https://www.youtube.com/watch?v=oUoZPE0ZMCc&list=PLbh7Z7xksfCrhnM5tU21dMYWVBhZ9hy5d&index=5
+
+
+Announcing Oracle AI Vector Search Professional Certification and Course -
+https://blogs.oracle.com/oracleuniversity/post/announcing-oracle-ai-vector-search-professional-certification-and-course
+
+
+Apple Jobs 
+https://jobs.apple.com/en-in/details/200582908/database-engineer-oracle-dba?team=SFTWR
+
+
+Adventures Visit by CAR / Tibet 
+Tibet Travel ( Tibet Vista ) - https://www.youtube.com/watch?v=iu15zHjSnT4
+
+Travel Vlogs - 
+Shurovy Yeasmin - https://www.youtube.com/@shurovyyeasmin8526/videos
+
+
+
+
+
+ChatGPT prompts for Job search - 
+
+Copy and paste these 5 ChatGPT prompts to land your dream job:
+1. “Cover Letter Architect"
+
+Prompt: "I'm applying for a [position] at [company]. Help me write a compelling cover letter that showcases my [top 3 relevant skills] and demonstrates my passion for [industry/field]. I have [X years] of experience in [relevant experience]. Include specific achievements and align them with the company's values and mission. Make it personalized and engaging while maintaining a professional tone."
+
+2. “Interview Success Navigator"
+
+Prompt: "I have an upcoming interview for [position] at [company]. Generate 10 likely interview questions specific to this role, including behavioral and technical questions. For each question, provide a structured STAR method response framework. Also, include industry-specific terminology and suggest 3 strategic questions I can ask the interviewer."
+
+3. "Resume Power-Up"
+
+Prompt: "Review my resume for [target position]. Here's my current experience: [paste experience]. Optimize my bullet points using strong action verbs and quantifiable achievements. Focus on [specific skills] that match the job description. Suggest improvements for formatting and keywords to pass ATS systems while maintaining a clean, professional layout."
+
+4. "LinkedIn Connection Catalyst"
+
+Prompt: "Help me craft a personalized connection message for [target professional's role] at [company]. I want to highlight our [common interest/background/mutual connection] and express interest in [specific aspect of their work/company]. Keep it concise, professional, and engaging. Include a clear call to action for networking purposes."
+
+5. "Industry Intel Master"
+Prompt: "I'm preparing to interview at [company] in the [industry] sector. Provide me with current industry trends, challenges, and opportunities. Include recent news about [company], their competitors, and market position. Also, suggest 5 talking points that demonstrate my industry knowledge and genuine interest in the company's mission."
+
+
+
+8 OCI certifications in a Day - Karol 
+https://www.linkedin.com/posts/karolstuart_how-i-achieved-8-oracle-cloud-professional-activity-7311023910878076931-qSBq?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+LINUX ONE LINER COMMANDS FOR PROCESSES - 
+========================================
+https://confluence.oraclecorp.com/confluence/display/linux/One-Liners
+https://confluence.oraclecorp.com/confluence/display/SERV/Famous+Oneliners#FamousOneliners-Memory
+https://confluence.oraclecorp.com/confluence/display/SaaSInfra/High+Swap+and+Memory+-+VM+Reboot+Process - Swap
+
+Commands to test the free mem(swap) - 
+=====================================
+for file in /proc/*/status ; do awk '/VmSwap|Name/{printf $2 " " $3}END{ print ""}' $file; done | sort -k 2 -n -r | more 
+Oracle Linux: How to Check Swap Usage of Each Processes (Doc ID 1931980.1)
+
+
+grep "free," 2025_04_02_08_10_30_TopExaWatcher_elha3a003-lhorp3.dat
+script to check % of swap current - https://gitlab.com/FritsHoogland/memstat/-/blob/master/memstat.sh?ref_type=heads (ref : https://fritshoogland.wordpress.com/2017/07/25/linux-memory-usage/)
+
+grep -i -A5 zzz 2025_04_02_08_10_30_TopExaWatcher_elha3a003-lhorp3.dat|grep "MiB Swap:" | grep "free,"   ---> to check swap memory usage over the time
+
+egrep -w "zzz|MemAvailable:|SwapFree:" 2025_04_02_07_49_05_MeminfoExaWatcher_elha3a003-lhorp4.dat -> important command for swap util
+Bug - https://bug.oraclecorp.com/pls/bug/webbug_print.showbug?c_rptno=29964645&i_highlight_bc=52783083
+Bug 29964645 - System hang with possible high swap utilization
+
+
+grep -i -A5 zzz 2025_04_02_07_49_05_MeminfoExaWatcher_elha3a003-lhorp4.dat | grep zzz -> process  count
+
+
+
+root@elha3a003-lhorp3():/fss/cloudops_tech_stage/BUG_TRIAGE/37780343/37780343/exawatcher/elha3a003-lhorp4/ExtractedResults/ExaWatcher_elha3a003-lhorp4_2025-04-01_20_00_00_24h00m00s/Meminfo.ExaWatcher# egrep -w "zzz|MemAvailable:|SwapFree:" 2025_04_02_07_49_05_MeminfoExaWatcher_elha3a003-lhorp4.dat
+
+zzz <04/02/2025 07:49:05> Count:0
+MemAvailable:   204671540 kB
+SwapFree:        9062908 kB
+zzz <04/02/2025 07:49:10> Count:1
+MemAvailable:   205800536 kB
+SwapFree:        9062908 kB
+
+
+
+
+DSA MIND MAP - 
+https://www.linkedin.com/posts/ayushi-sharma-8a285a185_this-will-help-you-solve-90-of-all-dsa-problems-activity-7322835833172955136-lKTG?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+Cloud Devops Cheatsheet - GOOGLE https://www.linkedin.com/posts/vsadhwani_check-out-this-practical-cheatsheet-to-prep-activity-7328445137032769539-kXei?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Check out this practical cheatsheet to prep for the Cloud DevOps portion of your interviews- 
+(with must-know concepts, tools, and use-cases)
+
+1. Infrastructure as Code (IaC)
+ → Tools: Terraform, CloudFormation, ARM/Bicep, Pulumi
+ → Concepts: Declarative provisioning, version-controlled infra
+ Use Case: Define and deploy all infrastructure (compute, network, IAM, storage) using code for consistency and automation.
+
+2. CI/CD Pipelines
+ → Tools: GitHub Actions, Jenkins, CodePipeline, Cloud Build
+ → Concepts: Pipelines as Code, automated deployments
+ Use Case: Automate building, testing, and deploying applications to cloud environments (VMs, containers, serverless).
+
+3. Configuration & Patch Management
+ → Tools: Cloud-Based SSMs, Ansible, Chef
+ → Concepts: Desired state, golden images, automated patching
+ Use Case: Manage and enforce configuration compliance across virtual machines and services at scale.
+
+4. Cloud Container Orchestration
+ → Services: EKS, GKE, AKS
+ → Tools: Helm, Kustomize, App Mesh
+ Use Case: Deploy, manage, and scale containerized applications on Kubernetes platforms with built-in monitoring and autoscaling.
+
+5. Serverless DevOps (FaaS & BaaS)
+ → Platforms: AWS Lambda, Firebase, AppSync
+ → Concepts: Managed runtimes, event-driven compute
+ Use Case: Build and deploy scalable APIs, functions, and backend services without managing servers.
+
+6. Cloud Release Strategies
+ → Strategies: Blue/Green, Canary, Feature Flags
+ → Tools: Cloud Build, CodeDeploy, Spinnaker
+ Use Case: Enable safe, progressive deployments using cloud-native traffic control methods for zero-downtime releases.
+
+7. Cloud Observability
+ → Tools: Cloud Monitoring, CloudWatch, Datadog etc
+ → Concepts: Logs, metrics, traces, centralized telemetry
+ Use Case: Monitor health and performance of cloud-native systems; troubleshoot failures and performance bottlenecks.
+
+8. Cloud Cost Optimization (FinOps)
+ → Tools: AWS Budgets, Azure Cost Management, Kubecost
+ → Concepts: Cost tagging, rightsizing, auto-shutdown
+ Use Case: Analyze and reduce cloud spend through visibility, optimization strategies, and policy-based cost controls.
+
+9. DevSecOps for Cloud
+ → Tools: OPA, Sentinel, AWS Config, Cloud WAF
+ → Concepts: Secure IaC, policy enforcement, automated audits
+ Use Case: Integrate security into every stage of the CI/CD pipeline and enforce compliance through code and automation.
+
+Instead of memorizing tools — think in use cases.
+
+My advice to study Cloud DevOps:
+ → Understand the core building blocks (IaC, CI/CD, Containers, Serverless)
+ → Learn how they integrate in real-world architectures - what used when?
+ 
+
+
+BASH SCRIPT : https://www.linkedin.com/posts/neelcshah_devops-bashscripting-automation-activity-7328014415696424960-_g-s?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+
+Administering Redo Logs - 
+https://www.linkedin.com/posts/oracleknowledgehubambikeya_verifying-and-administering-redo-logs-and-activity-7329049238393319424-7pXX?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+ 
+ =========================
+ 
+ 
+ 
+DATA ENGINEERING INTERVIEW TOPICS:- (linkedin Post)
+ 
+ https://www.linkedin.com/posts/ajay026_repost-comment-dataengineering-activity-7350375987882188801-wUUS?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+ 
+ 
+ 
+  
+NPS ACCOUNT ONLINE CREATION VIDEOS - 
+https://www.youtube.com/watch?v=G_Td_JkOosc
+https://www.youtube.com/watch?v=3I5XuMkuQBo
+
+
+PAYING HDFC CREDIT CARD BILL - NETBANKING
+https://www.youtube.com/watch?v=SsYPAmQP4cA
+
+EPFO balance transfer- 
+https://www.linkedin.com/posts/simran-gupta05_epfo-uan-pfwithdrawal-activity-7328689839699083264-oSC_?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+
+
+Siliguri Stay : 
+cozy comfort homestay - 
+https://www.booking.com/hotel/in/cozy-comfort-homestay.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaGyIAQGYAQm4AQfIAQzYAQHoAQH4AQyIAgGoAgO4ArXQxcEGwAIB0gIkODJiYTI2ZTMtNWM3Ny00NGJjLTgwYTMtNTRiNjYzMDlhODFk2AIG4AIB&sid=d7dd9aece7c8680eb49a8c6e7ef4da61&all_sr_blocks=1370272301_409241931_2_0_0&checkin=2025-06-14&checkout=2025-06-15&dest_id=-2111079&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=2&highlighted_blocks=1370272301_409241931_2_0_0&hpos=2&matching_block_id=1370272301_409241931_2_0_0&nflt=hotelfacility%3D2%3Bhotelfacility%3D107&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=review_score_and_price&sr_pri_blocks=1370272301_409241931_2_0_0__150000&srepoch=1748068492&srpvid=e3502e236404011a&type=total&ucfs=1&
+
+
+
+Suravi Apartment 3BHK Flat - Nice Stay 
+https://www.booking.com/hotel/in/suravi-apartment.en-gb.html?aid=304142&label=gen173nr-1FCAEoggI46AdIM1gEaGyIAQGYAQm4AQfIAQzYAQHoAQH4AQyIAgGoAgO4ArXQxcEGwAIB0gIkODJiYTI2ZTMtNWM3Ny00NGJjLTgwYTMtNTRiNjYzMDlhODFk2AIG4AIB&sid=d7dd9aece7c8680eb49a8c6e7ef4da61&all_sr_blocks=1379697901_410090857_2_0_0&checkin=2025-06-14&checkout=2025-06-15&dest_id=-2111079&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=5&highlighted_blocks=1379697901_410090857_2_0_0&hpos=5&matching_block_id=1379697901_410090857_2_0_0&nflt=hotelfacility%3D2%3Bhotelfacility%3D107&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=review_score_and_price&sr_pri_blocks=1379697901_410090857_2_0_0__255000&srepoch=1748068767&srpvid=e3502e236404011a&type=total&ucfs=1&
+
+
+Sakuntala Home Stay Lamahatta : Subhadeep Official YT video --- *****
+
+
+https://www.lamahatta.com/ - Lamahatta - Yangdup Homestay 
+
+
+Takdah Home Stay - Bong na bangali YT video 
+Humro Home Anugrah Homestay Takdah
+
+
+9735061215 -  bunglow 12
+
+
+
+AWS AI PRACTITIONER - 
+
+https://www.youtube.com/watch?v=9NmVGPEohzM - YT video
+
+
+
+
+OCI AI FOUNDATION QUESTIONS - 
+
+https://www.actual4test.com/exam/1Z0-1122-25-questions - travelinterested24@gmail.com
+
+https://www.youtube.com/watch?v=Ec44sbB6u60 - YT Video 2023
+
+https://www.youtube.com/watch?v=3PYeGBX-EkU - Good ones 
+
+https://www.youtube.com/watch?v=15aLvsG5tlg - YT Video - removed from YT
+
+https://www.youtube.com/watch?v=oUxoQmRRgpw - YT Video
+
+https://www.youtube.com/watch?v=MjkQoLNbpG0 - YT Video
+
+https://www.youtube.com/watch?v=TCejsfM1N5w - YT Video
+
+
+
+Portronics Dual Ciggarette lighter charger for phones - https://www.amazon.in/Portronics-Indicator-Compatible-Smartphone-Smartwatch/dp/B0DJBZJM15/ref=sr_1_3?crid=3CCG77XGGVIPO&dib=eyJ2IjoiMSJ9.E1sKt3JWRJOkDnKQzbYl-IhAY6e7v4fnckW1WAyMvhElWF_WOaa0xRS6YLWCRxMk3evpdyMbM2pIWHR4CePK7JopBVdziFOZ3fBwvGUeeGwX7ZxZsQuM_Naf1QAVvfBSikrmHpFK6CX7SB7aImIoSQZlobImxlPxIbWbrXzg1stKP0L-DqdPuCKO4ru97GbNb7qJdRkZp1Yn9afMG1ai9dN9WyEYsQaQv-btRItQt7M.Lu0PigwwzldW-tpWWyvkHwlk9mLqQMz9hqxjaKo8M6U&dib_tag=se&keywords=cigarette%2Blighter%2Bcharger%2Bfor%2Bcar&qid=1750860793&sprefix=cigarette%2Blighter%2Bcharger%2Bfor%2Bcar%2B%2Caps%2C244&sr=8-3&th=1
+
+
+
+Ladakh Trip plan - 
+
+https://www.youtube.com/watch?v=9cXHYeMS04Q - YT Videos
+Route map to print - https://drive.google.com/file/d/1_oJ85rhhZG2bEjXdjrtXZnaCH3oP4rhy/view?pli=1
+
+
+
+Sony Shooting Grip - 9799/-
+https://www.amazon.in/Sony-GPVPT2BT-SYU-GP-VPT2BT-Shooting-Grip/dp/B083V2P3JG/ref=asc_df_B083V2P3JG?mcid=4109933ad75238cf91ae9cf0c5ca3ef6&tag=googleshopdes-21&linkCode=df0&hvadid=710050609648&hvpos=&hvnetw=g&hvrand=11017380864696033778&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9061837&hvtargid=pla-868953515245&psc=1&gad_source=1
+
+
+Ulanzi MT-09 Extention Vlog Tripod Mini Portable Handle Grip for Gopro Hero 8 7 6 5 GoPro max Black Session Osmo Action Camera:-
+https://www.amazon.in/dp/B07ZV7BBC9/ref=sspa_dk_hqp_detail_aax_0?psc=1&aref=Wt99lmDzPI&sp_csd=d2lkZ2V0TmFtZT1zcF9ocXBfc2hhcmVk
+
+
+
+
+
+Thar Roxx Accessories : 
+https://www.youtube.com/watch?v=BfJo1h0S-D8
+
+
+REQUESTED: 
+==============
+7d Mats 24 MM 
+rear and front mud flaps
+ORVM and rear reflector Applique
+Screen guard for infotainment 
+Rediator protection guard Kit
+Sun shades for 4 windows
+
+
+CAR PHONE HOLDER FOR VLOGGING- 
+Magnetic Phone Ring Holder for car vlogging 
+ULANZI SC-02 CAMERA SUCTION CUP MOUNT - https://shorturl.at/EvAsB
+
+
+THAR ROXX detailed demo video - 
+https://www.youtube.com/watch?v=ZmxzvK581yc       >>>>>>>>>>>>>>>>> *********
+
+
+
+
+Shantiniketan Stay
+Khoai Village Resort 
+https://khoaivillageresort.com/ 
+
+
+Resort Sanjhbati - YT https://www.youtube.com/shorts/iLt36LDpdGs
+https://www.makemytrip.com/hotels/hotel-details/?_uCurrency=INR&cc=IN&checkin=08032025&checkout=08042025&city=CTXOJ&country=IN&guid=5d7acecb-6556-4ff6-93af-11e7b4d22ec7&hotelId=202302161434206758&locusId=CTXOJ&locusType=city&parentHostName=www.makemytrip.com&roomStayQualifier=2e0e&searchText=Resort%20Sanjhbati&seoReq=1753611561172&ws=true ***
+
+Bonolata Baganbari - Near Sonajhuri
+https://bonolata.in/baganbari/about-us
+
+Panchabon Art Resort - 
+https://www.makemytrip.com/hotels/hotel-details/?checkin=08022025&checkout=08032025&locusId=CTXOJ&locusType=city&city=CTXOJ&country=IN&searchText=Panchabon+Art+Resort&roomStayQualifier=2e0e&_uCurrency=INR&reference=hotel&rf=directSearch&topHtlId=202104251455093969&type=hotel&rsc=1e2e0e&cc=IN&hotelId=202104251455093969&isPropSearch=T  *****+++++*****
+
+Sonajhuri Adda | Shantiniketan Resort
+
+Divik solefull stay - Consider
+
+
+
+Puri 
+Hotel Arya ! Palace CT Road Puri Near Sea Beach -Spacious and Fully Air Conditioned Rooms - Free Wifi & Parking Facilities - Best Hotel
+
+
+
+
+
+Muruguma Purulia
+Bonpalashi eco hut - https://bonpolashi.com/tariff/ --> not responding
+
+Matha Forest Resort
+https://www.google.com/travel/search?q=muruguma%20resort%20stay&g2lb=4965990%2C4969803%2C72302247%2C72317059%2C72414906%2C72471280%2C72472051%2C72485658%2C72560029%2C72573224%2C72616120%2C72647020%2C72648289%2C72686036%2C72760082%2C72803964%2C72832976%2C72882230%2C72958624%2C72959983%2C72990341&hl=en-IN&gl=in&ssta=1&ts=CAESCgoCCAMKAggDEAAaUgo0EjAyJTB4MzlmNWNkMjU4Mzc4Mjc1YjoweDcyMGEzMzMyZjU0MDRjYjY6B011cmd1bWEaABIaEhQKBwjpDxAIGA8SBwjpDxAIGBAYATICCAEqDAoIOgNJTlJaAREaAA&qs=CAEyJ0Noa0k4dS1QMzRpZnRfbGxHZzB2Wnk4eE1XZGthM0Z3ZERKc0VBRTgGQgkRKvTsaCbRCJxCCRHUGk_-n8YJIEIJEYVJj0tCbNrhSABaUzJRqgFOEAEqDyILcmVzb3J0IHN0YXkoADIfEAEiGy_ZNFpbriH3VU_heDlorYYVuPr3BjR7TQKKGjIYEAIiFG11cnVndW1hIHJlc29ydCBzdGF5&ap=MABoAQ&ictx=111&ved=0CAAQ5JsGahgKEwiQ6Ybsqf-OAxUAAAAAHQAAAAAQ3gY
+
+https://bonpolashi.com/tariff/ - Bon Palashi eco Hut
+
+
+Chamtaburu Eco Resort
+https://www.google.com/travel/search?q=muruguma%20resort%20stay&g2lb=4965990%2C4969803%2C72302247%2C72317059%2C72414906%2C72471280%2C72472051%2C72485658%2C72560029%2C72573224%2C72616120%2C72647020%2C72648289%2C72686036%2C72760082%2C72803964%2C72832976%2C72882230%2C72958624%2C72959983%2C72990341&hl=en-IN&gl=in&ssta=1&ts=CAESCgoCCAMKAggDEAAaUgoyEjAyJTB4MzlmNWNkMjU4Mzc4Mjc1YjoweDcyMGEzMzMyZjU0MDRjYjY6B011cmd1bWESHBIUCgcI6Q8QCBgPEgcI6Q8QCBgQGAEyBAgAEAAqCgoIOgNJTlJaARE&qs=CAEyJ0Noa0lwT1A2OC1QdG5ZZ0RHZzB2Wnk4eE1YUTFNMnd3WjJKekVBRTgGQgkRKvTsaCbRCJxCCRHUGk_-n8YJIEIJEYVJj0tCbNrhSABaUzJRqgFOEAEqDyILcmVzb3J0IHN0YXkoADIfEAEiGy_ZNFpbriH3VU_heDlorYYVuPr3BjR7TQKKGjIYEAIiFG11cnVndW1hIHJlc29ydCBzdGF5&ap=KigKEgnMMupyj_M2QBEftYnzaHNVQBISCXFk7zCzizdAER-1iTOOlVVAMABoAQ&ictx=111&ved=0CAAQ5JsGahgKEwiwmPPiqf-OAxUAAAAAHQAAAAAQhgE
+
+
+
+
+
+https://wbtdcl.wbtourismgov.in/property-details/002b8c88fbf35a7e954180f1fa835623e2d7b8a494b8d4e25f1ec41fc0f6fccf068ef4a3278637cc2ca8419830cb1ed8216435d3feb0d5683ba21a5318ba8b87lVyBLo3dyayXaE738jJegT7eXaILl99cqt2bfFKRERw%3D#
+PuruStay
+Muruguma123#
+
+
+
+
+THAR ROXX ACCESSORIES :
+=======================
+
+Vahan Expo 7D Luxury Car Trunk Mat/Dicky/Boot Mat Suitable for Thar Roxx | Full Dicky Coverage | Anti Skid | Anti-Slip | Car Accessories Interior Care (Thar Roxx, Black)
+
+https://www.amazon.in/Expo-Thar-Roxx-Anti-Slip-Accessories/dp/B0DS69VJNV/ref=sr_1_33?crid=1KZSCAUY9N709&dib=eyJ2IjoiMSJ9.JiVVnkguyL3ksEqBlCBejrtm9GyKmxw_6ibZGjyvme10p-BulKtuLTHhT7oHmdnjg6KmxIwOHBflhKPyD_z-O8m-1RfK8lUh0tiaGiz9lnkkJ_eKCrMPl4SeCfToDAQYw_k8VM-ulPpHFI_-MYAcwgMzos504lOKH0PPV1HuHUbb0RxqcxjkNj0YSO2VEGHhQzOqF61cZ3Nv5u0G2G5cKNWgjBulLQpK12EJlxSJSEDQnmZxycxLSWPCBNZA4ccEk6W8whoqGzVEi6UnDnWEXX3dBOwW0us6zPulQmP2sGM.VuuJahapZ8JqVTlQ8iZhvjcaiWV1J-XZ0WqImYHgUnc&dib_tag=se&keywords=thar%2Broxx%2Baccessories%2B2025&qid=1755092494&sprefix=thar%2Broxx%2B%2Caps%2C331&sr=8-33&th=1
+
+
+Ganesha
+https://www.amazon.in/Gold-Art-India-terracotta-Dashboard/dp/B0BYDRVVSH/ref=sr_1_6?crid=1BITMNE8AWG7A&dd=RUVwEBYXFuLP_ayGBHjK7w%2C%2C&dib=eyJ2IjoiMSJ9.WjkIMrq_Bwi8DqaD0cf6_l5HsglY0rh-G6cZMgve_KEx1MfmZJUWqGIyVn7gKiTg9fXEiaiH6Y4GCpKUq9dL4yWBaoo5pa5RLYRriosR1rH4sV3ekfDyFMYgRq4AKJ0mj8kmm29Kqb_RazZNnV0cvsMrw__RIq5nvHcRTprHMpu6PAL1QIgjpsQFL7ElX5UXIHiTAEYl7b0QI3tx3RiNLSLxkE_WYPFrVkNMOiHsxMRgbN5XnqTz8G6LFMhyyDH45UBaU_uzVnnHqZNpmGevjoWUOj_zC3_GpAKkn-8IEZI.QBnSsNUuaO8xrdUEE_rH0wifIM10021pmRO-pVMp-44&dib_tag=se&keywords=lord%2Bganesha%2Bfor%2Bcar%2Bdashboard&qid=1755093115&refinements=p_90%3A6741118031&rnid=6741116031&sprefix=lord%2BGanesha%2Bfor%2BCar%2B%2Caps%2C279&sr=8-6&th=1
+
+
+Databricks free certification - 
+https://www.linkedin.com/posts/semaan_certification-freedatatraining-databricks-activity-7363193710844510210-x7nL?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+SYSTEM DESIGN BASIC BUILDING BLOCKS -
+====================================
+
+https://www.linkedin.com/posts/arslanahmad_systemdesign-techinterviews-softwareengineering-activity-7388495086021537792-7hIg?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw - Arslan Ahmad 
+
+
+LARGE SCALE SYSTEM DESIGN - 
+============================
+You need just 25 blogs and 25 days to understand how real systems work.
+
+Not tutorials. Not theory.
+
+But deep, behind-the-scenes insights from the engineering teams building the internet’s biggest platforms.
+
+These blogs won’t just teach you how to code...
+They’ll teach you how to think like a system designer.
+
+- Airbnb: https://lnkd.in/dYWRDvb2
+- Amazon: https://lnkd.in/g3YEQVps
+- Cloudflare: https://lnkd.in/gUqtiBn5
+- Databricks: https://lnkd.in/gQrUg9aE
+- Discord: https://discord.com/blog
+- DoorDash: https://lnkd.in/gCHJAeZ4
+- Dropbox: https://dropbox.tech
+- Etsy: https://codeascraft.com
+- GitHub: https://github.blog
+- Google: https://lnkd.in/gTpuPU3k
+- LinkedIn: https://lnkd.in/dgqbGwMm
+- Meta: https://ai.meta.com/blog
+- Microsoft: https://lnkd.in/gpXhP4eX
+- Netflix: https://lnkd.in/gktu-Apg
+- Nvidia: https://lnkd.in/d89DaYvx
+- OpenAI: https://openai.com/blog
+- Pinterest: https://lnkd.in/dbYHjx5Z
+- Quora: https://lnkd.in/gVKhJCej
+- Reddit: https://reddit.engineering
+- Shopify: https://lnkd.in/g4kehVdZ
+- Slack: https://slack.engineering
+- Spotify: https://lnkd.in/gQAPaWJP
+- Stripe: https://stripe.com/blog
+- Uber: https://eng.uber.com
+- X (formerly Twitter): https://x.ai/news
+
+♻️ Repost this to help your network get started
+➕ Follow Suresh for more
+
+
+https://www.linkedin.com/posts/giovanni-beggiato_new-aws-dropped-10-guides-for-building-activity-7365337089019699201-K-qR?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+NEW: AWS dropped 10+ GUIDES for building Effective AI AGENTS
+
+https://www.linkedin.com/posts/shivang0203_10-github-repos-that-can-teach-you-everything-share-7403735086854299648-E4Hv?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+➜ Writing best practices for RAG
+🔗 https://lnkd.in/db48nc_k
+
+➜ Foundations of agentic AI on AWS
+🔗 https://lnkd.in/dfmJhNJX
+
+➜ Agentic AI patterns and workflows on AWS
+🔗 https://lnkd.in/dGkYm3gz
+
+➜ Building architectures for agentic AI on AWS
+🔗 https://lnkd.in/d9AyTyRg
+
+➜ Creating RAG solutions on AWS for healthcare
+🔗 https://lnkd.in/dZgkkscS 
+
+➜ Agentic AI frameworks, protocols, and tools on AWS
+🔗 https://lnkd.in/d2TgBpQK
+
+➜ Choosing an AWS vector database for RAG use cases
+🔗 https://lnkd.in/dd3qdmtb
+
+➜ Building serverless architectures for agentic AI on AWS
+🔗 https://lnkd.in/dYHEZ5Ac
+
+And if you want more material on AI Agents, here:
+
+👉 rebrand.ly/levaai
+
+♻️Repost to help your network.
+And follow Giovanni Beggiato for more.
+
+
+
+Resume Builder :- https://www.linkedin.com/posts/rushika-rai-a58345254_swipe-activity-7364559494061715456-gO2Z?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+No replies. No interviews. Just silence for 90 days.
+
+Then, I ran my resume through ChatGPT.
+
+Got 5 callbacks in less than a week-using just 8 prompts.
+
+[Save for later]
+
+1. Spot the Flaws
+
+Prompt: Act as a recruiter for [your industry/role]. Review my resume below and highlight weak areas, overused buzzwords, and missing metrics. Be brutally honest.
+
+2. Rewrite for Impact
+
+Prompt: Rewrite this resume to sound more results-driven, quantifiable, and compelling for [target role]. Focus on achievements, not just duties.
+
+3. ATS Boost
+
+Prompt: Update this resume to be fully optimized for Applicant Tracking Systems (ATS) for the role of [specific role/title]. Use industry-specific keywords naturally.
+
+4. Craft My Hook
+
+Prompt: Write a powerful, 3-line professional summary that hooks a recruiter in under 10 seconds. Prioritize impact, clarity, and value.
+
+
+5. Upgrade Experience
+
+Prompt: Rephrase the experience section to highlight impact, results, and transferable skills using action verbs and quantifiable outcomes.
+
+
+6. Format Fix
+
+Prompt: Suggest a clean, modern resume format that works for both humans and ATS. No graphics, no columns. Just structured and effective.
+
+7. Tailor for the Role
+
+Prompt: Tailor this resume to fit this specific job description [paste JD]. Highlight matching experience and reword sections to match the language used.
+
+
+8. Standout Cover Letter
+
+Prompt: Write a compelling cover letter based on this resume and job description. Keep it personal, enthusiastic, and under 200 words
+
+
+Resume builder with AI - 
+https://www.linkedin.com/posts/mandarmpatil_helpful-websites-every-job-seeker-must-know-activity-7367024449012793344-xXmm/
+
+
+Another Resume Design Steps from AI :- https://www.linkedin.com/posts/md-ohiduzzaman-munshi-8a7227183_my-friend-applied-to-53-jobs-ignored-53-activity-7367433880770940929-Hd2i?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Zero interviews. Only rejections.
+Then I ran his resume through ChatGPT…
+8 replies in 5 days.
+
+Here are the 7 prompts that turned it around: 👇
+
+1 | Rewrite My Resume As a Recruiter
+Prompt: “You’re a senior tech recruiter. Rewrite my resume for a [insert job role], using powerful, measurable language that grabs attention.”
+
+2 | Optimize for ATS
+Prompt: “Make my resume 100% optimized for Applicant Tracking Systems. Use keywords that match [job title] in 2026.”
+
+3 | Brutally Honest Feedback
+Prompt: “Give me raw, unfiltered feedback on this resume. Point out what sucks, what’s average, and how to make it irresistible.”
+
+4 | High-Impact Cover Letter
+Prompt: “Write a compelling, personalized cover letter for [job title] that tells a story, shows passion, and makes me stand out.”
+
+5 | Match Resume to Job Description
+Prompt: “Take this job description and tailor my resume to match it point-by-point, using data-driven language.”
+
+6 | Fill Gaps with Transferable Skills
+Prompt: “My work history has gaps. Rewrite it to highlight transferable skills and career growth, not lack of consistency.”
+
+7 | Build a LinkedIn Bio That Gets DMs
+Prompt: “Write a LinkedIn bio that makes me look hire-ready, experienced, and easy to reach out to, even if I’m changing industries.”
+
+
+
+
+DBA Habits - 
+
+How the Top 1% DBAs Plan Their Day
+
+Ever wondered what separates an average DBA from the top 1%?
+
+It’s not just certifications or years of experience, it’s how they structure their day 
+
+1. Morning: Health Check First
+– Review DB dashboards (CPU, memory, slow queries).
+– Scan overnight alerts. Proactive beats firefighting.
+
+2. Late Morning: Automate > Repeat
+– Identify yesterday’s manual fixes.
+– Script or automate them (Ansible, Terraform, Flyway).
+
+3. Afternoon: Performance + Security
+– Tuning slow queries, checking indexes.
+– Reviewing access logs & user privileges (least privilege isn’t a buzzword).
+
+4. Evening: Business Impact Mode
+– Align with DevOps/Data teams.
+– Ask: "How did the DB help business today? Faster insights? Reduced cost?"
+
+5. Daily Habit: Learning 1 Thing
+– Could be AWS Aurora failover, Postgres pg_partman, or Oracle AI Ops.
+– Small learnings compound into massive growth.
+
+The top DBAs don’t just "keep the lights on." They build trust, cut costs, and enable growth.
+
+How do you structure your DBA day?
+
+
+------------------------------  ORACLE DB MIGRATION LEAD (MANAGER) JOB DESCRIPTION ---------------------------------------------------------- 
+
+Role Overview :
+
+Oracle Database Specialist is responsible database migration across Data Center and cloud platforms (AWS to AWS, Azure to Azure, and DC-to-DC). The ideal candidate will have strong hands-on experience in Oracle Exadata and Oracle Exadata Cloud@Customer (ExaCC) environments, including backup/recovery, replication, and monitoring with strong leadership and project management skills to ensure successful migrations, minimal downtime, and seamless delivery across all phases of the program.
+
+Key Responsibilities :
+
+- Lead the end-to-end migration lifecycle across assessment, planning, execution, validation, and post-migration optimization.
+
+- Define and drive migration strategy, methodologies, and best practices (zero/near-zero downtime, HA/DR).
+
+- Plan, design, and execute Oracle database migrations across :
+
+a. Data Center-to-Data Center
+
+b. AWS-to-AWS cloud setups
+
+c. Azure-to-Azure cloud setups
+
+- Oracle Exadata (Exadata to Exadata, Exadata to ExaCC)
+
+- Oracle Exadata Cloud@Customer (ExaCC) environments
+
+- Perform end-to-end database backup and recovery using :
+
+a. Rubrik for backup orchestration and recovery
+
+b. RMAN (Recovery Manager) for backup/restore operations, incremental (delta) syncs, and PITR (Point-in-Time Recovery)
+
+- Implement delta data synchronization strategies for near-zero downtime migration.
+
+- Use Oracle Enterprise Manager (OEM) for :
+
+a. Database performance monitoring
+
+b. Health checks and proactive alerting
+
+c. Migration tracking and validation
+
+- Execute data purging and archival strategies to optimize database size and performance pre/post-migration.
+
+- Collaborate with cloud architects, infrastructure teams, and application owners to ensure smooth migration with minimal business disruption.
+
+- Document migration runbooks, rollback procedures, and knowledge transfer.
+
+Must-Have Skills :
+
+- 12+ years of Oracle Database experience, with 5+ years in leadership/managerial roles overseeing database migration programs.
+
+- Proven track record of managing large-scale Oracle migrations in multi-cloud, Exadata, and ExaCC environments.
+
+- Strong experience with :
+
+a. Oracle Exadata administration, migration, and performance tuning
+
+b. Oracle Exadata Cloud@Customer (ExaCC) implementation and management
+
+c. Oracle Data Guard setup, switchover, failover, and role transitions
+
+d. Rubrik for backup, restore, and DR integration
+
+e. RMAN for backup/recovery, delta sync, cloning, and duplication
+
+f. OEM (Oracle Enterprise Manager) for monitoring and migration validation
+
+- Hands-on experience with cloud-native database solutions in AWS (RDS, EC2, S3) and Azure (Azure SQL, Blob Storage, Recovery Vaults).
+
+- Experience in data purging, retention policies, and compliance for regulated environments.
+
+- Strong troubleshooting, performance tuning, and problem-resolution skills, particularly in Exadata/ExaCC environments.
+
+- Excellent communication, documentation, and stakeholder management capabilities.
+
+Nice-to-Have Skills :
+
+- Knowledge of GoldenGate for real-time replication.
+
+- Familiarity with Terraform/Ansible for IaC-based DB provisioning.
+
+- Experience in hybrid migration scenarios (on-prem to Exadata, Exadata to ExaCC, ExaCC to cloud).
+
+- Exposure to DevOps pipelines for automated DB deployment.
+
+
+POSTGRESQL JOB DESCRIPTION - 
+
+Job highlights
+Bachelor's Degree in Computer Engineering, 8 years IT experience, 3+ years PostgreSQL operations experience, expert in PostgreSQL HA environment and troubleshooting
+Manage PostgreSQL clusters, implement backup/recovery strategies, automate routine tasks, act as Tech Lead
+
+Your Impact:
+
+We are looking for an experienced PostgreSQL database administrator who will be responsible for the performance, availability, security, and backup/recovery of clusters of PostgreSQL instances, along with the opportunity to learn to support Oracle and/or MS SQL instances.
+
+What the role offers:
+
+Setup and manage highly available Crunchy Data HA-based PostgreSQL clusters. Patch, upgrade, and maintain PostgreSQL software.
+Implement minimal downtime database upgrade using various technologies.
+Design and implement application specific data migration solution for database upgrade to minimize customer impact.
+Establish PostgreSQL best practices across various deployments
+Act as a Tech Lead within the team to drive our PostgreSQL delivery roadmap and strategy
+Pro-actively review database metrics, identify bottleneck, and tune the database/query.
+Configure and customize monitoring configurations for PostgreSQL databases.
+Implement backup/recovery strategies with point-in-time restore capability to meet customer's SLA. Periodically perform data restore to ensure recoverability.
+Implement/maintain data replication to disaster recovery environment and execute disaster recovery exercise annually.
+Automate routine tasks such as software installation, standby database validation, log rotation, security auditing.
+Develop and maintain documented procedures to ensure consistent and effective database operations in the team.
+Respond to page-outs as part of on-call rotation, perform incident recovery, root cause analysis, and identify and implement corrective actions.
+Act as PostgreSQL SME supporting your peers to provide expertise, input, and insights as needed
+Support database environments used by customer-facing OpenText applications aligned to our multi-tenant SaaS stack of products
+What you need to succeed:
+
+Bachelors Degree in Computer Engineering or related
+Should have at least 8 years of Information technology experience
+3+ years of PostgreSQL operations experience
+Expert skills in setting up and managing PostgreSQL HA environment
+Expert skills in PostgreSQL troubleshooting and performance management
+Expert skills in PostgreSQL backup/recovery
+Strong Unix skills, especially in writing automation scripts for remote execution
+Proficiency in writing and optimizing SQL statements
+Ability to thrive in a fast-paced environment working on projects against strict deadlines
+Experience supporting enterprise level database environments
+
+
+Postgresql Deep Dive when the database is slow - https://www.linkedin.com/posts/ugcPost-7413552477444227072-1jpx?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Your PostgreSQL database isn't slow. Your monitoring is just blind.
+
+🔥 The Ultimate 2026 PostgreSQL Toolbelt 🐘
+
+A slow PostgreSQL database doesn’t just cause latency…
+👉 it kills conversions
+👉 frustrates users
+👉 wakes DBAs at 3 AM
+
+So I compiled the complete, field-tested list of tools every DBA and developer should know in 2026
+
+🏆The Bedrock of PostgreSQL Performance
+
+• pg_stat_statements – See top time-consuming & frequent queries. Foundation of tuning.
+https://lnkd.in/dkWjF378
+• pgBadger – Converts logs into beautiful dashboards for RCA.
+https://lnkd.in/dR_qjgQe
+• PgBouncer – Prevents connection storms and backend saturation.
+https://www.pgbouncer.org
+
+🧠 Query Tuning & Visualizers
+
+• PGMustard – Explains why your query is slow.
+https://pgmustard.com
+• PEV2 – Visualize EXPLAIN plans in the browser.
+https://explain.dalibo.com
+• HypoPG – Simulate indexes before creating them. https://lnkd.in/dupipyvz
+• PostgreSQL Tuner – Instant config/health report.
+https://lnkd.in/dZhRfbCE
+• dbTune – AI-powered parameter tuning.
+https://www.dbtune.com
+
+📊 Monitoring Platforms
+
+• Redgate Monitor – Enterprise baseline-aware alerting
+https://www.red-gate.com
+• Redgate PGNow – Real-time DBA-friendly monitoring
+https://www.red-gate.com
+• Percona PMM – Best free open-source suite
+https://www.percona.com
+• PGAnalyze – Deep plan/index/bloat insights
+https://pganalyze.com
+• PGDash – Replication lag, locks, heatmaps
+https://pgdash.io
+• PoWA – Historical workload trends
+https://lnkd.in/d-p4dTRb
+• Datadog – Full-stack APM
+https://www.datadoghq.com
+• Zabbix Templates – Best if you already run Zabbix
+https://www.zabbix.com
+
+🔬 Deep Diagnostics
+
+• pg_profile – Historic performance snapshots
+https://lnkd.in/dsTF_quK
+• pgFincore – See what’s actually in OS cache
+https://lnkd.in/dfMc9Srx
+• pgmetrics – 350+ metrics in one JSON
+https://lnkd.in/dQXYzAcZ
+• check_pgactivity – Nagios plugin with deep checks
+https://lnkd.in/da2MQ9qz
+• pgLockTracker – Blocking/deadlock visualization
+https://lnkd.in/dZidP5c8
+
+🛠️ Operations & Maintenance
+
+• pgBackRest – Reliable, parallel backups
+https://pgbackrest.org
+• pgRepack – Remove bloat without downtime
+https://lnkd.in/dyamnTGe
+• Timescale Prometheus Exporter – Long-term metrics
+https://lnkd.in/dEF6sKS9
+• ELK Stack – Log-centric deep analysis
+https://lnkd.in/dEd_nEcf
+• Grafana + Prometheus – Open-source monitoring standard
+https://prometheus.io
+https://grafana.co
+https://lnkd.in/dZRb5FRe
+
+💡 Pro Tip
+
+Tools don’t fix databases.
+Engineers who read EXPLAIN ANALYZE do.
+
+HypoPG predicts the future.
+pg_stat_statements shows the present.
+pgRepack fixes the past.
+
+👇 Your turn
+Which tool saved you at 3 AM?
+
+
+
+
+
+
+
+Database Manager
+
+Job highlights
+Experience in database management and strategic guidance; strong technical leadership skills
+Manage complex projects, oversee database operations, and ensure service continuity
+
+Job description
+
+Advantmed is looking for DBA Manager who can provides strategic guidance and direction Formulates strategies to achieve plan objectives Designs.
+Plans, implements, manages highly complex projects.
+Handle software licensing policies Manage installation, maintenance.
+Monitoring of servers Disaster Recovery and Incident Response Planning Responsible for managing storage requirement for various application Managing Infrastructure.
+Ownership of service delivery for Database platforms Ensure 24x7 operation and services Represent the team during any high impact incidents and through the problem review process.
+Provide technical leadership and mentoring to Database team Enable effective communication to management Optimize service availability and reliability.
+Actively manage and own the program plans and resolve issues Promote continuous improvement
+Identify and implement appropriate tools, technology and techniques Risk identification and Mitigation plan.
+Maintain and execute the service continuity plan Provide best practice guidelines on infrastructure and process
+Ensure cross- departmental and company interaction and implementation of best technical solutions and approaches Provides RCA report to upper management.
+Bonus Points If:
+
+Experience in US Healthcare Domain.
+Flexibility to be proactive in a fast-paced & dynamic environment
+
+
+DATABASE ARCHITECT JOBS DESCRIPTION (GCP) - 
+
+Job description
+
+Job Description
+Experience
+
+Overall: 12+ years
+Application Architecture: 4+ years
+AlloyDB / PostgreSQL Internals: 6+ years (mandatory)
+ 
+
+Role Summary
+
+The Application & Database Architect will be responsible for defining, designing, and governing endtoend application and database architecture with a strong focus on GCP AlloyDB PostgreSQL.
+This role demands deep expertise in distributed PostgreSQL systems, performance engineering, and cloudnative architectures, ensuring highly scalable, secure, and highperformance solutions aligned with business and enterprise standards.
+
+The architect will act as a technical authority, driving application modernization, cloud migration, and database optimization for high throughput, low latency, and high availability systems deployed across multiple regions.
+
+Key Responsibilities
+
+Application Architecture
+
+Define endtoend application architecture across UI, services, integration, and data layers
+Design microservicesbased, eventdriven, APIfirst architectures
+Review and govern application designs, frameworks, and coding standards
+Guide teams on nonfunctional requirements: scalability, performance, security, reliability
+Lead application modernization and cloud migration initiatives
+Evaluate and recommend technology stacks, frameworks, and tools
+Ensure alignment with enterprise architecture, DevOps, and security standards
+Database & Data Architecture
+
+Design, enhance, and maintain multiregion AlloyDB PostgreSQL clusters on GCP
+Architect for high availability, failover, and crossregion replication
+Optimize read/write distribution, latency, and throughput across regions
+Perform deep AlloyDB/PostgreSQL performance tuning
+Diagnose complex production issues such as:
+Idle transactions
+Longrunning queries
+Subtransaction overhead and lock contention
+Analyze and optimize queries using EXPLAIN / ANALYZE
+Finetune PostgreSQL/AlloyDB parameters for:
+Parallel query execution
+CPU and memory utilization
+High concurrency workloads
+VACUUM and AUTOVACUUM internals
+Drive data modelling (conceptual, logical, physical) and schema governance
+Define indexing strategies and query optimization standards
+Own backup, DR, retention, and database security strategies
+Lead database migration and modernization (onprem cloud, legacy modern DBs)
+Cloud & Platform Architecture
+
+Define cloudnative architectures on GCP (AWS/Azure exposure is a plus)
+Design solutions using managed cloud services (databases, messaging, caching, storage)
+Establish CI/CD, IaC, and DevSecOps standards for applications and databases
+Drive cost optimization, performance tuning, and reliability engineering in cloud environments
+Governance & Technical Leadership
+
+Act as a crossteam technical authority
+Conduct architecture reviews and design walkthroughs
+Mentor senior developers, DBAs, and solution architects
+Collaborate with product owners, business stakeholders, and security teams
+Support presales, estimations, and technical solutioning when required
+Required Technical Skills
+
+Application & Integration
+
+Programming: Java / Python / Node.js (any two preferred)
+Spring Boot, RESTful APIs, eventdriven systems
+API gateways, messaging platforms (Kafka / PubSub / SQSlike systems)
+Frontend awareness: React / Angular (highlevel)
+Working knowledge of GenAI / Agentic AI / MCP workflows
+Databases
+
+AlloyDB PostgreSQL (deep internals – mandatory)
+Other RDBMS: MySQL, Oracle, SQL Server
+NoSQL: DynamoDB, MongoDB, Cassandra, or equivalent
+Experience with large data volumes, OLTP/OLAP, and highthroughput systems
+Strong expertise in data modeling and performance engineering
+Cloud & DevOps
+
+Handson architecture experience on GCP / AWS / Azure
+Docker & Kubernetes (designlevel proficiency)
+CI/CD tools: Git, Jenkins, GitHub Actions, Azure DevOps
+Infrastructure as Code: Terraform / ARM / CloudFormation
+Security & Reliability
+
+Secure design principles, IAM, encryption, auditing, compliance
+Observability: logging, monitoring, tracing
+DR, resilience, and faulttolerant design
+Good to Have
+
+Experience with data platforms: BigQuery, Databricks, Redshift, Snowflake
+Exposure to ETL and streaming architectures
+Experience in regulated environments (finance, dataprivacy heavy systems)
+TOGAF or Cloud Certifications (GCP / AWS / Azure)
+Soft Skills
+
+Strong stakeholder communication and technical storytelling
+Decisionmaking with clear tradeoff analysis
+Mentoring and technical leadership
+Ability to work across multiple programs and priorities
+
+
+
+Complete DEVOPS Projects with AIOPS -  (Vishakha Sadhwani) - https://www.youtube.com/@vishakha.sadhwani/videos
+https://www.linkedin.com/posts/vsadhwani_if-youre-preparing-for-cloud-devops-or-activity-7461443571078893568-mS0t?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+++++++++++++++++++++++++ Praveen Singampalli++++++++++++++
+
+https://www.linkedin.com/posts/praveen-singampalli_my-interview-experience-for-sre-role-with-activity-7371741678887460864-syQ_?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+My interview experience for SRE role with Google
+
+How I applied: Through referral for the SSE position
+
+📍Google HR Screening
+
+● What are the HTTP methods? PUT POST DELETE GET
+● What is the time complexity of merge sort?
+● What status codes are available?
+● What is the difference between PUT and POST?
+● What are the website cookies?
+● How to check IO Usage for a machine? SAR Utilities
+● How to Capture and Analyze Network Traffic? Tcpdump
+● How to check boot logs in linux? 
+● What is the significance of SIGKILL?
+● Which single will be send to the OS when you run kill -9 PID command in linux? SIGKILL
+● Caching mechanism?
+● How does the TCP Handsheek work behind the screen?
+● When you deploy a web server what are the security measures you would take?
+● How does the internet work at a high level?
+● Data Structure code was given you need to understand flow and tell them the final output
+
+📍Google RRK1 Interview Questions
+
+● How would you check whether the user has to execute permission or not?
+● How do you call the HTTP request method without a browser or curl?
+● What are the parameters available in the curl command?
+● A different alternative and flavor for curl command?
+● What happens if you run the cat command on terminal internal workflow?
+● What if I got an error cat command not found? What could be the possible issue?
+● What if I can't SSH into the remote machine? What is the possible step would
+you take to make it possible or check what is the issue?
+● It is mandatory to use port 22 for ssh if any other port is possible? ->
+● Practical coding round java code snippet was given?
+
+📍Google RRK2 Interview Questions
+
+● Basic web technology.
+● Type of Request
+● What Type of status code?
+● What is the HTTP method? PUT, POST, DELETE
+● What is the difference between PUT & POST?
+● Basics of networking, more about OSI model.
+● OS Related concepts
+● Shell commands for a particular situation.
+and some were twisted?
+●Explain the OSI model and its protocol?
+● Basic Networking commands like nslookup, dig, ping, traceroute.
+
+📍Google GCA + System Desgin
+
+● System Design basic concepts.
+● Design Caching Server?
+● Design Netflix streaming engine?
+● What is a load balancer?
+
+📍Google Googliness + Leadership
+
+● They Check whether you are fit for the company or not.
+● Some general questions and then he asked questions related to the role, basically he wanted to know whether I know about the role.
+
+
+
++++++++ Agentic Design Patterns 
+
+https://docs.google.com/document/d/1rsaK53T3Lg5KoGwvf8ukOUvbELRtH-V0LnOIFDxBryE/preview?pli=1&tab=t.0
+
+
+
+Kubernetes Interview Questions - By Praveen Singampalli
+https://www.linkedin.com/posts/praveen-singampalli_he-cleared-his-kubernetes-interview-after-share-7419939531275096064-QWfI?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+Get the K8 troubleshooting document - https://lnkd.in/dN9HYKFM
+
+
+
+++++++++ Interview Experience – Terraform | GCP | DevOps | Kubernetes
+
+https://www.linkedin.com/posts/sushant-ketu-%F0%9F%87%AE%F0%9F%87%B3-a64483123_devops-gcp-kubernetes-activity-7370708724774039552-KKPY?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+I recently appeared for a DevOps interview where I was asked a mix of GCP, Kubernetes, Helm, Terraform, and CI/CD questions:
+ • How to upgrade packages via Helm?
+ • What is use of values.yaml file?
+ • What do you understand by charts and templates in Helm?
+ • What is terraform taint?
+ • What is state file in Terraform?
+ • What is backend in Terraform?
+ • Write a Terraform resource block for creating a virtual machine in GCP?
+ • How can you secure our cloud environments in GCP?
+ • How to optimize cost of resources in GCP?
+ • What is usage of project id and project name in GCP?
+ • What is inode in Linux?
+ • Write a program to check prime numbers between 1 to 1000 via Linux Bash?
+ • What is use of kube-proxy in Kubernetes?
+ • What is use of “git fetch” command?
+ • What is difference between “git revert “ and “git reset”?
+
+ • How can we rotate datas of k8s secrets within 7 days?
+ • What is use of Istio?
+ • What do you understand by Anthos? Have you managed infra by this?
+ • How can you manage automatic deployment with ArgoCD?
+ • What do you use for CI/CD in your organisation?
+ 
+ 
+ 
+ 
+ ++++++++++++++++++++++++ Mongodb requirement ++++++++++++++++++++++++++
+ 
+Job description
+
+We are looking for a DBA professional who is passionate about his work and is aligned with the companys mission. Motivated to take ownership and has the zeal to continuously improve through learning and growth. Driven towards ways to maximize operation efficiency leading to customer satisfaction.
+
+Responsibilities:
+
+6+ year’s hands-on experience as DBA and 2+ years on MongoDB.
+Understanding of enterprise application technology architecture, components, databases, networking, and infrastructure as code.
+Implement appropriate indexes for performance improvement.
+Fine tune the configurations – mongo dB and servers for performance improvement.
+Implement optimal backup and recovery.
+Understand and optimize query performance.
+Database Health checks to be created and published to monitoring systems
+Identify slow queries
+Replication lags
+Node Failures
+Index Usage patterns
+CPU Usage
+Memory Usage
+Locks
+No of connections
+And any other params which can be added as part of database health checks.
+Evaluate, plan and perform the DB Upgrades.
+Maintenance – During release / outage etc.
+Implementing best practices for backups, replication, and health checks.
+Database hardening – Implement best practices.
+Design and implement DR Plans & HA solutions and recommendations.
+Work closely with Appl team to understand what changes are coming in a build / patch / hotfix, do an impact analysis, finetune the queries if any.
+Automate the process of deploying DB changes so that we can support this for a new build / patch / hotfix.
+DBA should act as Application DB as well. Get involved during the design.
+Required Skills
+
+Strong DBA Experience – MongoDB.
+Write efficient queries.
+Strong scripting experience - Unix/Shell Scripting, Python
+Technical knowledge of Linux & Windows based platforms
+Strong analytical and problem-solving skills
+Desired Skills
+
+Hands on Experience in AWS
+		- Disaster Recovery and Business Continuity
+		
+		
+		
+		+++++++++++++++++++++++++ SR DBA PROFESSIONAL ++++++++++++++++++++++++++++++++++
+		
+		
+Job description
+We are seeking a highly experienced Senior Database Administrator (DBA) to manage, monitor, optimize, and evolve our PostgreSQL database environments. This role is responsible for supporting high load on premises PostgreSQL systems as well as AWS RDS PostgreSQL deployments.
+The ideal candidate will bring deep expertise in query performance tuning , database version upgrades , and cloud database operations , with a proven ability to plan, test, and execute PostgreSQL upgrades and migrations while ensuring application compatibility, data integrity, and system stability.
+
+
+Key Responsibilities
+PostgreSQL Administration (On Premise & Cloud)
+Monitor, analyze, and tune heavy and long running SQL queries across PostgreSQL environments
+Identify and resolve performance bottlenecks using PostgreSQL statistics, logs, and system metrics
+Optimize database performance through:
+Index design and optimization
+Query analysis and rewriting
+PostgreSQL configuration tuning (memory, vacuum, autovacuum, checkpoints)
+Detect and propose data archival mechanism for unused data
+Ensure database availability, reliability, and data integrity
+Manage backup, restore, and disaster recovery strategies
+
+Database Version Upgrades & Compatibility Testing
+Lead and execute PostgreSQL database version upgrades in on premises and AWS RDS environments
+Perform pre upgrade assessments to identify:
+Deprecated features and breaking changes
+Extension, stored procedure, and function compatibility issues
+Query behavior and performance changes between versions
+Design and execute comprehensive upgrade testing plans to ensure:
+Stored procedures, functions, triggers, and views remain compatible
+Existing SQL queries execute correctly and efficiently
+Applications function as expected on the upgraded database version
+Validate data integrity, performance, and stability post upgrade
+
+AWS RDS PostgreSQL & Cloud Operations
+Design, provision, and manage AWS RDS PostgreSQL instances
+Spin up and configure RDS environments following best practices for:
+Security and access control
+Performance tuning and scalability
+High availability, backups, and snapshots
+Monitor RDS performance using AWS and PostgreSQL monitoring tools
+Partner with DevOps and infrastructure teams on cloud database architecture
+
+Database Migration & Modernization
+Lead and support database migrations between on premises PostgreSQL and AWS RDS
+Plan and execute migrations with minimal downtime and risk
+Perform data validation and performance testing after migration
+Provide strategic recommendations for PostgreSQL modernization, architecture improvements, and version adoption
+
+DevOps & Automation
+Apply DevOps principles to database operations
+Automate database provisioning, configuration, monitoring, and maintenance
+Support CI/CD pipelines involving database schema and data changes
+Use scripting and infrastructure as code approaches to improve operational efficiency
+
+Required Qualifications
+Minimum 7 years of experience as a Database Administrator, with strong focus on PostgreSQL
+Deep hands on knowledge of PostgreSQL internals , performance tuning, and query optimization
+Proven experience planning and executing PostgreSQL version upgrades , including:
+Compatibility testing of stored procedures, functions, and SQL queries
+Managing risks, rollback plans, and production cutovers
+Strong experience managing AWS RDS PostgreSQL environments
+Solid understanding of Linux/Unix operating systems
+Experience working with DevOps tools, automation, and modern infrastructure practices
+Excellent troubleshooting, analytical, and problem solving skills
+Experience supporting large scale or high traffic PostgreSQL environments
+Strong communication and technical documentation skills
+Ability to work independently and take ownership of complex database platforms
+Comfortable collaborating with application, DevOps, and infrastructure teams
+Proactive, improvement driven mindset focused on performance, stability, and scalability
+Familiarity with PostgreSQL monitoring and diagnostic tools
+Knowledge of high availability, replication, and failover strategies
+Experience with AWS services such as VPC, IAM, EC2, and S3
+Scripting skills (Bash, Python, or similar)
+
+
+IF YOU’RE SERIOUS ABOUT DEVOPS IN 2026 - https://www.linkedin.com/posts/sauravstwt_devops-cloud-kubernetes-activity-7445285566243401728-60ka?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+Bookmark this list. 
+
+These 15 resources can change your career:
+1. Linux Journey – brush up on fundamentals you’ll actually need in interviews.
+2. iximiuz playground – run K8s, Docker, Linux networking labs in-browser.
+3. AWS Well-Architected Labs – practice designing like an AWS Solutions Architect.
+4. Kubernetes the Hard Way – if you can do this, interviews feel easier.
+5. DevOps Exercises GitHub – 500+ questions, commands, and scenarios.
+6. Prometheus & Grafana Playground – monitoring without burning infra costs.
+7. GCP Architecture Framework – learn how Google designs for scale.
+8. Terraform Registry Modules – ready-to-use infra blueprints.
+9. Kube Academy (VMware) – free, high-quality K8s courses.
+10. Awesome Incident Response – real-world incident playbooks.
+11. Chaos Mesh Playground – break things safely and learn to recover.
+12. ShellCheck – fix bash scripts before they blow up in prod.
+13. Istio by Example – understand service mesh with real examples.
+14. Nginx Config Generator – production-ready configs made simple.
+15. The Site Reliability Workbook (Google SRE) – the bible of scaling & reliability.
+
+Bookmark this list. Drop a “+1” if you want me to share a full learning roadmap using these resources.
+ 
+ 
+ 
+AWS CHEAT SHEET - 
+ https://www.linkedin.com/posts/gaurav-chavan-codinglife_aws-cloudcomputing-devops-ugcPost-7423678205619752961-qIZT?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+ 
+Real Production AWS VPC Issues Every DevOps Engineer Faces - 
+https://www.linkedin.com/posts/ratheesh-kumar-6193b3266_aws-vpc-awsnetworking-share-7423646395250720769-rwJl?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+
+
+
+AWS TROUBLESHOOTING GUIDE - 
+https://www.linkedin.com/posts/shubhampraharaj_aws-devops-troubleshooting-cheet-sheet-ugcPost-7424674148561620992-mHoG?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw (PDF downloaded)
+ 
+
+
+Property Search YT Channel 
+Newdoor prop - https://www.youtube.com/@newdoorprop/videos
+
+
+Some India's Remote / Offbeat places to visit - Must Visit
+https://traveltriangle.com/blog/remote-places-in-india/
+
+
+Some offbeat places to visit in Meghalaya - 
+https://www.nomllers.com/unexplored-places-in-meghalaya/#Nongkhnum
+https://www.thrillophilia.com/places-to-visit-in-meghalaya
+
+Mehgalaya offbeat series- 
+https://www.youtube.com/watch?v=klU9sFqUQNc&list=PLzQwQxbuC7_Et9Swp8qYLSBupnswW_76R&index=7
+
+Hotel in Jowai(Meghalaya) - 
+Hotel Highland - https://www.makemytrip.com/hotels/hotel-details/?hotelId=202507160301168682&_uCurrency=INR&cc=IN&checkin=11062025&checkout=11072025&city=CTJOW&country=IN&guid=49947907-1166-406f-840d-2c8d8ffbde54&lat=25.37965&lng=92.32587&locusId=CTJOW&locusType=city&modifyDates=true&parentHostName=www.makemytrip.com&rank=1&roomStayQualifier=1e0e1e0e&searchText=Jowai&seoDS=true&seoReq=1759469638880&mtkeys=undefined
+
+https://www.goibibo.com/hotels/highland-hotel-in-jowai-8457841062663560710/
+
+paradise-adventure-camp - Phe Phe Falls
+https://www.universaladventures.in/tours/paradise-adventure-camp
+
+
+Sony Alpha stores Kolkata - 
+https://alphacommunity.in/camera-lenses-stores/west-bengal/kolkata/
+
+Sony Alpha ILCE-7M3K Full-Frame 24.2MP Mirrorless Digital SLR Camera with 28-70mm Zoom Lens | 4K Full Frame | Real-Time Eye Auto Focus | Tiltable LCD, Low Light Camera - Black
+https://www.amazon.in/gp/product/B07DPSQRFF/ref=ox_sc_act_title_2?smid=AJ6SIZC8YQDZX&th=1    ---- Price 1,33,489/-
+
+Kolkata's Camera Market | DSLR Camera Lenses Biggest Market In Kolkata | Open Box Lenses 🔥- 
+https://www.youtube.com/watch?v=oit9odaiUeo
+
+
+
+
+
+Thar Roxx must haves while travelling - Mechanical Jogudu
+https://www.youtube.com/watch?v=cDWJ3vt0dAE
+Thar Roxx accessories Defender style - 
+https://www.youtube.com/shorts/rSBExL8eteM
+
+
+Suction Cup Mount for Gopro iPhone - ULANZI SC-01 3in Pump-actived Vacuum Suction Mount Magic Arm Phone Holder Action Cam Adapter Car Boats Windshield Window Mount for Gopro Hero insta360 DJI Action - https://www.amazon.in/Suction-Cup-Mount-Gopro-iPhone/dp/B0BW3W5LWK/ref=sr_1_2_sspa?crid=3P5KTZ4YV9D2O&dib=eyJ2IjoiMSJ9.TqSPZrVgaYRq6vg96VLVDTvTcGCcPMCQcPdOGyqnq4_ZO9ZPdZnQe94jeiCKP47PWU09E2kkKl4u_Y4IbKddlCDaZJCsVP-pavdWJ8_hY1GSQToSb30b2w7h0mJczS5kcIyO0MVt5VAfLfhit3aHCmSDzPmqMXXxSMSJf-FpL8aYU4ZqzJIvjy1CC5HdrpCCe_IWkqPa8-vFcODWeUGZ54idu9z5QC8SraaC3_3lX30.C2aO5HaZU8LQRhsHHCd1tbz9_K6yRP06y90xZlxAjGs&dib_tag=se&keywords=suction%2Bmount%2Bfor%2Bcar%2Bulanzi%2BSC%2B02&qid=1760596914&sprefix=suction%2Bmount%2Bfor%2Bcar%2Bulanzi%2Bsc%2B02%2Caps%2C229&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1 
+
+
+Mobile phone holder for CAR - 
+https://www.amazon.in/Fotokina-Windshield-Smartphones-Adjustable-Hands-Free/dp/B0DS8C6BCL/ref=sr_1_91?crid=6EFIR1NU2UJT&dib=eyJ2IjoiMSJ9.-YKb92rCJJoGGD70JEIZuaAmjcZ9q-wATioVroV4QlkPtqeiAuHD6-BkegewwL6JlfNLJeo2x-RhvRbSnZW9Lw5nsS_-3wPFXwnBm-OGBA4aTExirA-21qtJ1mHV6vHPazb2h9L6s-Tu3kvALDavbRwKVZuAAhA0slQZ83LQmqGFw109DzJCnRJL1XC5EypB.TRAsKFeri7ZSo1tH7hGLGUIn99cBM5nXrwVzwJojDNI&dib_tag=se&keywords=car+mount+for+mobile+phone+for+vlogging&qid=1764600529&sprefix=car+mount+for+mobile+phone+for+vlogging%2Caps%2C214&sr=8-91&xpid=Q5lS3Nf-B6er0
+
+ROTATING MOBILE HOLDER : 
+https://www.amazon.in/Amazon-Rotating-Adjustable-Videographers-Photographers/dp/B0BY2S3K4H/ref=pb_allspark_dp_sims_pao_desktop_session_based_d_sccl_4_7/525-7776617-2824569?pd_rd_w=DzvCJ&content-id=amzn1.sym.e84a26b2-5470-42e6-b7fa-162e7bb17185&pf_rd_p=e84a26b2-5470-42e6-b7fa-162e7bb17185&pf_rd_r=00QYN06BZM0Y34Z3Z0SB&pd_rd_wg=v5cUM&pd_rd_r=ef90c34b-ed91-4248-99ed-be3f8e323284&pd_rd_i=B0BY2S3K4H&th=1
+
+
+Ulanzi MT-09 Extention Vlog Tripod Mini Portable Handle Grip for Gopro Hero 8 7 6 5 GoPro max Black Session Osmo Action Camera - 
+https://shorturl.at/KO01u
+ 
+
+Ladakh by Car (alto) YT video - 
+https://www.youtube.com/watch?v=E-of0Wjle0s
+
+
+How To Edit a TRAILER For TRAVEL Video | 5 Easy Steps | HINDI -> Roadside Traveller
+https://www.youtube.com/watch?v=7JWfuiqVxeE
+
+
+Apple AirTag Full Review: How It Actually Works + Live Tracking Test! - 
+https://www.youtube.com/watch?v=NJIdPdmlMYU
+
+A7 IV vs A7 CII vs ZV-E1
+
+Sony A7C II vs Sony A7 IV | कौन है Sony का बेस्ट कैमरा 2024 - https://www.youtube.com/watch?v=4u87KmkV56A
+
+I Tested Every Sony Camera in 2025 - These Are The Best Ones - https://www.youtube.com/watch?v=PzDq-Q6q1fY
+
+
+Tital Eye + - Sunglassed 
+Decathlon - Hiking shoes 
+Check where the good Dashcam work is done in Kolkata
+
+
+DARDRIS Tire Pressure Gauge pencil, Tire Gauge with Pocket Clip, Built-in Deflator Valve, 10-50 PSI Analog Air Checker for Car, Bike, Motorcycle, Tractor, Sports Balls – Portable Tyre Gauge Tool 
+
+
+
+Ambrane 4-in-1 Powerbank, Magsafe Wireless & Laptop Charging with Inbuilt Type C Cable, 65W Fast Charging 15000mAh, Universal All-in-1 for iPhone, Android & MacBook/Type C Laptop (Aerosync 65, Green) 
+https://www.amazon.in/gp/product/B0D671VWNF/ref=ox_sc_act_title_3?smid=A1WYWER0W24N8S&th=1
+
+
+
+
+
+
+
+
+
+
+Sandakafu Journey by Car - YT videos
+https://www.youtube.com/watch?v=Z66GlD9faOI
+https://www.youtube.com/watch?v=cOq6r6o5CrA - Dr Sayak Paul
+Sandakphu Road Trip | Jeep Compass Trailhawk | Maimajhua - Sandakphu | Nepal Route | Dangerous Road
+
+
+Leh and Ladakh by Car - 
+
+14 Days Exploring in the Zanskar Region – My Complete Travel Guide
+https://traveldreams.live/zanskar-region-complete-travel-guide/experiences-travel-n-beyond/2024/#h-drang-drung-glacier
+
+
+
+
+
+
+DS Learning - Many topics and Good resources 
+https://www.linkedin.com/feed/update/urn:li:activity:7393629380746559488/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+++++++++++++++++++++++++ AI Learning
+
+
+
+
+
+OPEN AI LEARNING :YT VIDEOS
+============================
+
+United Top Tech - 
+https://www.youtube.com/@unitedtoptech6288/videos
+OpenAI playlist - 
+https://www.youtube.com/playlist?list=PLJVcjChYKnPdSz-87ONz5PeaL1J8KUDqm
+
+
+OPENAI TUtorials - 
+Scaling PostgreSQL to power 800 million ChatGPT users
+https://www.linkedin.com/feed/update/urn:li:activity:7420464148997881856/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+Play all
+OpenAI Responses API Tutorial (Python)
+Leon van Zyl
+https://www.youtube.com/playlist?list=PL4HikwTaYE0GgR36Px9iXb9bNgrLihCnG
+
+
+How to Use the OpenAI API in Python (Full Tutorial + Setup + Example)
+Big Stupid Tech
+https://www.youtube.com/watch?v=TR8GtqwGglw
+
+
+Step By Step Guide to Build AI Agents | Python | OpenAI Agents SDK
+AI with Prashant
+https://www.youtube.com/watch?v=uBYDJfta8Nc
+
+
+Amazon AI certifications - 
+AIF-C01 certification - 
+Unfold Data Science
+https://www.youtube.com/playlist?list=PLmPJQXJiMoUWFW2JxRSAfhcsQ0Cr9qbv-
+
+Udemy Course - 
+Comprehensive AWS Certified AI Practitioner AIF-C01 Bootcamp - Vladimir Raykov (15.5 hrs)
+
+
+
+YT Videos to follow the travelling Journey 
+https://www.youtube.com/@themoopoint/videos - The Moo Point
+ 
+
+imovie tut for beginners - 
+https://www.youtube.com/watch?v=eYNDyog0gFg
+
+
+HOW TO MAKE A VLOG FOR BEGINNERS:- 
+https://www.youtube.com/watch?v=PcerMSMMR98
+
+
+
+What are ESOPs & RSUs || How to File Taxes on ESOPs/ RSUs || ITR Filing on ClearTax|| FY 2024-2025 ********** Most clear and simple 
+https://www.youtube.com/watch?v=E64i591ZlLI
+
+ITR Filing for US Stocks | How to File ITR For Foreign Stocks | Schedule FA FSI TR Form 67 Filing
+- https://www.youtube.com/watch?v=7XnzbgtZ7UM
+
+
+Taxation for US assets / shares - 
+https://www.youtube.com/shorts/msGLpONxb1o
+
+
+ITR-2 Filing EXPLAINED: STCG, LTCG & Salary Income 2024-25 | How to File ITR-2 Online
+https://www.youtube.com/watch?v=1Pdv0au2l6I
+
+
+
+Video Editing
+
+(inal Cut Pro X Tutorial In Hindi | FCPX Complete Video Editing Course | Avedesh Verma)
+With Final Cut Pro - https://www.youtube.com/watch?v=4YOe1r-N36A
+
+
+
+
+Wheelbase for revolving chairs - 
+https://www.amazon.in/CHAIR-Base-Clump-Office-Chair/dp/B07T92FCRF/ref=nav_signin?crid=1X0S5663A0OZU&dib=eyJ2IjoiMSJ9.3tngUEx7mgHbi6KJs7vgFuKHnhJywYmjgrBL93KVn2jVHPzyET6SNr0UVb3O1vA49kL0I0PW__dhhBmCZS77iCjExb0nUdSxgbfSZIZ3jeAKXYfpKQNn3qRXJ1CsaBIweV53KfLOIxCxR0UYMfIaXxDTInYgrkFEW7NjS6m6BEsmnWu-DWT5NqH6LU6szsgJjxYBX-_CFvkZkmBPnURTueteu22tlsj2R_pKPG3Pn54_PFo2hzHhY13JhO2qoknAbvnsllE0S2M7HahGXOxugQKUS6xnlgsXtMWfB78PLfo.9KmxFmvlBlx_goPQuhOp-KpaFy4OnjZTlLDUF3XVPBQ&dib_tag=se&keywords=revolving+chair+base&qid=1767677025&sprefix=revolving+chair+base%2Caps%2C367&sr=8-4-spons&aref=nav_signin&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1
+
+
+Mahindra Topsia - 
+
+9748237548 - Ramen Pyne (accessories)
+
+9073356813 - Debjani (accessories) - Topsia 
+
+Call after 15th Oct 
+
+Mahindra Rajarhat - 
+
+
+
+https://www.linkedin.com/in/chaoran-wang-super/
+
+remote jobs:
+https://www.linkedin.com/posts/thecreatorsir_hiring-remotejob-tech-activity-7418880591028428801-FkqW?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+ORACLE RAC 26AI Patching - no downtime 
+https://www.linkedin.com/posts/harvinder-duggal-2a745b1_oracle26ai-oraclerac-zerodowntime-share-7421473566447247360-mW-R?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+
+AWS GOOD BOOKS - OREILLY (MUST READ)
+--------------------------------------
+AWS Certified Solutions Architect SAA-C03 - Includes 3 Capstone Projects
+
+
+AWS SOULTION ARCHITECT ASSOCIATE QUESTIONS (YT VIDEOS )
+=========================================================
+https://www.youtube.com/playlist?list=PL2SluYPF9ZQVrOupgNv8jIB-ZblznwxHX - Good one
+https://www.youtube.com/watch?v=2Lk8k8RSEN8 - Good explanations of Questions
+https://www.youtube.com/watch?v=rbVhe5gJrZs - Comprehensive Questions
+https://www.youtube.com/watch?v=q7R36EF8ov0 - Good Questions 
+https://www.youtube.com/watch?v=Wee_F8_k8s4
+Set of 500 Questions - https://www.youtube.com/watch?v=OGy8zXqkHfo&list=PLB574eEmT4ocaZvy0MHVykInztB7nsB8e 
+
+
+Various INDEXING techniques in Databases - Linkedin Article 
+https://www.linkedin.com/feed/update/urn:li:activity:7430170174617624576/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+Comments / Remarks - 
+
+https://www.linkedin.com/posts/kprasadrao_big-tech-layoffs-felt-like-a-shock-when-they-share-7433248189455167488-JNeF?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+Stability isn't coming back. 
+Adaptability is the new job security.
+
+
+
+OCI AI FOUNDATION QUESTIONS (YT VIDEOS )-
+============================================
+Study Notes - https://github.com/astramieri/oci-ai-foundations/blob/main/docs/transformer_walkthrough.md
+
+https://www.youtube.com/watch?v=WNsawiKCGY8
+https://www.youtube.com/watch?v=PBFrYqoJ98c
+https://www.youtube.com/watch?v=7Tsz6_cX_kU
+https://www.youtube.com/watch?v=2k1nOXS6rmA
+
+
+SENIOR DATA ARCHITECT JOB - 
+https://in.indeed.com/viewjob?jk=4e7b28128530529f&tk=1jj179nqakeur801&from=jobi2a_jobmatch-reactivation-en-IN_email&rjptk=1jj16t74gjp2c805&xpse=SoDS67I3mofqI_zDGR0LbzkdCdPP&xfps=cea5e8e6-7857-4eec-bcb2-d17feef4c9e2&xkcb=SoA067M3mhGo7zU6gh0TbzkdCdPP
+
+
+AI DB ARCHITECT - 
+https://www.naukri.com/job-listings-ai-db-architect-hcltech-noida-hyderabad-chennai-11-to-20-years-060326018981?xp=3&src=ja20260307111&xid=20260307111%255Egm%255E3100857&uid=3100857&alertId=&utm_campaign=ja_mailer&utm_medium=email&utm_source=joblink&utm_content=job_alerts_ja_0_1_new___job_alerts_ja_0_1_weekend&utm_term=20260307111
+
+
+
+
+CONTACT NO ORACLE ::
+
+Akul     - 9911552543
+Mayank S - 9873607044
+Mayank R - 9871754349
+Asim     - 9108696633
+Dibya    - 9830564647
+Siva     - 8041073033
+
+
+
+AIIMS Kalyani 
+
+Psychiatry Department 
+mon - friday
+9-5 
+
+Token started from 7 AM morning (before that time queue is there)
+
+ghostty blogs - https://dev.to/tdkn/ghosttys-optionbackspace-not-working-fixed-kgm
+
+Sony Camera comparison - 
+https://www.youtube.com/watch?v=WoJ3YHezmGg (The Only Sony Camera You Need)
+
+
+MOBILE CAR MOUNT :- 
+======================
+HUMBLE UNIVERSAL 360° ROTATABLE DASHBOARD MOUNT SMARTPHONE HOLDER ANTI-SLIP SILICONE MOUNT FOR CAR, OFFICE & HOME ADJUSTABLE STAND FOR PORTRAIT & LANDSCAPE VIEWING, BLACK
+
+https://www.amazon.in/HUMBLE-Universal-Rotatable-Smartphone-Adjustable/dp/B0DRYWFMLC/ref=sr_1_8?crid=1CZHWG4USUXEY&dib=eyJ2IjoiMSJ9.cJuKq5i91pa728Sz9AbvYo1CTJRadAnaj5SGJ4FaxtPkqp7GxVqvGGoE52aVmsCr1L8axQdCHAWkSwX8ez7vKAqO4a_OSxcDRu8fj-mpByt_k4N-BRLxLhZX-h4Dnuks1LxpxOTYvlXztc1ID-BsvX1Fph_DE_lTXilsRd3HK83ME2fYPe_0SyqDsLEXjvvKiEjfZdjQyileS8hKHWwb8Gnly6EpvcZbGeMuYjdrr6VF9kUVS7X1ca8GIGKkpMkrJbYQVJdt0_OSeg6zhfcTSVUEuVneI1ekHcbhiVQ76PU.vlcYGUN7WFPVdV3g4z78dWZz_FmkC0Xin2T30pwgL4Y&dib_tag=se&keywords=360+degree+rotatable+j+hook+for+car+mount+for+DJI+for+dashboard&nsdOptOutParam=true&qid=1775645902&s=electronics&sprefix=360+degree+rotatable+j+hook+for+car+mount+for+dji+for+dashboar%2Celectronics%2C404&sr=1-8
+
+
+
+
+CAR SUCTION MOUNT :
+====================
+
+PULUZ CAR SUCTION CUP MOUNT WITH SCREW & TRIPOD MOUNT ADAPTER & STORAGE BAG FOR GOPRO, INSTA360, DJI AND OTHER ACTION CAMERAS
+
+https://www.amazon.in/PULUZ-Suction-Adapter-Storage-Windshield/dp/B08V4TJFR2/ref=sr_1_16_sspa?crid=1CZHWG4USUXEY&dib=eyJ2IjoiMSJ9.cJuKq5i91pa728Sz9AbvYo1CTJRadAnaj5SGJ4FaxtPkqp7GxVqvGGoE52aVmsCr1L8axQdCHAWkSwX8ez7vKAqO4a_OSxcDRu8fj-mpByt_k4N-BRLxLhZX-h4Dnuks1LxpxOTYvlXztc1ID-BsvX1Fph_DE_lTXilsRd3HK83ME2fYPe_0SyqDsLEXjvvKiEjfZdjQyileS8hKHWwb8Gnly6EpvcZbGeMuYjdrr6VF9kUVS7X1ca8GIGKkpMkrJbYQVJdt0_OSeg6zhfcTSVUEuVneI1ekHcbhiVQ76PU.vlcYGUN7WFPVdV3g4z78dWZz_FmkC0Xin2T30pwgL4Y&dib_tag=se&keywords=360+degree+rotatable+j+hook+for+car+mount+for+DJI+for+dashboard&nsdOptOutParam=true&qid=1775645902&s=electronics&sprefix=360+degree+rotatable+j+hook+for+car+mount+for+dji+for+dashboar%2Celectronics%2C404&sr=1-16-spons&aref=eb8TQR5ZHI&sp_csd=d2lkZ2V0TmFtZT1zcF9tdGY&psc=1
+
+
+DJI OSMO ACTION 5 PRO HEAD MOUNT:
+================================
+
+https://www.amazon.in/s?k=dji+osmo+action+5+pro+head+mount&crid=31LE3QG3WUZZS&sprefix=dji+osmo+action+5+pro+head+%2Caps%2C394&ref=nb_sb_ss_fb_1_27_mvt-t11-ranker
+
+
+
+
+
+NVIDIA AI CERTIFICATIONS - 
+
+https://www.youtube.com/playlist?list=PLZ-_9YKUftDBuSH3vJ7DwW2YFIz7fQzEP -- NCA-GENL Practice Test
+
+
+
+HOW TO BUILD RAG SYSTEMS (LINKEDIN)- ************
+https://www.linkedin.com/posts/reshmawithai_ive-interviewed-multiple-ai-engineers-activity-7451504016666271744-ewlo?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
++++++++++++++
+
+AWS AI CERTIFICATIONS PRACTICE :::
+==================================
+AIF-C01 - https://www.youtube.com/playlist?list=PLZ-_9YKUftDBeDDNt-phYZYwRABDyNpvQ
+AIP-C01 - https://www.youtube.com/playlist?list=PLZ-_9YKUftDCOWZOtXmrXE4LXpzTnTnmu
+
+https://www.youtube.com/watch?v=gevdk7PV-s8 -- Learn the buzz word
+
+https://www.youtube.com/@TechwithShapingpixel/search?query=AIF-C01 - tech with shapingpixel
+
+https://www.youtube.com/watch?v=54_bhZlF8m8
+
+https://www.youtube.com/watch?v=YGYr-zMIwdw -- KODECLOUD
+
+++++++++++++++
+
+
+AI JOB 
+
+Job Title: Cognizant - Generative AI Architect (13-20 yrs)
+
+Click here to Apply
+
+Job Description :
+
+Note : Note : If shortlisted, you will be invited for initial rounds on 20th June 2026, Saturday in Bangalore
+
+
+
+Job Description :
+
+
+
+- Build GenAI applications using Python for tasks like chatbots, summarization and intelligent automation.
+
+
+- Develop and fine tune LLMs and ML models for classification, prediction, and decision support.
+
+
+- Design solutions using embeddings, vector search, and retrieval augmented generation (RAG).
+
+
+- Deploy models using Azure Machine Learning and Azure OpenAI scale with Azure Functions and Cognitive Services.
+
+
+- Integrate models with AWS services like SageMaker, Lambda, Bedrock and data platforms like Snowflake.
+
+
+- Integrate AI systems with APIs, enterprise data platforms and business workflows.
+
+
+- Strong Python development with experience in GenAI frameworks like LangChain, Hugging Face, OpenAI.
+
+
+
+
+PYTHON LEARNING :::
+====================
+
+Droid Dev Hub (Chris Naik) - https://www.youtube.com/@Droid_dev_hub/videos
+
+
+
+CLOUD INTERVIEW TIPS AND TRICKS - 
+https://www.linkedin.com/posts/ajitinamdar_aws-devops-cloud-share-7469815729039732736-DCcq/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+
+DEVELOPING AI AGENTS BY AWS - 
+
+https://www.linkedin.com/posts/kprasadrao_aws-dropped-14-modules-on-building-ai-agents-activity-7452210222749741056-iITo?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+CLAUDE CERTIFICATIONS (CCAF EXAM)
+https://www.linkedin.com/posts/wesley-louw-a9707697_anthropic-claude-aiarchitecture-activity-7453465552485965825-YEib?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+b1 l2 102 (Milli Chattaraj)
+
+
+sleep company standing desk
+5.25 ft 
+2.33 ft 
+
+
+
+
+
+Colonoscopy
+tapan Kansari 
+ 8334801401
+ 
+ 
+ 
+ Subasish - Mahindra Siliguri service center
+ 8956332162
+ 
+ 
+
+
+DATABASE MIGRATIONS USING AWS KIRO - 
+
+https://www.linkedin.com/posts/sibsankar-mitra-09ba5829_oracle-postgresql-databasemigration-share-7471503445603176448-6Ytm/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+ 
+ 
+AWS 50% certification (before 30th Sep 2026)
+ https://www.linkedin.com/posts/mahendran-selvakumar_aws-awscertified-aipractitioner-share-7471693617183690754-9uzU/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+ 
+https://www.pearsonvue.com/us/en/aws/aif2cloud.html
+
+
+AWSOME KUBEAUSTRANAUT - 
+https://www.linkedin.com/posts/activity-7472166114911907842-sFkY?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+DYNAMODB IMPORTANT QUESTIONS - https://www.linkedin.com/posts/thilakkumar205_awsdevops-awsdynamodb-aws-share-7473544330222436352-HpeM/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+AWS DynamoDB Production Troubleshooting Questions (0–3 Years Experience)
+
+1) DynamoDB request latency suddenly increases. How would you investigate?
+
+2) Read throttling errors appear in production. What would you check?
+
+3) Write capacity is exhausted unexpectedly. How would you troubleshoot?
+
+4) A deployment causes DynamoDB performance degradation. What would you investigate?
+
+5) Applications experience intermittent read failures. What would you verify?
+
+6) DynamoDB costs increase dramatically overnight. How would you analyze them?
+
+7) Global Tables replication becomes delayed. What would you investigate?
+
+8) Queries become slower after schema changes. How would you troubleshoot?
+
+9) DynamoDB streams stop processing events. What would you check?
+
+10) Applications cannot access DynamoDB tables. How would you investigate?
+
+11) Auto Scaling for DynamoDB does not respond to workload increases. What would you verify?
+
+12) Hot partitions impact application performance. How would you identify them?
+
+13) Backup restoration takes longer than expected. What would you analyze?
+
+14) Monitoring alerts indicate abnormal read/write patterns. How would you investigate?
+
+15) Data appears inconsistent across regions. What would you troubleshoot?
+
+16) DynamoDB transactions fail intermittently. What would you investigate?
+
+17) A DynamoDB issue causes a Sev-1 outage. What evidence would you collect?
+
+18) Which CloudWatch metrics are critical for DynamoDB health?
+
+19) How would you identify DynamoDB bottlenecks quickly?
+
+20) What logs would you review during database incidents?
+
+21) How would you validate DynamoDB resilience?
+
+22) What testing should be done before schema changes?
+
+23) What should be documented in a DynamoDB RCA?
+
+24) How would you improve DynamoDB performance?
+
+25) What preventive measures would reduce future incidents?
+
+📌 Save this post for interview preparation.
+
+💬 Follow Thilak Kumar for advanced AWS DevOps interview content.
+📩 Feel free to connect if you're preparing for AWS DevOps roles.
+🔁 Repost to help others learn real Production concepts.
+
+
+ELASTICACHE IMPORTANT QUESTIONS  - https://www.linkedin.com/posts/thilakkumar205_awsdevops-awselasticcache-aws-share-7473544615682379776-krSW/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+AWS ElastiCache Production Troubleshooting Questions (0–3 Years Experience)
+
+1) Application latency suddenly increases after cache failures. How would you investigate?
+
+2) Redis nodes become unavailable unexpectedly. What would you check first?
+
+3) Cache hit ratio drops significantly. How would you troubleshoot?
+
+4) ElastiCache failover occurs during peak traffic. How would you respond?
+
+5) Applications cannot connect to cache clusters. What would you investigate?
+
+6) Memory utilization reaches 100%. How would you analyze it?
+
+7) Cache eviction rates increase rapidly. What would you troubleshoot?
+
+8) A deployment impacts cache performance. How would you investigate?
+
+9) Replication lag increases across cache nodes. What would you analyze?
+
+10) CloudWatch alarms indicate abnormal cache behavior. What would you check?
+
+11) ElastiCache scaling causes application issues. How would you troubleshoot?
+
+12) Session management fails due to cache instability. What would you investigate?
+
+13) Cache nodes restart repeatedly. How would you identify the root cause?
+
+14) Read-heavy workloads experience latency spikes. What would you analyze?
+
+15) Cache cluster costs increase unexpectedly. How would you investigate?
+
+16) Monitoring shows healthy cache nodes but applications are slow. What would you check?
+
+17) An ElastiCache issue causes a Sev-1 outage. What evidence would you collect?
+
+18) Which CloudWatch metrics are most important for cache monitoring?
+
+19) How would you identify cache bottlenecks quickly?
+
+20) What logs would you review during cache incidents?
+
+21) How would you validate cache resilience?
+
+22) What testing should be performed before production changes?
+
+23) What should be documented in an ElastiCache RCA?
+
+24) How would you improve cache reliability?
+
+25) What preventive actions would reduce future incidents?
+
+📌 Save this post for interview preparation.
+
+💬 Follow Thilak Kumar for advanced AWS DevOps interview content.
+📩 Feel free to connect if you're preparing for AWS DevOps roles.
+🔁 Repost to help others learn real Production concepts.
+
+
+
+SEV-1 DATABASE LINK 
+https://www.linkedin.com/posts/haiderzah_wait-is-over-the-sev-1-database-new-platform-share-7491522363671527424-_1Tu/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+DBA MANAGER JOBS REQUIREMENT IN BARCLAYS
+use : sandipsarkar.76@gmail.com
+pass: Barclays123#
+============================================
+
+Deep expertise in:
+
+RAC, ASM
+
+Data Guard, GoldenGate
+
+RMAN backup/recovery
+
+Strong SQL and PL/SQL skills
+
+OCI Cloud Expertise
+
+Hands-on experience designing and managing:
+
+OCI database services (DB Systems, Autonomous DB, Exadata)
+
+OCI Networking (VCN, DRG, Load Balancers)
+
+IAM and security models
+
+Experience with multi-region and hybrid cloud setups
+
+Architecture & Strategy
+
+Define and lead database architecture strategy across on-prem and OCI environments
+
+Design high availability, disaster recovery, and multi-region architectures
+
+Drive cloud adoption and migration strategy (on-prem → OCI)
+
+Establish database standards, best practices, and governance frameworks
+
+OCI Cloud Leadership
+
+Architect and manage:
+
+OCI DB Systems (Bare Metal / VM DB)
+
+Autonomous Databases (ATP, ADW)
+
+Exadata Cloud Service (preferred)
+
+Lead OCI landing zone design (networking, IAM, security architecture)
+
+Optimize cost, performance, and scalability in OCI environments
+
+Drive adoption of Infrastructure as Code (IaC) using Terraform/OCI Resource Manager
+
+Performance & Scalability
+
+Lead advanced performance tuning and capacity planning
+
+Analyze AWR, ASH, ADDM reports for deep insights
+
+Design systems for high throughput, low latency, and scalability
+
+Implement partitioning, sharding, indexing, and workload management
+
+High Availability & DR
+
+Architect and manage:
+
+Oracle RAC
+
+Data Guard (Active Data Guard)
+
+GoldenGate replication
+
+Design zero/near-zero downtime architectures
+
+Conduct DR drills, failover/failback testing
+
+Automation & Engineering Mindset
+
+Drive automation-first DBA practices
+
+Build frameworks using:
+
+Shell scripting / Python
+
+OCI CLI / SDK
+
+Terraform / Ansible
+
+Strong scripting experience (Python, Shell)
+
+Expertise in:
+
+Terraform / OCI Resource Manager
+
+CI/CD pipelines (Azure DevOps, Jenkins, etc.)
+
+Git-based workflows
+
+Integrate database deployments into CI/CD pipelines
+
+Introduce self-healing and auto-scaling mechanisms
+
+Migration & Modernization
+
+Lead large-scale database migrations using:
+
+RMAN / Data Pump
+
+OCI Database Migration Service
+
+GoldenGate
+
+Modernize legacy databases to:
+
+Autonomous DB
+
+Cloud-native architectures
+
+Security & Compliance
+
+Define and enforce enterprise-grade security architecture
+
+Implement:
+
+TDE (Transparent Data Encryption)
+
+Data masking, auditing, and access control
+
+Ensure compliance with standards (e.g., GDPR, PCI-DSS where applicable)
+
+Other essential responsibilities:
+
+Act as technical authority and escalation point for complex issues
+
+Mentor junior DBAs and lead cross-functional teams
+
+Collaborate with enterprise architects, DevOps, and application teams
+
+Influence roadmaps and strategic decisions at leadership level
+
+Enterprise-level OCI database architecture blueprint
+
+Migration roadmap and execution plan
+
+Automated DBA frameworks (IaC + CI/CD)
+
+HA/DR design with tested failover scenarios
+
+Performance benchmarking and optimization reports
+
+++++++++++++++++++++++++++++++++++++++
+
+cbc
+procal ****
+serum electrolites
+creatinine 
+sodium/patassium
+thyroid
+CRP
+TSH 
+Fasting Bloos Sugar 
+
+
+
+String to search - 
+how to fill itr2 with us stocks declaration latest
+
+
+free cloud certifications study notes - cloudfluently
+
+https://www.linkedin.com/posts/emmanuel-oluyemi-43588a217_cloudcomputing-aws-certification-share-7362355953834336256-9BlU/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACbXQfYBj7Hd9GeyPnCpO17wCI9iz4wz5Iw
+
+
+Slack Themes - https://www.suptask.com/blog/best-slack-themes
+==================
+#0D1117,#161B22,#58A6FF,#C9D1D9,#21262D,#8B949E,#238636,#DA3633 - github dark
+
+#4D394B,#5D475C,#8A7B89,#FFFFFF,#5D475C,#FFFFFF,#38978D,#E01E5A - Slack Classic
+
+#2E3440,#3B4252,#88C0D0,#E5E9F0,#4C566A,#D8DEE9,#A3BE8C,#BF616A - Nord (Dark Minimalist)
+
+
+
+Arup / Bhuban - Mahindra Royal Motors Insurance 
+
+
+
+How to edit YT video on phone - 
+https://www.youtube.com/watch?v=vBK_4_iEnyM
+
+
+Singapore Guide - 
+https://www.youtube.com/@Celebratinglife24x7/videos (with cost breakup)
+
+Chicken - 9804073176
+
+
+
+
+SBI PPF STATEMENT
+
+Statement downloaded successfully
+You can access your statement on your device. The downloaded statement is password-protected
+
+Your password will consist of the first five characters of your first name (upper case) followed by your date of
+birth in DDMMYYYY format. If your name is shorter than five characters, your password will be your entire first
+name (upper case) followed by date of birth in DDMMYYYY format.
+
+For example:
+Customer name: Ravina Shetty
+Date of birth: 11/01/1978
+Password: RAVIN11011978
+
+Customer name: Dev Patel
+Date of birth: 28/11/2003
+Password: DEV28112003
+
+
+
+
+8336900447 - iris hospital test enquery
+
+
+
+https://www.amazon.in/gp/product/B0GWCTLBYB/ref=ox_sc_act_title_2?smid=A1EQDWRD74SWOU&th=1 - headstrap mount 
+
+
+
+
+VIDEO EDITING IN BANGLA
+https://www.youtube.com/playlist?list=PLrLtKM495GpoiiJ6aFY3WNgQpiSjOVH7t
+
+IMOVIE TUTOTRIAL 
+https://www.youtube.com/watch?v=jhGG7ypIW_w
+
+Capcut Video making tutorial
+https://www.youtube.com/watch?v=ThucY3MQVQc
+
+
+
+mini 8500
+
+mini2 9500
+
+Car Rental in Malaysia- 
+
+https://www.discovercars.com/search/2a351268-b5a1-46ba-9655-f5a274c2e36b?sq=eyJQaWNrdXBMb2NhdGlvbklkIjo1OTQzLCJEcm9wT2ZmTG9jYXRpb25JZCI6NTk0MywiUGlja3VwRGF0ZVRpbWUiOiIyMDI2LTA4LTI1VDExOjAwOjAwIiwiRHJvcE9mZkRhdGVUaW1lIjoiMjAyNi0wOC0zMFQxMTowMDowMCIsIlJlc2lkZW5jZUNvdW50cnkiOiJJTiIsIkRyaXZlckFnZSI6MzUsIkhhc2giOiIifQ%3D%3D&searchVersion=2
+
+Car Rental good companies in Malaysia - 
+https://mkazcarrental.com
+https://farego.my/contact-us/
+trevo app
+
+**************** Discover cars 
+https://www.discovercars.com/offer/db3d94d7-31c9-41eb-9f2b-5b908dc8c266-UQS2?sq=eyJQaWNrdXBMb2NhdGlvbklkIjo1OTQzLCJEcm9wT2ZmTG9jYXRpb25JZCI6NTk0MywiUGlja3VwRGF0ZVRpbWUiOiIyMDI2LTA4LTI1VDExOjAwOjAwIiwiRHJvcE9mZkRhdGVUaW1lIjoiMjAyNi0wOC0zMFQxOTowMDowMCIsIlJlc2lkZW5jZUNvdW50cnkiOiJJTiIsIkRyaXZlckFnZSI6MzUsIkhhc2giOiIzY2JkOTQ4MWJmYmYwYmRhYzdhMDAzMTU4NjI5YWVkYSJ9 
+
+
+Airtel internaltion roaming no to dial from Abroad -       +91  9910099100
+
+
+Postgresql Talk (LONDON) - https://lnkd.in/p/gEWdYFER (somdyuti Paul)
+
+DEVOPS CI/CD/Jenkins/Kubernetes Hands on projects - https://lnkd.in/p/garEhw4F
+
+
+ULANZI MT99 Mini Tripod & Selfie Stick for DJI Osmo Action 6/Nano - https://www.amazon.in/ULANZI-MT99-Tripod-Selfie-Action/dp/B0GS9MFYXH/ref=sr_1_35_sspa?crid=2EVKESZ5SC40S&dib=eyJ2IjoiMSJ9.9p2oenOghoAq8X_ZwLe8O_1kg5R36cVTzlGsNwn1NCA.G0Awc5NVs8a6m5LRMGVixdApK9fiJ7S_ZQd_A3KVCi8&dib_tag=se&keywords=small+shooting+grip+for+DJI+osmo+action+5+pro&nsdOptOutParam=true&qid=1788449984&sprefix=small+shooting+grip+for+dji+osmo+action+5+pro+%2Caps%2C278&sr=8-35-spons&xpid=QUJ2Jng87SrXt&aref=SlTG9SRW5h&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGZfbmV4dA&psc=1
+
+
+Ulanzi MT-09 Extention Vlog Tripod Mini Portable Handle Grip for Gopro Hero 8 7 6 5 GoPro max Black Session Osmo Action Camera- 
+https://www.amazon.in/Ulanzi-MT-09-Extention-Portable-Session/dp/B07ZV7BBC9/ref=sr_1_49_sspa?crid=2EVKESZ5SC40S&dib=eyJ2IjoiMSJ9.QJt0wm0xpfmIQJePR-9cm6Tx34I7DvbmHPO-e2XwdBnkrvMykL_DZpIvKYP7_5mAlH083vyWVraejCKnfApgEXBVY5ccyXDkJ8sWpfiDepzJsT8BmClQwqNRAyqqb-ynf07ikP3Z6qxrW4aEmuYFbRFoQ8WWMhlAcOMmb7AgGSUlfdnYb-VQm-E2MV8zIoT8oHKBAIzuNZI1hGbN-4N4lymIUxVGNpFgRSnlrtbIHgQ.1num47YAB6jxO123eltjZ3Qi_DLn9zMQQ1EU5o88J-Y&dib_tag=se&keywords=small+shooting+grip+for+DJI+osmo+action+5+pro&nsdOptOutParam=true&qid=1788451019&sprefix=small+shooting+grip+for+dji+osmo+action+5+pro+%2Caps%2C278&sr=8-49-spons&xpid=QUJ2Jng87SrXt&aref=jDBXOnFrGy&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGZfbmV4dA&psc=1
+
+
+DJI OSMO POCKET 4P COVERS - 
+=============================
+https://www.amazon.in/s?k=dji+osmo+pocket+4p+cover&page=2&xpid=bpSaAchzOwcP4&crid=1GOUA0T7A6YXL&qid=1788513387&sprefix=dji+osmo+pocket+4p+cover%2Caps%2C275&ref=sr_pg_1
+
+
+GIMBAL SCREEN PROTECTIVE CASE FOR DJI OSMO POCKET 4P (BLACK)- 
+==============================================================
+https://www.amazon.in/Yufeizi-Gimbal-Screen-Protective-Pocket/dp/B0H5QL7M5Q/ref=pb_allspark_dp_sims_pao_desktop_session_based_d_sccl_1_3/259-2861060-0182747?pd_rd_w=bZwor&content-id=amzn1.sym.e84a26b2-5470-42e6-b7fa-162e7bb17185&pf_rd_p=e84a26b2-5470-42e6-b7fa-162e7bb17185&pf_rd_r=66QQSDHCGY4B6ZNAMMF3&pd_rd_wg=QCTF5&pd_rd_r=95106324-ad17-4285-88c2-e9d412e0a661&pd_rd_i=B0H5QL7M5Q&th=1
+
+
+HOW TO CREATE EBOOK AND SELL IN META PLATFORM TO GENERATE THE REVENEW - 
+https://www.youtube.com/watch?v=uB7oBeMjhI0
+
+
+ 
